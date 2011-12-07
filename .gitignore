@@ -1,0 +1,5 @@
+# we don't want to inlude Leros here
+leros
+# OS generated files
+.DS_Store?
+Thumbs.db
