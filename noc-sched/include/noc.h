@@ -68,11 +68,22 @@ public:
     return Kind;
   }
 
+  /// Check whether the node is a router.
+  /// @return True if the node is a router, false otherwise.
+  bool is_router() const
+  {
+    return Kind == ROUTER;
+  }
+  
+  /// Return the column of the NoC node.
+  /// @param Return the column of the NoC node.
   unsigned int get_column() const
   {
     return Column;
   }
 
+  /// Return the row of the NoC node.
+  /// @param Return the row of the NoC node.
   unsigned int get_row() const
   {
     return Row;
@@ -82,7 +93,7 @@ public:
 /// Print a textual representation of a node kind to the output stream.
 /// @param os The output stream.
 /// @param kind The node kind.
-std::ostream &operator<<(std::ostream &os, node_kind_e kind)
+inline std::ostream &operator<<(std::ostream &os, node_kind_e kind)
 {
   switch(kind)
   {
@@ -100,7 +111,7 @@ std::ostream &operator<<(std::ostream &os, node_kind_e kind)
 /// Print a node of the NoC to the output stream.
 /// @param os The output stream.
 /// @param n The node.
-std::ostream &operator<<(std::ostream &os, const node_t &n)
+inline std::ostream &operator<<(std::ostream &os, const node_t &n)
 {
   return os << boost::format("%1%%2%_%3%") % n.Kind % n.Column % n.Row;
 }
@@ -146,7 +157,7 @@ public:
 /// Print a link of the NoC to the output stream.
 /// @param os The output stream.
 /// @param l The link.
-std::ostream &operator<<(std::ostream &os, const link_t &l)
+inline std::ostream &operator<<(std::ostream &os, const link_t &l)
 {
   return os << boost::format("%1%_%2%") % l.S % l.D;
 }
@@ -385,11 +396,11 @@ public:
     return *new_noc;
   }
 
-  /// Create a new double-torus NoC with NxM nodes each with a router.
+  /// Create a new bi-torus NoC with NxM nodes each with a router.
   /// @param n The number of columns in the NoC.
   /// @param m The number of rows in the NoC.
   /// @return A new instance of a NoC with all nodes and links constructed.
-  static noc_t &create_double_torus(unsigned int n, unsigned int m)
+  static noc_t &create_bitorus(unsigned int n, unsigned int m)
   {
     noc_t *new_noc = new noc_t();
 

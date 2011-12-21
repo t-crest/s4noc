@@ -14,6 +14,6 @@
 #  along with noc-sched. If not, see <http://www.gnu.org/licenses/>.
 #
 
-add_executable(noc-sched main.cc)
+add_executable(noc-sched main.cc ilp-schedule.cc pattern-schedule.cc)
 
 target_link_libraries(noc-sched ${Boost_LIBRARIES})

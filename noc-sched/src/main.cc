@@ -20,341 +20,13 @@
 #include <ostream>
 #include <fstream>
 #include <sstream>
-#include <cassert>
-#include <cmath>
 
 #include <boost/program_options.hpp>
 
-/// Check whether the node is a router node.
-/// @param n The node.
-/// @return True if the node is a router, false otherwise.
-static bool is_router(const node_t &n)
-{
-  return n.get_kind() == ROUTER;
-}
-
-#ifndef NDEBUG
-std::set<std::string> ILP_names;
-#endif
-
-/// Get the name of the ILP variable for a link, a destination node, and a
-/// cycle.
-/// @param l The link.
-/// @param d The destination node.
-/// @param c The cycle.
-static void el_(const link_t &l, const node_t &d, unsigned int c,
-                std::ostream &os)
-{
-  os << l << "____" << d << "____" << c;
-}
-
-/// Get the name of the ILP variable for a link, a destination node, and a 
-/// cycle.
-/// @param l The link.
-/// @param d The destination node.
-/// @param c The cycle.
-static void el(const link_t &l, const node_t &d, unsigned int c,
-               std::ostream &os)
-{
-  el_(l, d, c, os);
-
-#ifndef NDEBUG
-  const node_t &ls(l.get_source());
-  const node_t &ld(l.get_destination());
-
-  assert(is_router(ls) || &ls != &d);
-  assert(is_router(ld) || &ld == &d);
-
-  std::stringstream s;
-  el_(l, d, c, s);
-  if (ILP_names.find(s.str()) == ILP_names.end())
-  {
-    std::cerr << s.str();
-  }
-  assert(ILP_names.find(s.str()) != ILP_names.end());
-#endif
-}
-
-/// Print ILP equations to derive a routing schedule for the NoC.
-/// @param os An output stream to write the equations to.
-/// @param noc An instance of a given NoC (topology).
-/// @param bound An upper bound on the schedule length (depending on the NoC 
-/// topology)
-void print_lp(std::ostream &os, const noc_t &noc, unsigned int bound)
-{
-  const nodes_t &N = noc.get_nodes();
-  const links_t &L = noc.get_links();
-
-  // count non-router nodes
-  unsigned int non_router = 0;
-  for(nodes_t::const_iterator d(N.begin()), de(N.end());d != de; d++)
-  {
-    if (!is_router(**d))
-    {
-      non_router++;
-    }
-  }
-
-  unsigned int MAXC = bound;
-
-  // count constraints
-  unsigned int cnt = 0;
-
-  // make a list of all valid ILP variable names appearing in the equations.
-#ifndef NDEBUG
-  for(links_t::const_iterator l(L.begin()), le(L.end()); l != le; l++)
-  {
-    const node_t &ls((*l)->get_source());
-    const node_t &ld((*l)->get_destination());
-
-    for(nodes_t::const_iterator d(N.begin()), de(N.end());d != de; d++)
-    {
-      if ((is_router(ls) || &ls != *d) &&
-          (is_router(ld) || &ld == *d) &&
-          !is_router(**d))
-      {
-        for(unsigned int c = 0; c != MAXC + 1; c++)
-        {
-          std::stringstream s;
-          el_(**l, **d, c, s);
-          ILP_names.insert(s.str());
-        }
-      }
-    }
-  }
-#endif
-  os << "Minimize\ncycles\n";
-
-  for(links_t::const_iterator l(L.begin()), le(L.end()); l != le; l++)
-  {
-    const node_t &ls((*l)->get_source());
-    const node_t &ld((*l)->get_destination());
-
-    for(nodes_t::const_iterator d(N.begin()), de(N.end());d != de; d++)
-    {
-      if ((is_router(ls) || &ls != *d) &&
-          (is_router(ld) || &ld == *d) &&
-          !is_router(**d))
-      {
-        for(unsigned int c = 0; c != MAXC + 1; c++)
-        {
-          os << " + " << 1.0/(L.size()*non_router*MAXC) << " ";
-          el_(**l, **d, c, os);
-        }
-        os << "\n";
-      }
-    }
-  }
-  
-  os << "\n\nSubject To\n";
-
-  // derive the last cycle with an active link.
-  for(unsigned int c = 1; c != MAXC + 1; c++)
-  {
-    os << "c" << cnt++ << ":\t" << non_router << " cycle_" << c;
-
-    for(links_t::const_iterator l(L.begin()), le(L.end()); l != le; l++)
-    {
-      const node_t &ld((*l)->get_destination());
-
-      // a link to a non-router node
-      if (!is_router(ld))
-      {
-        os << " - ";
-        el(**l, ld, c, os);
-      }
-    }
-    os << " >= 0\n";
-
-    os << "c" << cnt++ << ":\tcycles - " << c << " cycle_" << c << " >= 0\n";
-  }
-
-  // ensure that routers never produce values out of nothing at cycle 0
-  for(links_t::const_iterator l(L.begin()), le(L.end()); l != le; l++)
-  {
-    const node_t &ls((*l)->get_source());
-    const node_t &ld((*l)->get_destination());
-
-    // do not constrain the ILP variables for non-router nodes, since they
-    // can produce values at any moment
-    if (is_router(ls))
-    {
-      for(nodes_t::const_iterator d(N.begin()), de(N.end());d != de; d++)
-      {
-        if ((is_router(ld) || &ld == *d) &&
-            !is_router(**d))
-        {
-          // ensure that routers never produce values out of nothing at cycle 0
-          os << "i" << cnt++ << ":\t";
-          el(**l, **d, 0, os);
-          os << " = 0\n";
-        }
-      }
-    }
-  }
-
-  // preserve in- and out-going flow at routers on every cycle
-  // find all router
-  for(nodes_t::const_iterator r(N.begin()), re(N.end());r != re; r++)
-  {
-    if (is_router(**r))
-    {
-      for(nodes_t::const_iterator d(N.begin()), de(N.end());d != de; d++)
-      {
-        if (!is_router(**d))
-        {
-          for(unsigned int c = 0; c != MAXC; c++)
-          {
-            os << "f" << cnt++ << ":\t";
-
-            for(links_t::const_iterator l(L.begin()), le(L.end()); l != le; l++)
-            {
-              const node_t &ls((*l)->get_source());
-              const node_t &ld((*l)->get_destination());
-
-              // a link to/from the router
-              if (&ls == *r || &ld == *r)
-              {
-                if ((is_router(ls) || &ls != *d) &&
-                    (is_router(ld) || &ld == *d))
-                {
-                  // sum out-flow
-                  if (&ls == *r)
-                  {
-                    os << " + ";
-                    el(**l, **d, c + 1, os);
-                  }
-                  // subtract in-flow
-                  if (&ld == *r)
-                  {
-                    os << " - ";
-                    el(**l, **d, c, os);
-                  }
-                }
-              }
-            }
-
-            // in-flow and out-flow have to match
-            os << " = 0\n";
-          }
-        }
-      }
-    }
-  }
-
-  // restrict each link to one message per cycle
-  for(unsigned int c = 0; c != MAXC + 1; c++)
-  {
-    for(links_t::const_iterator l(L.begin()), le(L.end()); l != le; l++)
-    {
-      const node_t &ls((*l)->get_source());
-      const node_t &ld((*l)->get_destination());
-
-      os << "u" << cnt++ << ":\t";
-
-      for(nodes_t::const_iterator d(N.begin()), de(N.end());d != de; d++)
-      {
-        if ((is_router(ls) || &ls != *d) &&
-            (is_router(ld) || &ld == *d) &&
-            !is_router(**d))
-        {
-          os << " + ";
-          el(**l, **d, c, os);
-        }
-      }
-
-      os << " <= 1\n";
-    }
-  }
-
-  // ensure that every node receives a message from every other node
-  for(links_t::const_iterator l(L.begin()), le(L.end()); l != le; l++)
-  {
-    const node_t &ld((*l)->get_destination());
-
-    // a link to a non-router node
-    if (!is_router(ld))
-    {
-      // consider all communications over this links leading to the non-router 
-      // node over all cycles
-      os << "r" << cnt++ << ":\t";
-      for(unsigned int c = 0; c != MAXC + 1; c++)
-      {
-        os << " + ";
-        el(**l, ld, c, os);
-      }
-
-      os << " = " << (non_router - 1) << "\n";
-    }
-  }
-  
-  // ensure that every node sends once to every other node
-  for(links_t::const_iterator l(L.begin()), le(L.end()); l != le; l++)
-  {
-    const node_t &ls((*l)->get_source());
-
-    // a link from a non-router node
-    if (!is_router(ls))
-    {
-      for(nodes_t::const_iterator d(N.begin()), de(N.end());d != de; d++)
-      {
-        // only send to other non-router nodes
-        if (*d != &ls && !is_router(**d))
-        {
-          // disallow sending messages in the last cycle
-          os << "n" << cnt++ << ":\t";
-          el(**l, **d, MAXC, os);
-          os << " = 0\n";
-
-          // consider all links leading from the non-router node to the 
-          // destination.
-          os << "s" << cnt++ << ":\t";
-          for(unsigned int c = 0; c != MAXC; c++)
-          {
-            os << " + ";
-            el(**l, **d, c, os);
-          }
-
-          os << " = 1\n";
-        }
-      }
-    }
-  }
-
-  // // // // // // // // // // // // // // // // // // // // // // // // // //
-  os << "\n\nBounds\n";
-  os << (non_router - 1) << " <= cycles <= " << (non_router*non_router) << "\n";
-
-  // // // // // // // // // // // // // // // // // // // // // // // // // //
-  os << "\n\nBinaries\n";
-  for(links_t::const_iterator l(L.begin()), le(L.end()); l != le; l++)
-  {
-    const node_t &ls((*l)->get_source());
-    const node_t &ld((*l)->get_destination());
-
-    for(nodes_t::const_iterator d(N.begin()), de(N.end());d != de; d++)
-    {
-      if ((is_router(ls) || &ls != *d) &&
-          (is_router(ld) || &ld == *d) &
-          !is_router(**d))
-      {
-        for(unsigned int c = 0; c != MAXC + 1; c++)
-        {
-          el(**l, **d, c, os);
-          os << "\n";
-        }
-      }
-    }
-  }
-  
-  for(unsigned int c = 1; c != MAXC + 1; c++)
-  {
-    os << "cycle_" << c << "\n";
-  }
-  
-  os << "Generals\ncycles\n";
-  os << "End\n";
-}
+extern unsigned int schedule_mesh_pattern(std::ostream &os, unsigned int n);
+extern unsigned int schedule_torus_pattern(std::ostream &os, unsigned int n);
+extern unsigned int schedule_bitorus_pattern(std::ostream &os, unsigned int n);
+extern void print_lp(std::ostream &os, const noc_t &noc, unsigned int bound);
 
 /// Open an output file given by name.
 /// @param name The name of the output file.
@@ -388,11 +60,12 @@ int main(int argc, char **argv)
     ("help", "produce help message")
     ("dot", boost::program_options::value<std::string>(), "dump NoC as dot graph file")
     ("lp", boost::program_options::value<std::string>(), "dump ILP equations to a file")
+    ("hshd", boost::program_options::value<std::string>(), "schedule using a heuristic to a file")
     ("size", "dump network size")
     ("bound", boost::program_options::value<int>(), "give a bound for the ILP formulation")
     ("mesh", boost::program_options::value<int>(), "create a NxN mesh NoC")
     ("torus", boost::program_options::value<int>(),"create a NxN torus NoC")
-    ("dtorus", boost::program_options::value<int>(),"create a NxN double-torus NoC")
+    ("bitorus", boost::program_options::value<int>(),"create a NxN bi-directional torus NoC")
     ("tree", boost::program_options::value<int>(),"create a tree NoC with N leafs")
     ("ftree", boost::program_options::value<int>(),"create a fat-tree NoC with N leafs");
 
@@ -423,10 +96,10 @@ int main(int argc, char **argv)
     // TODO: use analytical bounds from paper
     bound = 3*n*n;
   }
-  else if (vm.count("dtorus"))
+  else if (vm.count("bitorus"))
   {
-    unsigned int n = vm["dtorus"].as<int>();
-    noc = &noc_t::create_double_torus(n, n);
+    unsigned int n = vm["bitorus"].as<int>();
+    noc = &noc_t::create_bitorus(n, n);
     // TODO: use analytical bounds from paper
     bound = 20*n*n;
   }
@@ -472,7 +145,7 @@ int main(int argc, char **argv)
     unsigned int router = 0;
     for(nodes_t::const_iterator d(N.begin()), de(N.end());d != de; d++)
     {
-      if (!is_router(**d))
+      if (!(*d)->is_router())
       {
         non_router++;
       }
@@ -483,6 +156,27 @@ int main(int argc, char **argv)
     std::cout << boost::format("Network Size: nodes = %1%, router = %2%, "
                                "devices = %3%, links = %4%\n\n")
               % N.size() % router % non_router % L.size();
+  }
+
+  if (vm.count("hshd"))
+  {
+    std::ostream &hs(get_stream(vm["hshd"].as<std::string>()));
+    if (vm.count("mesh"))
+    {
+      unsigned int n = vm["mesh"].as<int>();
+      bound = std::min(bound, schedule_mesh_pattern(hs, n));
+    }
+    else if (vm.count("torus"))
+    {
+      unsigned int n = vm["torus"].as<int>();
+      bound = std::min(bound, schedule_torus_pattern(hs, n));
+    }
+    else if (vm.count("bitorus"))
+    {
+      unsigned int n = vm["bitorus"].as<int>();
+      bound = std::min(bound, schedule_bitorus_pattern(hs, n));
+    }
+    free_stream(hs);
   }
   
   if (vm.count("lp"))
