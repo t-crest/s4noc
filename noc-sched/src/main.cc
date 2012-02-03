@@ -15,18 +15,48 @@
 //
 
 #include "noc.h"
+#include "heuristic.h"
 
 #include <iostream>
 #include <ostream>
 #include <fstream>
 #include <sstream>
+#include <istream>
 
 #include <boost/program_options.hpp>
 
-extern unsigned int schedule_mesh_pattern(std::ostream &os, unsigned int n);
-extern unsigned int schedule_torus_pattern(std::ostream &os, unsigned int n);
-extern unsigned int schedule_bitorus_pattern(std::ostream &os, unsigned int n);
 extern void print_lp(std::ostream &os, const noc_t &noc, unsigned int bound);
+
+/// Parse the name of the "hsel" program option from an input stream.
+///  @param s The input stream.
+///  @param res The result.
+///  @return The original input stream.
+std::istream& operator>>(std::istream& s, candidate_selection_e &cnd_sel)
+{
+  // read string
+  std::string tmp;
+  s >> tmp;
+
+  // check all alternatives
+  if (tmp == "rnd")
+  {
+    cnd_sel = RND;
+  }
+  else if (tmp == "lng")
+  {
+    cnd_sel = LNG;
+  }
+  else if (tmp == "cnfl")
+  {
+    cnd_sel = CNFL;
+  }
+  else throw boost::program_options::validation_error(
+                 boost::program_options::validation_error::invalid_option_value,
+                 "Invalid value for hsel, possible value: rnd, lng, cnfl",
+                 "hsel");
+
+  return s;
+}
 
 /// Open an output file given by name.
 /// @param name The name of the output file.
@@ -61,6 +91,7 @@ int main(int argc, char **argv)
     ("dot", boost::program_options::value<std::string>(), "dump NoC as dot graph file")
     ("lp", boost::program_options::value<std::string>(), "dump ILP equations to a file")
     ("hshd", boost::program_options::value<std::string>(), "schedule using a heuristic to a file")
+    ("hsel", boost::program_options::value<candidate_selection_e>()->default_value(LNG), "choose candidate selection for heuristic")
     ("size", "dump network size")
     ("bound", boost::program_options::value<int>(), "give a bound for the ILP formulation")
     ("mesh", boost::program_options::value<int>(), "create a NxN mesh NoC")
@@ -161,20 +192,21 @@ int main(int argc, char **argv)
   if (vm.count("hshd"))
   {
     std::ostream &hs(get_stream(vm["hshd"].as<std::string>()));
+    candidate_selection_e cnd_sel(vm["hsel"].as<candidate_selection_e>());
     if (vm.count("mesh"))
     {
       unsigned int n = vm["mesh"].as<int>();
-      bound = std::min(bound, schedule_mesh_pattern(hs, n));
+      bound = std::min(bound, schedule_mesh_pattern(hs, cnd_sel, n));
     }
     else if (vm.count("torus"))
     {
       unsigned int n = vm["torus"].as<int>();
-      bound = std::min(bound, schedule_torus_pattern(hs, n));
+      bound = std::min(bound, schedule_torus_pattern(hs, cnd_sel, n));
     }
     else if (vm.count("bitorus"))
     {
       unsigned int n = vm["bitorus"].as<int>();
-      bound = std::min(bound, schedule_bitorus_pattern(hs, n));
+      bound = std::min(bound, schedule_bitorus_pattern(hs, cnd_sel, n));
     }
     free_stream(hs);
   }
