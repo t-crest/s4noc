@@ -45,17 +45,22 @@ extern unsigned int schedule_mesh_pattern(std::ostream &os,
 /// Construct a schedule for an NxN torus, based on communication patterns.
 /// @param os Output stream to dump the heuristic schedule.
 /// @param n The size of the torus.
+/// @param with_registers Flag indicating whether registers should be assumed on
+/// each link of the network, i.e., all hops take two cycles.
 /// @return The length of the schedule.
 extern unsigned int schedule_torus_pattern(std::ostream &os,
                                            candidate_selection_e cnd_sel,
-                                           unsigned int n);
+                                           unsigned int n, bool with_registers);
 
 /// Construct a schedule for an NxN bi-directional torus, based on communication
 /// patterns.
 /// @param os Output stream to dump the heuristic schedule.
 /// @param n The size of the bi-torus.
+/// @param with_registers Flag indicating whether registers should be assumed on
+/// each link of the network, i.e., all hops take two cycles.
 /// @return The length of the schedule.
 extern unsigned int schedule_bitorus_pattern(std::ostream &os,
                                              candidate_selection_e cnd_sel,
-                                             unsigned int n);
+                                             unsigned int n,
+                                             bool with_registers);
 #endif // HEURISTIC_H

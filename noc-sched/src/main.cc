@@ -95,12 +95,14 @@ int main(int argc, char **argv)
     ("dot", boost::program_options::value<std::string>(), "dump NoC as dot graph file")
     ("lp", boost::program_options::value<std::string>(), "dump ILP equations to a file")
     ("hshd", boost::program_options::value<std::string>(), "schedule using a heuristic to a file")
-    ("hsel", boost::program_options::value<candidate_selection_e>()->default_value(LNG), "choose candidate selection for heuristic")
+    ("hsel", boost::program_options::value<candidate_selection_e>()->default_value(LNG, "lng"), "choose candidate selection for heuristic")
     ("size", "dump network size")
     ("bound", boost::program_options::value<int>(), "give a bound for the ILP formulation")
     ("mesh", boost::program_options::value<int>(), "create a NxN mesh NoC")
     ("torus", boost::program_options::value<int>(),"create a NxN torus NoC")
     ("bitorus", boost::program_options::value<int>(),"create a NxN bi-directional torus NoC")
+    ("ptorus", boost::program_options::value<int>(),"create a NxN torus NoC with registers on links")
+    ("pbitorus", boost::program_options::value<int>(),"create a NxN bi-directional torus NoC with registers on links")
     ("tree", boost::program_options::value<int>(),"create a tree NoC with N leafs")
     ("ftree", boost::program_options::value<int>(),"create a fat-tree NoC with N leafs");
 
@@ -131,10 +133,26 @@ int main(int argc, char **argv)
     // TODO: use analytical bounds from paper
     bound = 3*n*n;
   }
+  else if (vm.count("ptorus"))
+  {
+    unsigned int n = vm["ptorus"].as<int>();
+    // TODO: implement
+    // noc = &noc_t::create_torus(n, n);
+    // TODO: use analytical bounds from paper
+    bound = 3*n*n;
+  }
   else if (vm.count("bitorus"))
   {
     unsigned int n = vm["bitorus"].as<int>();
     noc = &noc_t::create_bitorus(n, n);
+    // TODO: use analytical bounds from paper
+    bound = 20*n*n;
+  }
+  else if (vm.count("pbitorus"))
+  {
+    unsigned int n = vm["pbitorus"].as<int>();
+    // TODO: implement
+    // noc = &noc_t::create_bitorus(n, n);
     // TODO: use analytical bounds from paper
     bound = 20*n*n;
   }
@@ -205,12 +223,26 @@ int main(int argc, char **argv)
     else if (vm.count("torus"))
     {
       unsigned int n = vm["torus"].as<int>();
-      bound = std::min(bound, schedule_torus_pattern(hs, cnd_sel, n));
+      bound = std::min(bound, schedule_torus_pattern(hs, cnd_sel, n, false));
+    }
+    else if (vm.count("ptorus"))
+    {
+      unsigned int n = vm["ptorus"].as<int>();
+      bound = std::min(bound, schedule_torus_pattern(hs, cnd_sel, n, true));
     }
     else if (vm.count("bitorus"))
     {
       unsigned int n = vm["bitorus"].as<int>();
-      bound = std::min(bound, schedule_bitorus_pattern(hs, cnd_sel, n));
+      bound = std::min(bound, schedule_bitorus_pattern(hs, cnd_sel, n, false));
+    }
+    else if (vm.count("pbitorus"))
+    {
+      unsigned int n = vm["pbitorus"].as<int>();
+      bound = std::min(bound, schedule_bitorus_pattern(hs, cnd_sel, n, true));
+    }
+    else
+    {
+      std::cerr << "Topology not supported by heuristic.\n\n";
     }
     free_stream(hs);
   }

@@ -64,6 +64,8 @@ echo "" > ${RESULT}
 
 run_top mesh | tee -a ${RESULT} | egrep "running|network|configuration|schedule|time"
 run_top torus | tee -a ${RESULT} | egrep "running|network|configuration|schedule|time"
+run_top ptorus | tee -a ${RESULT} | egrep "running|network|configuration|schedule|time"
 run_top bitorus | tee -a ${RESULT} | egrep "running|network|configuration|schedule|time"
+run_top pbitorus | tee -a ${RESULT} | egrep "running|network|configuration|schedule|time"
 
 exit 0;

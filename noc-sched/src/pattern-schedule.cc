@@ -513,7 +513,7 @@ unsigned int schedule_mesh_pattern(std::ostream &os,
 
 unsigned int schedule_torus_pattern(std::ostream &os,
                                     candidate_selection_e cnd_sel,
-                                    unsigned int n)
+                                    unsigned int n, bool with_registers)
 {
   patterns_t patterns;
 
@@ -523,18 +523,24 @@ unsigned int schedule_torus_pattern(std::ostream &os,
 
   for(unsigned int i = 0; i < n; i++)
   {
+    // hops take two cycles with registers on links
+    unsigned int li = with_registers ? i*2 : i;
+    
     for(unsigned int j = 0; j < n; j++)
     {
+      // hops take two cycles with registers on links
+      unsigned int lj = with_registers ? j*2 : j;
+      
       if (i != 0)
       {
-        pattern_t p(EAST, i, (j == 0) ? NONE : SOUTH, j);
+        pattern_t p(EAST, li, (j == 0) ? NONE : SOUTH, lj);
         
         patterns.insert(p);
         patterns.insert(inverse(p));
       }
       else if (j != 0)
       {
-        pattern_t p(SOUTH, j, NONE, 0);
+        pattern_t p(SOUTH, lj, NONE, 0);
         
         patterns.insert(p);
       }
@@ -557,7 +563,7 @@ unsigned int schedule_torus_pattern(std::ostream &os,
 
 unsigned int schedule_bitorus_pattern(std::ostream &os,
                                       candidate_selection_e cnd_sel,
-                                      unsigned int n)
+                                      unsigned int n, bool with_registers)
 {
   patterns_t patterns;
 
@@ -578,6 +584,13 @@ unsigned int schedule_bitorus_pattern(std::ostream &os,
         direction_t db = (j == ref) ? NONE : (j < ref ? NORTH : SOUTH);
         unsigned int lb = j < ref ? ref - j : j - ref;
 
+        // hops take two cycles with registers on links
+        if (with_registers)
+        {
+          la *= 2;
+          lb *= 2;
+        }
+        
         pattern_t p(da, la, db, lb);
 
         patterns.insert(p);
@@ -585,8 +598,15 @@ unsigned int schedule_bitorus_pattern(std::ostream &os,
       }
       else if (j != ref)
       {
+        // note: hops take two cycles with registers on links
         direction_t da = j < ref ? NORTH : SOUTH;
         unsigned int la = j < ref ? ref - j : j - ref;
+
+        // hops take two cycles with registers on links
+        if (with_registers)
+        {
+          la *= 2;
+        }
 
         pattern_t p(da, la, NONE, 0);
 
