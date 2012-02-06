@@ -37,6 +37,7 @@ function run_top()
   TOP=$1
   run_set ${TOP} rnd
   run_set ${TOP} lng
+  run_set ${TOP} sht
   run_set ${TOP} cnfl
 }
 

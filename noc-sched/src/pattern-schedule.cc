@@ -253,9 +253,7 @@ pattern_t select_candidate_rnd(const patterns_t &p)
   abort();
 }
 
-/// Select a candidate pattern to schedule next.
-/// Currently the longest unscheduled pattern is selected, other strategies
-/// using e.g., some form of critical path length, might be a good idea.
+/// Select one of the longest remaining candidate pattern to schedule next.
 /// @param p The set of unscheduled patterns.
 pattern_t select_candidate_lng(const patterns_t &p)
 {
@@ -263,6 +261,23 @@ pattern_t select_candidate_lng(const patterns_t &p)
   for(patterns_t::const_iterator i(p.begin()), ie(p.end()); i != ie; i++)
   {
     if (!r || length(*r) < length(*i))
+    {
+      r = &*i;
+    }
+  }
+
+  assert(r);
+  return *r;
+}
+
+/// Select one of the shortest remaining candidate pattern to schedule next.
+/// @param p The set of unscheduled patterns.
+pattern_t select_candidate_sht(const patterns_t &p)
+{
+  const pattern_t *r = NULL;
+  for(patterns_t::const_iterator i(p.begin()), ie(p.end()); i != ie; i++)
+  {
+    if (!r || length(*r) > length(*i))
     {
       r = &*i;
     }
@@ -391,6 +406,9 @@ static unsigned int schedule_heuristic(std::ostream &os,
         break;
       case LNG:
         p = select_candidate_lng(worklist);
+        break;
+      case SHT:
+        p = select_candidate_sht(worklist);
         break;
       case CNFL:
         p = select_candidate_cnfl(worklist, lastp);

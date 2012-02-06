@@ -46,6 +46,10 @@ std::istream& operator>>(std::istream& s, candidate_selection_e &cnd_sel)
   {
     cnd_sel = LNG;
   }
+  else if (tmp == "sht")
+  {
+    cnd_sel = SHT;
+  }
   else if (tmp == "cnfl")
   {
     cnd_sel = CNFL;

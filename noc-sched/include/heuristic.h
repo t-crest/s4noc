@@ -27,6 +27,8 @@ enum candidate_selection_e
   RND,
   /// Randomly select one of the longest candidate patterns.
   LNG,
+  /// Randomly select one of the shortest candidate patterns.
+  SHT,
   /// Randomly select one of the longest candidate pattern without a conflict 
   /// to the previously selected candidate.
   CNFL,
