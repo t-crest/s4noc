@@ -12,7 +12,7 @@ function run_instance()
   SIZE=$2
   HEUR=$3;
   echo "configuration: ${TOP} ${SIZE} ${HEUR};"
-  echo "running: ${NOC_SCHED} --hshd --hsel ${HEUR} --${TOP} $i;"
+  echo "running: ${NOC_SCHED} --hshd - --hsel ${HEUR} --${TOP} $i;"
   ${NOC_SCHED} --hshd - --hsel ${HEUR} --${TOP} $i;
 }
 
@@ -62,10 +62,10 @@ RESULT=$1
 
 echo "" > ${RESULT}
 
-run_top mesh | tee -a ${RESULT} | egrep "running|network|configuration|schedule|time"
-run_top torus | tee -a ${RESULT} | egrep "running|network|configuration|schedule|time"
-run_top ptorus | tee -a ${RESULT} | egrep "running|network|configuration|schedule|time"
-run_top bitorus | tee -a ${RESULT} | egrep "running|network|configuration|schedule|time"
-run_top pbitorus | tee -a ${RESULT} | egrep "running|network|configuration|schedule|time"
+run_top mesh | tee -a ${RESULT} | egrep "running|network|configuration|schedule|patterns|time"
+run_top torus | tee -a ${RESULT} | egrep "running|network|configuration|schedule|patterns|time"
+run_top ptorus | tee -a ${RESULT} | egrep "running|network|configuration|schedule|patterns|time"
+run_top bitorus | tee -a ${RESULT} | egrep "running|network|configuration|schedule|patterns|time"
+run_top pbitorus | tee -a ${RESULT} | egrep "running|network|configuration|schedule|patterns|time"
 
 exit 0;

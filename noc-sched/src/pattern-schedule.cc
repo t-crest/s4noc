@@ -37,6 +37,9 @@
 /// Trace network properties
 #define TRACE_NETWORK
 
+/// Trace candidate patterns
+#define TRACE_PATTERNS
+
 
 
 #ifdef TRACE_TIME
@@ -442,9 +445,20 @@ static unsigned int schedule_heuristic(std::ostream &os,
      % PatternSeconds % ScheduleSeconds % (PatternSeconds + ScheduleSeconds);
 #endif //TRACE_TIME
 
+#ifdef TRACE_PATTERNS
+  unsigned int sum = 0;
+  for(patterns_t::const_iterator i(p.begin()), ie(p.end()); i != ie; i++)
+  {
+    sum += length(*i);
+  }
+
+  os << boost::format("patterns: %1% number, %2% average length, "
+                      "%3% scheduled\n")
+     % p.size() % (sum / p.size()) % s.size();
+#endif //TRACE_PATTERNS
+
   // dump the schedule to the output stream
-  os << boost::format("schedule: %1% (%2% patterns scheduled from %3%)\n")
-     % max_t % s.size() % p.size();
+  os << boost::format("schedule: %1%\n\n\n") % max_t;
   for(schedule_t::const_iterator i(s.begin()), ie(s.end()); i != ie; i++)
   {
     for(unsigned int t = 0; t < i->first; t++)
