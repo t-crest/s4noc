@@ -14,11 +14,16 @@
 //  along with noc-sched. If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "noc.h"
+#include "heuristic.h"
+
+#include <boost/timer.hpp>
+#include <boost/random/uniform_int.hpp>
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/format.hpp>
 
 #include <iostream>
-#include <ostream>
 #include <map>
+#include <set>
 
 /// Trace conflicts during schedule construction.
 #undef TRACE_CONFLICTS
@@ -26,21 +31,52 @@
 /// Trace progress of schedule construction.
 #undef TRACE_SCHEDULE
 
+/// Measure and print time for different phases of the schedule construction.
+#define TRACE_TIME
+
+/// Trace network properties
+#define TRACE_NETWORK
+
+/// Trace candidate patterns
+#define TRACE_PATTERNS
+
+
+
+#ifdef TRACE_TIME
+/// Time for the computation of patterns.
+double PatternSeconds = 0;
+
+/// Timer to track execution time of the pattern computation.
+boost::timer PatternTimer;
+
+/// Time for the computation of the final schedule (without patterns)
+double ScheduleSeconds = 0;
+
+/// Timer to track execution time of the schedule computation.
+boost::timer ScheduleTimer;
+#endif // TRACE_TIME
+
+
+/// source for uniform random numbers
+boost::mt19937 RandomNumberGenerator;
+boost::uniform_int<unsigned int> RandomNumbers;
+
+
 typedef std::set<unsigned int> range_t;
 
-void insert(range_t &r, unsigned int f, unsigned int t)
+static void insert(range_t &r, unsigned int f, unsigned int t)
 {
   assert(f <= t);
   for (unsigned int i = f; i != t + 1; i++)
     r.insert(i);
 }
 
-void insert(range_t &r, unsigned int f)
+static void insert(range_t &r, unsigned int f)
 {
   insert(r, f, f);
 }
 
-std::ostream &operator << (std::ostream &s, const range_t &r)
+static std::ostream &operator << (std::ostream &s, const range_t &r)
 {
   bool first = true;
   bool first_skip = true;
@@ -88,6 +124,10 @@ struct pattern_t
   direction_t da, db;
   int la, lb;
 
+  explicit pattern_t() : da(NONE), db(NONE), la(0), lb(0)
+  {
+  }
+  
   pattern_t(direction_t da_, int la_, direction_t db_, int lb_)
       : da(da_), db(db_), la(la_), lb(lb_)
   {
@@ -96,7 +136,7 @@ struct pattern_t
   }
 };
 
-bool operator < (const pattern_t &a, const pattern_t &b)
+static bool operator < (const pattern_t &a, const pattern_t &b)
 {
   if (a.da != b.da)
     return a.da < b.da;
@@ -113,7 +153,7 @@ bool operator < (const pattern_t &a, const pattern_t &b)
 typedef std::set<pattern_t> patterns_t;
 typedef std::map<unsigned int, pattern_t> schedule_t;
 
-std::ostream &operator << (std::ostream &s, const direction_t &d)
+static std::ostream &operator << (std::ostream &s, const direction_t &d)
 {
   switch(d)
   {
@@ -134,7 +174,7 @@ std::ostream &operator << (std::ostream &s, const direction_t &d)
   return s;
 }
 
-std::ostream &operator << (std::ostream &s, const pattern_t &p)
+static std::ostream &operator << (std::ostream &s, const pattern_t &p)
 {
   assert(p.da != NONE && p.la != 0);
   assert(p.db != NONE || p.lb == 0);
@@ -147,7 +187,7 @@ std::ostream &operator << (std::ostream &s, const pattern_t &p)
   return s;
 }
 
-range_t conflict(const pattern_t &a, const pattern_t &b)
+static range_t conflict(const pattern_t &a, const pattern_t &b)
 {
   range_t r;
   // consider conflicts when sending a message out
@@ -177,7 +217,7 @@ range_t conflict(const pattern_t &a, const pattern_t &b)
 /// @param a The pattern.
 /// @return Return the total length of the pattern, i.e., the sum of its 
 /// horizontal and vertical path lengths.
-unsigned int length(const pattern_t &a)
+static unsigned int length(const pattern_t &a)
 {
   return a.la + a.lb;
 }
@@ -188,7 +228,7 @@ unsigned int length(const pattern_t &a)
 /// @param a The original pattern.
 /// @return The inverse pattern of the original pattern with the horizontal and
 /// vertical paths swapped.
-pattern_t inverse(const pattern_t &a)
+static pattern_t inverse(const pattern_t &a)
 {
   if (a.lb == 0)
     return a;
@@ -196,11 +236,29 @@ pattern_t inverse(const pattern_t &a)
     return pattern_t(a.db, a.lb, a.da, a.la);
 }
 
-/// Select a candidate range to schedule next.
-/// Currently the longest unscheduled pattern is selected, other strategies
-/// using e.g., some form of critical path length, might be a good idea.
+/// Randomly select a candidate pattern to schedule next.
 /// @param p The set of unscheduled patterns.
-pattern_t select_candidate(const patterns_t &p)
+pattern_t select_candidate_rnd(const patterns_t &p)
+{
+  // get a random index
+  unsigned int rnd = RandomNumbers(RandomNumberGenerator) % p.size();
+  
+  unsigned int idx = 0;
+  for(patterns_t::const_iterator i(p.begin()), ie(p.end()); i != ie; i++, idx++)
+  {
+    if (rnd == idx)
+    {
+      return *i;
+    }
+  }
+
+  assert(false);
+  abort();
+}
+
+/// Select one of the longest remaining candidate pattern to schedule next.
+/// @param p The set of unscheduled patterns.
+pattern_t select_candidate_lng(const patterns_t &p)
 {
   const pattern_t *r = NULL;
   for(patterns_t::const_iterator i(p.begin()), ie(p.end()); i != ie; i++)
@@ -215,13 +273,56 @@ pattern_t select_candidate(const patterns_t &p)
   return *r;
 }
 
+/// Select one of the shortest remaining candidate pattern to schedule next.
+/// @param p The set of unscheduled patterns.
+pattern_t select_candidate_sht(const patterns_t &p)
+{
+  const pattern_t *r = NULL;
+  for(patterns_t::const_iterator i(p.begin()), ie(p.end()); i != ie; i++)
+  {
+    if (!r || length(*r) > length(*i))
+    {
+      r = &*i;
+    }
+  }
+
+  assert(r);
+  return *r;
+}
+
+/// Select a candidate pattern to schedule next.
+/// Currently the longest unscheduled pattern is selected, other strategies
+/// using e.g., some form of critical path length, might be a good idea.
+/// @param p The set of unscheduled patterns.
+pattern_t select_candidate_cnfl(const patterns_t &p, const pattern_t &lastp)
+{
+  const pattern_t *r = NULL;
+  const pattern_t *rnc = NULL;
+  for(patterns_t::const_iterator i(p.begin()), ie(p.end()); i != ie; i++)
+  {
+    if (!r || length(*r) < length(*i))
+    {
+      r = &*i;
+    }
+    
+    if ((!rnc || length(*rnc) < length(*i)) && conflict(lastp, *i).size() == 1)
+    {
+      rnc = &*i;
+    }
+  }
+
+  assert(r);
+  return rnc ? *rnc : *r;
+}
+
 /// Insert the pattern at the earliest possible position in the schedule such
 /// that it does not conflict with any other scheduled pattern.
 /// @param s The partial schedule so far.
 /// @param max_t Current maximal schedule length.
 /// @param p The pattern to schedule.
 /// @param Returns the time instance at which p has been scheduled.
-unsigned int schedule(schedule_t &s, unsigned int max_t, const pattern_t &p)
+static unsigned int schedule(schedule_t &s, unsigned int max_t,
+                             const pattern_t &p)
 {
   // the easy case -- we are scheduling the first pattern
   if (s.empty())
@@ -280,18 +381,43 @@ unsigned int schedule(schedule_t &s, unsigned int max_t, const pattern_t &p)
 
 /// Make a heuristic schedule based on the given set of patterns
 /// @param os Output stream to dump the heuristic schedule.
+/// @param cnd_sel Indicate how candidate patterns are selected during 
+/// scheduling.
 /// @param p The set of patterns.
 /// @return The length of the schedule.
-unsigned int schedule_heuristic(std::ostream &os, const patterns_t &p)
+static unsigned int schedule_heuristic(std::ostream &os,
+                                       candidate_selection_e cnd_sel,
+                                       const patterns_t &p)
 {
   // copy all patterns
   patterns_t worklist(p);
   schedule_t s;
-   
+
+#ifdef TRACE_TIME
+  ScheduleTimer.restart();
+#endif //TRACE_TIME
+
+  pattern_t lastp;
   unsigned int max_t = 0;
   while (!worklist.empty())
   {
-    pattern_t p(select_candidate(worklist));
+    pattern_t p;
+    switch(cnd_sel)
+    {
+      case RND:
+        p = select_candidate_rnd(worklist);
+        break;
+      case LNG:
+        p = select_candidate_lng(worklist);
+        break;
+      case SHT:
+        p = select_candidate_sht(worklist);
+        break;
+      case CNFL:
+        p = select_candidate_cnfl(worklist, lastp);
+        lastp = p;
+        break;
+    }
 
 #ifdef TRACE_SCHEDULE
     std::cerr << "candidate :" << p << " (" << inverse(p) << ")\n";
@@ -312,8 +438,27 @@ unsigned int schedule_heuristic(std::ostream &os, const patterns_t &p)
     worklist.erase(inverse(p));
   }
 
+#ifdef TRACE_TIME
+  ScheduleSeconds = ScheduleTimer.elapsed();
+
+  os << boost::format("time: %1%s patterns, %2%s schedule, %3%s total\n")
+     % PatternSeconds % ScheduleSeconds % (PatternSeconds + ScheduleSeconds);
+#endif //TRACE_TIME
+
+#ifdef TRACE_PATTERNS
+  unsigned int sum = 0;
+  for(patterns_t::const_iterator i(p.begin()), ie(p.end()); i != ie; i++)
+  {
+    sum += length(*i);
+  }
+
+  os << boost::format("patterns: %1% number, %2% average length, "
+                      "%3% scheduled\n")
+     % p.size() % (sum / p.size()) % s.size();
+#endif //TRACE_PATTERNS
+
   // dump the schedule to the output stream
-  os << boost::format("schedule: %1%\n") % max_t;
+  os << boost::format("schedule: %1%\n\n\n") % max_t;
   for(schedule_t::const_iterator i(s.begin()), ie(s.end()); i != ie; i++)
   {
     for(unsigned int t = 0; t < i->first; t++)
@@ -337,14 +482,16 @@ unsigned int schedule_heuristic(std::ostream &os, const patterns_t &p)
   return max_t;
 }
 
-/// Construct a schedule for an NxN mesh, based on communication patterns.
-/// @param os Output stream to dump the heuristic schedule.
-/// @param n The size of the mesh.
-/// @return The length of the schedule.
-unsigned int schedule_mesh_pattern(std::ostream &os, unsigned int n)
+unsigned int schedule_mesh_pattern(std::ostream &os,
+                                   candidate_selection_e cnd_sel,
+                                   unsigned int n)
 {
   patterns_t patterns;
 
+#ifdef TRACE_TIME
+  PatternTimer.restart();
+#endif // TRACE_TIME
+  
   for(unsigned int i = 1; i < n; i++)
   {
     patterns.insert(pattern_t(NORTH, i, NONE, 0));
@@ -364,51 +511,80 @@ unsigned int schedule_mesh_pattern(std::ostream &os, unsigned int n)
     }
   }
 
+#ifdef TRACE_TIME
+  PatternSeconds = PatternTimer.elapsed();
+#endif // TRACE_TIME
+
+#ifdef TRACE_NETWORK
+  os << boost::format("network: %1% side length, %2% nodes, %3% links, "
+                      "%4% capacity bound, %5% bisection bound\n")
+     % n % (n * n) % ((n - 1) * n * 4) % ((n*n*(n+1))/6)  % ((n*n*n)/4);
+#endif //TRACE_NETWORK
+  
   // make a heuristic schedule
-  return schedule_heuristic(os, patterns);
+  return schedule_heuristic(os, cnd_sel, patterns);
 }
 
-/// Construct a schedule for an NxN torus, based on communication patterns.
-/// @param os Output stream to dump the heuristic schedule.
-/// @param n The size of the torus.
-/// @return The length of the schedule.
-unsigned int schedule_torus_pattern(std::ostream &os, unsigned int n)
+unsigned int schedule_torus_pattern(std::ostream &os,
+                                    candidate_selection_e cnd_sel,
+                                    unsigned int n, bool with_registers)
 {
   patterns_t patterns;
 
+#ifdef TRACE_TIME
+  PatternTimer.restart();
+#endif // TRACE_TIME
+
   for(unsigned int i = 0; i < n; i++)
   {
+    // hops take two cycles with registers on links
+    unsigned int li = with_registers ? i*2 : i;
+    
     for(unsigned int j = 0; j < n; j++)
     {
+      // hops take two cycles with registers on links
+      unsigned int lj = with_registers ? j*2 : j;
+      
       if (i != 0)
       {
-        pattern_t p(EAST, i, (j == 0) ? NONE : SOUTH, j);
+        pattern_t p(EAST, li, (j == 0) ? NONE : SOUTH, lj);
         
         patterns.insert(p);
         patterns.insert(inverse(p));
       }
       else if (j != 0)
       {
-        pattern_t p(SOUTH, j, NONE, 0);
+        pattern_t p(SOUTH, lj, NONE, 0);
         
         patterns.insert(p);
       }
     }
   }
 
+#ifdef TRACE_TIME
+  PatternSeconds = PatternTimer.elapsed();
+#endif // TRACE_TIME
+
+#ifdef TRACE_NETWORK
+  os << boost::format("network: %1% side length, %2% nodes, %3% links, "
+                      "%4% capacity bound, %5% bisection bound\n")
+     % n % (n * n) % (n * n * 2) % ((n*n*n - n*n)/2)  % ((n*n*n)/4);
+#endif //TRACE_NETWORK
+
   // make a heuristic schedule
-  return schedule_heuristic(os, patterns);
+  return schedule_heuristic(os, cnd_sel, patterns);
 }
 
-/// Construct a schedule for an NxN bi-directional torus, based on communication
-/// patterns.
-/// @param os Output stream to dump the heuristic schedule.
-/// @param n The size of the bi-torus.
-/// @return The length of the schedule.
-unsigned int schedule_bitorus_pattern(std::ostream &os, unsigned int n)
+unsigned int schedule_bitorus_pattern(std::ostream &os,
+                                      candidate_selection_e cnd_sel,
+                                      unsigned int n, bool with_registers)
 {
   patterns_t patterns;
 
+#ifdef TRACE_TIME  
+  PatternTimer.restart();
+#endif // TRACE_TIME
+  
   unsigned int ref = n/2;
   for(unsigned int i = 0; i < n; i++)
   {
@@ -422,6 +598,13 @@ unsigned int schedule_bitorus_pattern(std::ostream &os, unsigned int n)
         direction_t db = (j == ref) ? NONE : (j < ref ? NORTH : SOUTH);
         unsigned int lb = j < ref ? ref - j : j - ref;
 
+        // hops take two cycles with registers on links
+        if (with_registers)
+        {
+          la *= 2;
+          lb *= 2;
+        }
+        
         pattern_t p(da, la, db, lb);
 
         patterns.insert(p);
@@ -429,8 +612,15 @@ unsigned int schedule_bitorus_pattern(std::ostream &os, unsigned int n)
       }
       else if (j != ref)
       {
+        // note: hops take two cycles with registers on links
         direction_t da = j < ref ? NORTH : SOUTH;
         unsigned int la = j < ref ? ref - j : j - ref;
+
+        // hops take two cycles with registers on links
+        if (with_registers)
+        {
+          la *= 2;
+        }
 
         pattern_t p(da, la, NONE, 0);
 
@@ -439,7 +629,17 @@ unsigned int schedule_bitorus_pattern(std::ostream &os, unsigned int n)
     }
   }
 
+#ifdef TRACE_TIME
+  PatternSeconds = PatternTimer.elapsed();
+#endif // TRACE_TIME
+
+#ifdef TRACE_NETWORK
+  os << boost::format("network: %1% side length, %2% nodes, %3% links, "
+                      "%4% capacity bound, %5% bisection bound\n")
+     % n % (n * n) % (n * n * 4) % ((n*n*n - n)/8)  % ((n*n*n)/8);
+#endif //TRACE_NETWORK
+
   // make a heuristic schedule
-  return schedule_heuristic(os, patterns);
+  return schedule_heuristic(os, cnd_sel, patterns);
 }
 
