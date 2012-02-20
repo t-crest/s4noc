@@ -2,7 +2,7 @@ library ieee;
 use ieee.numeric_std.all;
 use ieee.std_logic_1164.all;
 
-use work.ni_types.all;
+use work.noc_types.all;
 
 entity serdes is
   
@@ -32,12 +32,12 @@ architecture behave of serdes is
 
   signal piso_regs      : registers;
   signal next_piso_regs : registers;
-  signal piso_phase     : unsigned(log2(RATIO_CLK)-1 downto 0);
+  signal piso_phase     : std_logic;
 
   -- Constants
 
-  constant ZERO_PHASE : unsigned(log2(RATIO_CLK)-1 downto 0)          := to_unsigned(0, piso_phase'length);
-  constant ONE_PHASE : unsigned(log2(RATIO_CLK)-1 downto 0)          := to_unsigned(1, piso_phase'length);
+  constant ZERO_PHASE : std_logic                                     := '0';
+  constant ONE_PHASE  : std_logic                                     := '1';
   constant ZERO_REG   : std_logic_vector(SERIAL_REG_WIDTH-1 downto 0) := std_logic_vector(to_unsigned(0, SERIAL_REG_WIDTH));
   
 begin  -- behave
@@ -84,15 +84,11 @@ begin  -- behave
     piso_shregs : process (fast_clk, slow_clk, reset)
     begin  -- process piso_shregs
       if reset = '1' then               -- asynchronous reset (active high)
-        if rising_edge(slow_clk) then
-          piso_phase <= ONE_PHASE;
-        end if;
         for i in 1 to RATIO_CLK-1 loop
           piso_regs(i) <= ZERO_REG;
         end loop;  -- i
       elsif rising_edge(fast_clk) then  -- rising clock edge
-        piso_regs  <= next_piso_regs;
-        piso_phase <= piso_phase + to_unsigned(1, piso_phase'length);
+        piso_regs <= next_piso_regs;
       end if;
     end process piso_shregs;
   end generate border;
@@ -101,5 +97,10 @@ begin  -- behave
     serial_out <= parallel_in;
   end generate border1;
 
+-------------------------------------------------------------------------------
+-- Phase generation for the PISO (Only working for RATIO_CLK = 2, should be generalized)
+-------------------------------------------------------------------------------
+
+  piso_phase <= not slow_clk;
   
 end behave;

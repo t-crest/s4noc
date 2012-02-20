@@ -2,28 +2,27 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+use work.noc_types.all;
+
 entity outnode is
-	generic ( WIDTH	: natural; 
-		  PERIOD_P : natural);
 	port(
 		clk	: in std_logic;
 		reset	: in std_logic;
-		in0	: in std_logic_vector(WIDTH-1 downto 0);
-		in1	: in std_logic_vector(WIDTH-1 downto 0);
-		in2	: in std_logic_vector(WIDTH-1 downto 0);
-		in3	: in std_logic_vector(WIDTH-1 downto 0);
+		in0	: in network_link_forward;
+		in1	: in network_link_forward;
+		in2	: in network_link_forward;
+		in3	: in network_link_forward;
 
-		reg_out	:out std_logic_vector(WIDTH-1 downto 0)
+		reg_out	:out network_link_forward
 	);
 end entity outnode;
 
 architecture arc of outnode is
 
 signal sel		: std_logic_vector(1 downto 0);
-signal slt_cnt		: unsigned(PERIOD_P-1 downto 0);
-signal next_slt		: unsigned(PERIOD_P-1 downto 0);
-signal state		: std_logic_vector(3 downto 0);
-signal next_q		: std_logic_vector(WIDTH-1 downto 0);
+signal slt_cnt		: unsigned(16-1 downto 0);
+signal next_slt		: unsigned(16-1 downto 0);
+signal next_q		: network_link_forward;
 
 begin
 
@@ -31,7 +30,7 @@ begin
 	slot_counter : process (clk, reset, slt_cnt) is
 	begin
 		if reset = '1' then
-			slt_cnt <= to_unsigned(0,PERIOD_P);
+			slt_cnt <= to_unsigned(0,16);
 		elsif clk'event and clk = '1' then
 			slt_cnt <= next_slt;
 		end if;
@@ -66,10 +65,11 @@ begin
 				in3 when others;
 
 	-- output assignment
-	Reg : process (clk, reset, state) is
+	Reg : process (clk, reset) is
 	begin
 		if reset = '1' then
-			reg_out <= (others =>'0');
+			reg_out.data <= (others =>'0');
+                        reg_out.data_valid <= '0';
 		elsif clk'event and clk = '1' then
 			reg_out <= next_q;
 		end if;

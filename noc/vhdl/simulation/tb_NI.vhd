@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 library work;
-use work.ni_types.all;
+use work.noc_types.all;
 use work.leros_types.all;
 
 entity tb_NI is
@@ -13,7 +13,7 @@ architecture struct of tb_NI is
   constant stable_length          : natural := 8;
   constant router_clk_period      : time    := 5 ns;
   signal   router_clk             : std_logic;
-  signal   tile_clk               : std_logic;
+  signal   tile_clk             : std_logic;
   signal   reset                  : std_logic;
   signal   router_f_1, router_f_2 : network_link_forward;
   signal   router_b_1, router_b_2 : network_link_backward;
