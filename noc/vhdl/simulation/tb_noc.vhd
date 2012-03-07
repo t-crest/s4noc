@@ -15,59 +15,21 @@ architecture behav of tb_noc is
   signal   router_clk        : std_logic;
   signal   processor_clk     : std_logic;
   signal   reset             : std_logic;
-  signal   link_east         : network_link_forward;
-  signal   link_west         : network_link_forward;
-  signal   zero_network_link : network_link_forward;
   signal   ser_txd           : std_logic;
   signal   ser_rxd           : std_logic;
 
 begin  -- behav
 
-  zero_network_link.data       <= (others => '0');
-  zero_network_link.data_valid <= '0';
-
-
-  tile1 : entity work.tile
-    generic map (
-      UART => true)
+  tile_test: entity work.tile_top
     port map (
-      router_clk    => router_clk,
       processor_clk => processor_clk,
-      reset         => reset,
-
-      north_in => zero_network_link,
-      south_in => zero_network_link,
-      east_in  => link_west,
-      west_in  => zero_network_link,
-
-      north_out => open,
-      south_out => open,
-      east_out  => link_east,
-      west_out  => open,
-
-      ser_txd => ser_txd,
-      ser_rxd => ser_rxd);
-
-
-  tile2 : entity work.tile
-    port map (
       router_clk    => router_clk,
-      processor_clk => processor_clk,
       reset         => reset,
+      ser_txd       => ser_txd,
+      ser_rxd       => ser_rxd);
 
-      north_in => zero_network_link,
-      south_in => zero_network_link,
-      east_in  => zero_network_link,
-      west_in  => link_east,
-
-      north_out => open,
-      south_out => open,
-      east_out  => open,
-      west_out  => link_west,
-
-      ser_txd => open,
-      ser_rxd => '0');
-
+  ser_rxd <= '0';
+  
   router_clock_gen : process is
   begin  -- process clock_gen
     router_clk <= '0' after router_clk_period/2, '1' after router_clk_period;

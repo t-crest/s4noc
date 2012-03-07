@@ -1,12 +1,13 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 use work.leros_types.all;
 use work.noc_types.all;
 
 entity tile is
   generic (
-    UART     : boolean := false);
+    UART : boolean := false);
   port (
     router_clk    : in std_logic;
     processor_clk : in std_logic;
@@ -29,12 +30,19 @@ entity tile is
 end tile;
 
 architecture struct of tile is
-  signal processor_out : io_out_type;
-  signal processor_in  : io_in_type;
+  signal processor_out     : io_out_type;
+  signal processor_in      : io_in_type;
+  signal processor_out_mux : io_out_type;
+  signal processor_in_mux  : io_in_type;
 
   signal local_in  : network_link_forward;
   signal tile_tx_b : network_link_backward;
   signal local_out : network_link_forward;
+
+  signal uart_addr   : std_logic;
+  signal uart_rd     : std_logic;
+  signal uart_wr     : std_logic;
+  signal uart_rddata : std_logic_vector(15 downto 0);
   
 begin  -- struct
 
@@ -49,22 +57,50 @@ begin  -- struct
   gen_ua : if UART generate
     ua : entity work.uart
       generic map (
-        clk_freq  => 100000000,
+        clk_freq  => 50000000,
         baud_rate => 115200,
         txf_depth => 1,
         rxf_depth => 1)
       port map (
         clk     => processor_clk,
         reset   => reset,
-        address => processor_out.addr(0),
+        address => uart_addr,
         wr_data => processor_out.wrdata,
-        rd      => processor_out.rd,
-        wr      => processor_out.wr,
-        rd_data => processor_in.rddata,
+        rd      => uart_rd,
+        wr      => uart_wr,
+        rd_data => uart_rddata,
 
         txd => ser_txd,
         rxd => ser_rxd);
+
+    ua_mux : process (processor_out, uart_rddata,processor_in_mux)
+    begin  -- process ua_mux
+      uart_addr <= '0';
+      uart_rd   <= '0';
+      uart_wr   <= '0';
+      processor_out_mux.addr <=(others => '0');
+      processor_out_mux.wrdata <=(others => '0');
+      processor_out_mux.rd <='0';
+      processor_out_mux.wr <='0';
+      processor_in.rddata <= (others => '0');
+      if processor_out.addr(7 downto 1) = std_logic_vector(to_unsigned(0,7)) then
+        uart_addr           <= processor_out.addr(0);
+        uart_rd             <= processor_out.rd;
+        uart_wr             <= processor_out.wr;
+        processor_in.rddata <= uart_rddata;                                 
+      elsif processor_out.addr(7 downto 1) /= std_logic_vector(to_unsigned(0,7)) then
+        processor_out_mux <= processor_out;
+        processor_in <= processor_in_mux;
+      end if;
+      
+    end process ua_mux;
+    
   end generate gen_ua;
+
+  not_gen_ua : if not UART generate
+    processor_out_mux <= processor_out;
+    processor_in      <= processor_in_mux;
+  end generate not_gen_ua;
 
   ni : entity work.ni
     port map (
@@ -75,8 +111,8 @@ begin  -- struct
       tile_tx_b     => tile_tx_b,
       tile_rx_f     => local_out,
       tile_rx_b     => open,
-      processor_out => processor_out,
-      processor_in  => processor_in);
+      processor_out => processor_out_mux,
+      processor_in  => processor_in_mux);
 
   
   router_node : entity work.router

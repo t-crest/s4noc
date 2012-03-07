@@ -3,3 +3,7 @@ leros
 # OS generated files
 .DS_Store?
 Thumbs.db
+
+/noc/vhdl/ni.vhd.bak
+/noc/vhdl/ni_types.vhd.bak
+/noc/work

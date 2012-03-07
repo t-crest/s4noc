@@ -35,7 +35,11 @@ architecture behav of ni is
   signal status_reg, next_status_reg : std_logic_vector(15 downto 0);  -- Status register for communicating to the tile.
   
 begin  -- behav
-
+  
+-------------------------------------------------------------------------------
+-- Counter for keeping track of the timeslot number
+-------------------------------------------------------------------------------
+  
   counter : process (processor_clk, reset)
   begin  -- process count
     if reset = '1' then                    -- asynchronous reset (active high)
@@ -44,6 +48,10 @@ begin  -- behav
       count <= count + to_unsigned(1, 1);
     end if;
   end process counter;
+
+-------------------------------------------------------------------------------
+-- Serialize/deserialize or atomize/deatomize
+-------------------------------------------------------------------------------
 
   serdes : entity work.serdes
     generic map (
@@ -58,6 +66,10 @@ begin  -- behav
       serial_out   => tile_tx_f.data,
       parallel_out => rx_in);
 
+-------------------------------------------------------------------------------
+-- Transmit channel
+-------------------------------------------------------------------------------
+  
   tx_register : process (processor_clk, reset)
   begin  -- process tx_reg
     if reset = '1' then
@@ -77,6 +89,20 @@ begin  -- behav
     end if;
   end process tx_register;
 
+  tx_data : process (tx_rdy, tx_reg)
+  begin  -- process
+    if tx_rdy = '1' then
+      tx_out <= tx_reg;
+    else
+      tx_out <= (others => '0');
+    end if;
+    
+  end process tx_data;
+
+-------------------------------------------------------------------------------
+-- Receive channel
+-------------------------------------------------------------------------------
+  
   rx_register : process (processor_clk, reset)
   begin  -- process rx_register
     if reset = '1' then
@@ -92,7 +118,7 @@ begin  -- behav
     end if;
   end process rx_register;
 
-  rx_data : process (processor_out.rd, processor_out.addr, rx_reg, status_reg)
+  rx_data : process (processor_out, rx_reg, status_reg)
   begin  -- process out_data
     rx_clr <= '0';
     if processor_out.rd = '1' then
@@ -107,16 +133,10 @@ begin  -- behav
     end if;
   end process rx_data;
 
-  tx_data : process (tx_rdy, tx_reg)
-  begin  -- process
-    if tx_rdy = '1' then
-      tx_out <= tx_reg;
-    else
-      tx_out <= (others => '0');
-    end if;
-    
-  end process tx_data;
-
+-------------------------------------------------------------------------------
+-- Control logic & update of the status register
+-------------------------------------------------------------------------------
+  
   control : process (tx_rdy, rx_rdy, processor_out.wr, rx_clr, status_reg)
     variable rx_status : std_logic;
     variable rx_error  : std_logic;
@@ -185,6 +205,10 @@ begin  -- behav
       status_reg <= next_status_reg;
     end if;
   end process status_register;
+
+-------------------------------------------------------------------------------
+-- Slot tables, still only hard coded.
+-------------------------------------------------------------------------------
 
   tx_stable : process (count, status_reg)
   begin  -- process tx_stable
