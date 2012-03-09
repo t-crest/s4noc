@@ -30,7 +30,10 @@ begin
 
   tile_1 : entity work.tile
     generic map (
-      UART => true)
+      UART => true,
+      TOTAL_NI_NUM => 9,
+      NI_NUM => 0,
+      stable_length => 28)
     port map (
       router_clk    => router_clk,
       processor_clk => processor_clk,
@@ -48,7 +51,10 @@ begin
 
   tile_2 : entity work.tile
     generic map (
-      UART => false)
+      UART => false,
+      TOTAL_NI_NUM => 9,
+      NI_NUM => 1,
+      stable_length => 28)
     port map (
       router_clk    => router_clk,
       processor_clk => processor_clk,

@@ -21,11 +21,14 @@ base: leros
 	$(WINE) vlib work
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/noc_types.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/serdes.vhd
+	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/router_ST.vhd
+	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/ni_ST.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/ni.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/outnode.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/router.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/tile.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/tile_top.vhd
+	
 
 leros:
 	$(WINE) vlib work

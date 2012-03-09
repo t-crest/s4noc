@@ -5,6 +5,8 @@ use ieee.numeric_std.all;
 use work.noc_types.all;
 
 entity router is
+  generic (
+    stable_length : natural := 28);
   port(
     clk   : in std_logic;
     reset : in std_logic;
@@ -31,53 +33,69 @@ architecture struct of router is
   signal west_in_reg, west_in_buf   : network_link_forward;
   signal local_in_reg, local_in_buf : network_link_forward;
 
-  component outnode
-    port (
-      clk   : in std_logic;
-      reset : in std_logic;
-      in0   : in network_link_forward;
-      in1   : in network_link_forward;
-      in2   : in network_link_forward;
-      in3   : in network_link_forward;
-
-      reg_out : out network_link_forward
-      );
-  end component;
-  signal sel : std_logic_vector(1 downto 0);
+  signal sels              : select_signals;
+  signal count, next_count : unsigned(log2(stable_length)+1 downto 0);
 
 begin
 
-  north_output : outnode
-    port map (in0     => local_in_reg, in1 => south_in_reg,
-              in2     => east_in_reg, in3 => west_in_reg,
+  counter : process (count)
+  begin  -- process counter
+    if count(log2(stable_length)+1 downto 0) < (stable_length*2)-1 then
+      next_count <= count + to_unsigned(1, 1);
+    else
+      next_count <= (others => '0');
+    end if;
+  end process counter;
+
+  next_counter : process (clk, reset)
+  begin  -- process next_counter
+    if reset = '1' then                 -- asynchronous reset (active high)
+      count <= (others => '0');
+    elsif rising_edge(clk) then         -- rising clock edge
+      count <= next_count;
+    end if;
+  end process next_counter;
+
+  router_ST : entity work.router_ST
+    port map (
+      count => count(log2(stable_length)+1 downto 1),
+      sels  => sels);
+
+  north_output : entity work.outnode
+    port map (in0     => east_in_reg, in1 => south_in_reg,
+              in2     => west_in_reg, in3 => local_in_reg,
               clk     => clk, reset => reset,
+              sel     => sels(0),
               reg_out => north_out);
 
-  south_output : outnode
-    port map(in0     => north_in_reg, in1 => local_in_reg,
-             in2     => east_in_reg, in3 => west_in_reg,
+  east_output : entity work.outnode
+    port map(in0     => south_in_reg, in1 => west_in_reg,
+             in2     => local_in_reg, in3 => north_in_reg,
              clk     => clk, reset => reset,
+             sel     => sels(1),
+             reg_out => east_out);
+
+  south_output : entity work.outnode
+    port map(in0     => west_in_reg, in1 => local_in_reg,
+             in2     => north_in_reg, in3 => east_in_reg,
+             clk     => clk, reset => reset,
+             sel     => sels(2),
              reg_out => south_out);
 
 
-  east_output : outnode
-    port map(in0     => north_in_reg, in1 => south_in_reg,
-             in2     => local_in_reg, in3 => west_in_reg,
+  west_output : entity work.outnode
+    port map(in0     => local_in_reg, in1 => north_in_reg,
+             in2     => east_in_reg, in3 => south_in_reg,
              clk     => clk, reset => reset,
-             reg_out => east_out);
-
-
-  west_output : outnode
-    port map(in0     => north_in_reg, in1 => south_in_reg,
-             in2     => east_in_reg, in3 => local_in_reg,
-             clk     => clk, reset => reset,
+             sel     => sels(3),
              reg_out => west_out);
 
 
-  local_output : outnode
-    port map(in0     => north_in_reg, in1 => south_in_reg,
-             in2     => east_in_reg, in3 => west_in_reg,
+  local_output : entity work.outnode
+    port map(in0     => north_in_reg, in1 => east_in_reg,
+             in2     => south_in_reg, in3 => west_in_reg,
              clk     => clk, reset => reset,
+             sel     => sels(4),
              reg_out => local_out);
 
 

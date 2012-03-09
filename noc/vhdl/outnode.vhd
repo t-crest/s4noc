@@ -13,56 +13,21 @@ entity outnode is
     in2   : in network_link_forward;
     in3   : in network_link_forward;
 
+    sel     : in  integer range 0 to 3;
     reg_out : out network_link_forward
     );
 end entity outnode;
 
 architecture arc of outnode is
 
-  signal sel      : std_logic_vector(1 downto 0);
-  signal slt_cnt  : unsigned(3 downto 0);
-  signal next_slt : unsigned(3 downto 0);
-  alias count     : unsigned(2 downto 0) is slt_cnt(3 downto 1);
-  signal next_q   : network_link_forward;
+  signal next_q : network_link_forward;
 
 begin
 
-  -- counter
-  slot_counter : process (clk, reset, slt_cnt) is
-  begin
-    if reset = '1' then
-      slt_cnt <= to_unsigned(0, 4);
-    elsif rising_edge(clk) then
-      slt_cnt <= next_slt;
-    end if;
-    next_slt <= slt_cnt + 1;
-  end process slot_counter;
-
-  -- schedule table
-  sel <= "00" when count = 0 or count = 4 else  --north
-         "01" when count = 1 or count = 5 else  --south
-         "10" when count = 2 or count = 7 else  --east
-         "11";                          --west
-
-
---      -- mux 4-to-1
---      CL : process (sel, in0, in1, in2, in3) is
---      begin
---              if sel = "00" then
---                      next_state <= in0;
---              elsif sel = "01" then
---                      next_state <= in1;
---              elsif sel = "10" then
---                      next_state <= in2;
---              else
---                      next_state <= in3;
---              end if;
---      end process CL;
-
   with sel select
-    next_q <= in0 when "00",
-    in1           when "01",
-    in2           when "10",
+    next_q <= in0 when 0,
+    in1           when 1,
+    in2           when 2,
     in3           when others;
 
   -- output assignment

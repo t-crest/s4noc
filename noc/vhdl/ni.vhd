@@ -6,16 +6,19 @@ use work.noc_types.all;
 
 entity ni is
   generic (
-    stable_length : integer := 8);      -- The slot table length.
+    TOTAL_NI_NUM  : natural;
+    NI_NUM        : natural;
+    stable_length : natural);     -- The slot table length should be
+                                        -- modified to fit the NoC.
   port (
     router_clk    : in  std_logic;
     processor_clk : in  std_logic;
     reset         : in  std_logic;
     -- Signals to/from the router
-    tile_tx_f   : out network_link_forward;
-    tile_tx_b   : in  network_link_backward;
-    tile_rx_f   : in  network_link_forward;
-    tile_rx_b   : out network_link_backward;
+    tile_tx_f     : out network_link_forward;
+    tile_tx_b     : in  network_link_backward;
+    tile_rx_f     : in  network_link_forward;
+    tile_rx_b     : out network_link_backward;
     -- Signals to/from the tile
     processor_out : in  io_out_type;
     processor_in  : out io_in_type);
@@ -23,7 +26,7 @@ entity ni is
 end ni;
 
 architecture behav of ni is
-  signal count                       : unsigned(log2(stable_length)-1 downto 0);  -- Count to
+  signal count                       : unsigned(log2(stable_length) downto 0);  -- Count to
                                         -- describe the
                                         -- slot number.
   signal tx_reg, tx_out              : tile_word;  -- Register to save data word from tile.
@@ -33,9 +36,10 @@ architecture behav of ni is
   signal rx_reg, rx_in               : tile_word;  -- Signal representing an entire network flit.
   signal rx_clr, rx_rdy              : std_logic;  -- Signals for clearing and setting the rx_register
   signal status_reg, next_status_reg : std_logic_vector(15 downto 0);  -- Status register for communicating to the tile.
+  signal tx_slot_dest, rx_slot_src   : integer range 0 to TOTAL_NI_NUM;
   
 begin  -- behav
-  
+
 -------------------------------------------------------------------------------
 -- Counter for keeping track of the timeslot number
 -------------------------------------------------------------------------------
@@ -43,9 +47,14 @@ begin  -- behav
   counter : process (processor_clk, reset)
   begin  -- process count
     if reset = '1' then                    -- asynchronous reset (active high)
-      count <= (others => '1');
+      count <= (others => '0');
     elsif rising_edge(processor_clk) then  -- rising clock edge
-      count <= count + to_unsigned(1, 1);
+      if count < stable_length-1 then
+        count <= count + to_unsigned(1, 1);
+      else
+        count <= (others => '0');
+      end if;
+
     end if;
   end process counter;
 
@@ -102,7 +111,7 @@ begin  -- behav
 -------------------------------------------------------------------------------
 -- Receive channel
 -------------------------------------------------------------------------------
-  
+
   rx_register : process (processor_clk, reset)
   begin  -- process rx_register
     if reset = '1' then
@@ -136,7 +145,7 @@ begin  -- behav
 -------------------------------------------------------------------------------
 -- Control logic & update of the status register
 -------------------------------------------------------------------------------
-  
+
   control : process (tx_rdy, rx_rdy, processor_out.wr, rx_clr, status_reg)
     variable rx_status : std_logic;
     variable rx_error  : std_logic;
@@ -210,26 +219,39 @@ begin  -- behav
 -- Slot tables, still only hard coded.
 -------------------------------------------------------------------------------
 
-  tx_stable : process (count, status_reg)
+  ni_ST : entity work.ni_ST
+    generic map (
+      NI_NUM => NI_NUM)
+    port map (
+      count => count,
+      dest  => tx_slot_dest,
+      src   => rx_slot_src);
+
+  
+  tx_stable : process (tx_slot_dest, status_reg,tx_addr)
   begin  -- process tx_stable
---    if count = unsigned(tx_addr(7 downto 8-count'length)) then
-    if std_logic_vector(count(1 downto 0)) = "01" then
-      tx_rdy                 <= '1';
+    if to_unsigned(tx_slot_dest, log2(TOTAL_NI_NUM)+1) = unsigned(tx_addr(log2(TOTAL_NI_NUM)+1 downto 0)) then
+--      if std_logic_vector(count(1 downto 0)) = "01" then
+      tx_rdy               <= '1';
       tile_tx_f.data_valid <= status_reg(0);
     else
-      tx_rdy                 <= '0';
+      tx_rdy               <= '0';
       tile_tx_f.data_valid <= '0';
     end if;
+--    end if;
   end process tx_stable;
 
-  rx_stable : process (tile_rx_f.data_valid)
+
+
+  rx_stable : process (tile_rx_f.data_valid, rx_slot_src)
   begin  -- process rx_stable
---    if std_logic_vector(count(1 downto 0)) = "01" and tile_rx_f.data_valid = '1' then
-    if tile_rx_f.data_valid = '1' then
-      rx_rdy <= '1';
-    else
-      rx_rdy <= '0';
-    end if;
+--    if to_unsigned(rx_slot_src, log2(TOTAL_NI_NUM)) = unsigned(tx_addr(log2(TOTAL_NI_NUM) downto 0)) then
+      if tile_rx_f.data_valid = '1' then
+        rx_rdy <= '1';
+      else
+        rx_rdy <= '0';
+      end if;
+--    end if;
   end process rx_stable;
-  
+
 end behav;

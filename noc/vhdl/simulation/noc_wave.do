@@ -67,7 +67,7 @@ add wave -noupdate -radix hexadecimal -label count /tb_noc/tile_test/tile_2/ni/c
 
 add wave -noupdate -radix hexadecimal -label rounter/west_out /tb_noc/tile_test/tile_2/router_node/west_out
 add wave -noupdate -radix hexadecimal /tb_noc/tile_test/tile_2/router_node/local_in
-add wave -noupdate -radix hexadecimal -label router/count /tb_noc/tile_test/tile_2/router_node/west_output/count
+add wave -noupdate -radix hexadecimal -label router/count /tb_noc/tile_test/tile_2/router_node/count
 
 
 

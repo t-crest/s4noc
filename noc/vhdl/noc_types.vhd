@@ -36,6 +36,9 @@ package noc_types is
     ack : std_logic;
   end record;
 
+
+  type select_signals is array (0 to 4) of integer range 0 to 3;
+
   function log2 (N : natural) return integer;
 
 

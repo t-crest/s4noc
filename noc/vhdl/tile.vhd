@@ -7,7 +7,10 @@ use work.noc_types.all;
 
 entity tile is
   generic (
-    UART : boolean := false);
+    UART          : boolean := false;
+    TOTAL_NI_NUM  : natural;
+    NI_NUM        : natural;
+    stable_length : natural);
   port (
     router_clk    : in std_logic;
     processor_clk : in std_logic;
@@ -73,24 +76,24 @@ begin  -- struct
         txd => ser_txd,
         rxd => ser_rxd);
 
-    ua_mux : process (processor_out, uart_rddata,processor_in_mux)
+    ua_mux : process (processor_out, uart_rddata, processor_in_mux)
     begin  -- process ua_mux
-      uart_addr <= '0';
-      uart_rd   <= '0';
-      uart_wr   <= '0';
-      processor_out_mux.addr <=(others => '0');
-      processor_out_mux.wrdata <=(others => '0');
-      processor_out_mux.rd <='0';
-      processor_out_mux.wr <='0';
-      processor_in.rddata <= (others => '0');
-      if processor_out.addr(7 downto 1) = std_logic_vector(to_unsigned(0,7)) then
+      uart_addr                <= '0';
+      uart_rd                  <= '0';
+      uart_wr                  <= '0';
+      processor_out_mux.addr   <= (others => '0');
+      processor_out_mux.wrdata <= (others => '0');
+      processor_out_mux.rd     <= '0';
+      processor_out_mux.wr     <= '0';
+      processor_in.rddata      <= (others => '0');
+      if processor_out.addr(7 downto 1) = std_logic_vector(to_unsigned(63, 7)) then
         uart_addr           <= processor_out.addr(0);
         uart_rd             <= processor_out.rd;
         uart_wr             <= processor_out.wr;
-        processor_in.rddata <= uart_rddata;                                 
-      elsif processor_out.addr(7 downto 1) /= std_logic_vector(to_unsigned(0,7)) then
+        processor_in.rddata <= uart_rddata;
+      elsif processor_out.addr(7 downto 1) /= std_logic_vector(to_unsigned(63, 7)) then
         processor_out_mux <= processor_out;
-        processor_in <= processor_in_mux;
+        processor_in      <= processor_in_mux;
       end if;
       
     end process ua_mux;
@@ -103,6 +106,10 @@ begin  -- struct
   end generate not_gen_ua;
 
   ni : entity work.ni
+    generic map (
+      TOTAL_NI_NUM  => TOTAL_NI_NUM,
+      NI_NUM        => NI_NUM,
+      stable_length => stable_length)
     port map (
       router_clk    => router_clk,
       processor_clk => processor_clk,
