@@ -8,10 +8,11 @@ tools:
 	cd leros && make tools
 
 compile:
-	cd leros\LerosMuviumSDK && makeTest.bat
+#	cd leros/LerosMuviumSDK && makeTest.bat
+	cd leros && make java_app -e JAPP=TestNoc
 
 asemble:
-	cd leros && make rom -e APP=../LerosMuviumSDK/muvium
+	cd leros && make rom -e APP=../asm/muvium
 
 build:
 	cd leros && make rom -e APP=io
