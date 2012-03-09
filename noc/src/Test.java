@@ -20,23 +20,32 @@ public class Test extends MuviumRunnable {
 	//	for (;;) {
 	status = Native.rd(128);
 	if(( status & 7) == 0){
-	    Native.wr(15, 2);
+	    Native.wr(15, 0);
 	    //	    break;
 	}
 	//	}
 	
-	for(int j = 0; j < 60; j++) {
+	for(int j = 0; j != 2; j++) {
 	    status = Native.rd(128);
-	    if (( status & 112) == 1){ // Tile 1
+	    if (( status & 112) == 16){ // Tile 1
 		int token = Native.rd(15);
-		Native.wr(token,1);
+		Native.wr(token,127);
 		for(;;){
 		    status = Native.rd(128);
-		    if((status & 112) == 1){
+		    if((status & 112) == 16 ){
 			token = Native.rd(15);
-			Native.wr(token,1);
+			Native.wr(token,127);
 		    }
 		}
+	    }
+	}
+	// Tile 2
+	int number = 43;
+	for(;;){
+	    status = Native.rd(128);
+	    if (( status & 7) == 0){
+		Native.wr(number,0);
+		number++;
 	    }
 	}
 	
