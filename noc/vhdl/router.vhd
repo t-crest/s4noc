@@ -33,7 +33,7 @@ architecture struct of router is
   signal west_in_reg, west_in_buf   : network_link_forward;
   signal local_in_reg, local_in_buf : network_link_forward;
 
-  signal sels              : select_signals;
+  signal sels, reg_sels    : select_signals;
   signal count, next_count : unsigned(log2(stable_length)+1 downto 0);
 
 begin
@@ -59,7 +59,16 @@ begin
   router_ST : entity work.router_ST
     port map (
       count => count(log2(stable_length)+1 downto 1),
-      sels  => sels);
+      sels  => reg_sels);
+
+  ST_reg : process (clk, reset)
+  begin  -- process ST_reg
+    if reset = '1' then                 -- asynchronous reset (active high)
+      sels <= (others => 0);
+    elsif rising_edge(clk) then         -- rising clock edge
+      sels <= reg_sels;
+    end if;
+  end process ST_reg;
 
   north_output : entity work.outnode
     port map (in0     => east_in_reg, in1 => south_in_reg,
