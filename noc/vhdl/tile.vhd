@@ -105,7 +105,7 @@ begin  -- struct
     processor_in      <= processor_in_mux;
   end generate not_gen_ua;
 
-  ni : entity work.ni
+  ni : entity work.ni_ram
     generic map (
       TOTAL_NI_NUM  => TOTAL_NI_NUM,
       NI_NUM        => NI_NUM,

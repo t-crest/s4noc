@@ -50,7 +50,7 @@ begin
   next_counter : process (clk, reset)
   begin  -- process next_counter
     if reset = '1' then                 -- asynchronous reset (active high)
-      count <= (others => '0');
+      count <= (others => '1');
     elsif rising_edge(clk) then         -- rising clock edge
       count <= next_count;
     end if;
