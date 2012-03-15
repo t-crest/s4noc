@@ -13,9 +13,9 @@ public class Noc_test extends MuviumRunnable {
 		int MAXCPU = Native.rd(252);
 		int status = 0;
 		
-		if(CPUID == 0){
+		if(CPUID == 0){ // Core zero waits for all other cores to reply
 			for(;;){
-				if(Native.rd(MAXCPU+1) == 511){
+				if(Native.rd(MAXCPU+1) == 511){ // All cores have sent their reply
 					Native.wr(43,255);
 				}
 			}
