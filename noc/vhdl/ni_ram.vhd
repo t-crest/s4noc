@@ -211,16 +211,17 @@ begin  -- behav
 
       in_rx_status(to_integer(unsigned(processor_out.addr))) <= '1';
       processor_in.rddata                                    <= rx_out;
-    elsif processor_out.rd = '1' and processor_out.addr(0) = '0' then
+    elsif processor_out.rd = '1' and unsigned(processor_out.addr) = to_unsigned(TOTAL_NI_NUM, processor_out.addr'length) then
       -- return status registers 
-      processor_in.rddata <= std_logic_vector(to_unsigned(0, processor_in.rddata'length-tx_status_reg'length)) & tx_status_reg;  -- TODO fix: return the correct
+      processor_in.rddata(tx_status_reg'length-1 downto 0) <= tx_status_reg;  -- TODO fix: return the correct
                                         -- status register, depending on
                                         -- the address.
-    elsif processor_out.rd = '1' and processor_out.addr(0) = '1' then
-      processor_in.rddata <= std_logic_vector(to_unsigned(0, processor_in.rddata'length-rx_status_reg'length)) & rx_status_reg;
+    elsif processor_out.rd = '1' and unsigned(processor_out.addr) = to_unsigned(TOTAL_NI_NUM+1, processor_out.addr'length) then
+      processor_in.rddata(rx_status_reg'length-1 downto 0) <= rx_status_reg;
     end if;
 
-    if processor_out.wr = '1' and unsigned(processor_out.addr) < to_unsigned(TOTAL_NI_NUM, processor_out.addr'length) and tx_status_reg(to_integer(unsigned(processor_out.addr))) = '0' then
+    if processor_out.wr = '1' and unsigned(processor_out.addr) < to_unsigned(TOTAL_NI_NUM, processor_out.addr'length)
+      and tx_status_reg(to_integer(unsigned(processor_out.addr))) = '0' then
       in_addr <= to_integer(unsigned(processor_out.addr));
       in_wr   <= '1';
       in_en   <= '1';
@@ -257,6 +258,9 @@ begin  -- behav
       end if;
       
     end loop;  -- i
+
+    next_rx_status_reg(NI_NUM) <=  '1';
+    next_tx_status_reg(NI_NUM) <=  '0';
     
   end process control;
 

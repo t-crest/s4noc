@@ -118,24 +118,43 @@ begin  -- struct
       processor_out_mux.rd     <= '0';
       processor_out_mux.wr     <= '0';
       processor_in.rddata      <= (others => '0');
-      if processor_out.addr(7 downto 1) = std_logic_vector(to_unsigned(63, 7)) then
+      if processor_out.addr(7 downto 1) = std_logic_vector(to_unsigned(127, 7)) then
         uart_addr           <= processor_out.addr(0);
         uart_rd             <= processor_out.rd;
         uart_wr             <= processor_out.wr;
         processor_in.rddata <= uart_rddata;
-      elsif processor_out.addr(7 downto 1) /= std_logic_vector(to_unsigned(63, 7)) then
+      elsif processor_out.addr(7 downto 1) /= std_logic_vector(to_unsigned(127, 7)) then
         processor_out_mux <= processor_out;
         processor_in      <= processor_in_mux;
       end if;
-      
+
+      if processor_out.addr = std_logic_vector(to_unsigned(253, processor_out.addr'length)) and processor_out.rd = '1' then
+        processor_in.rddata <= std_logic_vector(to_unsigned(NI_NUM, processor_in.rddata'length));
+      elsif processor_out.addr = std_logic_vector(to_unsigned(252, processor_out.addr'length)) and processor_out.rd = '1' then
+        processor_in.rddata <= std_logic_vector(to_unsigned(TOTAL_NI_NUM, processor_in.rddata'length));
+      end if;
     end process ua_mux;
     
   end generate gen_ua;
 
   not_gen_ua : if not UART generate
-    processor_out_mux <= processor_out;
-    processor_in      <= processor_in_mux;
+
+    -- CPU register, for ease of programming.
+    cpu_reg : process (processor_out.addr)
+    begin  -- process cpu_reg
+      processor_out_mux <= processor_out;
+      processor_in      <= processor_in_mux;
+      if processor_out.addr = std_logic_vector(to_unsigned(253, processor_out.addr'length)) and processor_out.rd = '1' then
+        processor_in.rddata <= std_logic_vector(to_unsigned(NI_NUM, processor_in.rddata'length));
+      elsif processor_out.addr = std_logic_vector(to_unsigned(252, processor_out.addr'length)) and processor_out.rd = '1' then
+        processor_in.rddata <= std_logic_vector(to_unsigned(TOTAL_NI_NUM, processor_in.rddata'length));
+      end if;
+    end process cpu_reg;
   end generate not_gen_ua;
+
+
+
+
 
   ni : entity work.ni_ram
     generic map (
