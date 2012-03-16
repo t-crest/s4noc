@@ -38,7 +38,8 @@ use work.noc_types.all;
 use work.leros_types.all;
 
 entity tile_test_alt is
-  
+  generic (
+    TEST_TYPE : string := "NxN");
   port (
     clk     : in  std_logic;
     reset   : in  std_logic;
@@ -64,12 +65,25 @@ begin  -- struct
       locked => locked_sig
       );
 
-  tile_top : entity work.tile_top
+  NxN: if TEST_TYPE = "NxN" generate
+    tile_top : entity work.noc
     port map (
       processor_clk => processor_clk,
       router_clk    => router_clk,
       reset         => reset,
       ser_txd       => ser_txd,
       ser_rxd       => ser_rxd);
+  end generate NxN;
+
+  simple : if TEST_TYPE = "Simple" generate
+    tile_top : entity work.tile_top
+      port map (
+        processor_clk => processor_clk,
+        router_clk    => router_clk,
+        reset         => reset,
+        ser_txd       => ser_txd,
+        ser_rxd       => ser_rxd);  
+  end generate simple;
+  
 
 end struct;

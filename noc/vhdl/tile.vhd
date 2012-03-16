@@ -71,7 +71,7 @@ architecture struct of tile is
   signal processor_in_mux  : io_in_type;
 
   signal local_in  : network_link_forward;
-  signal tile_tx_b : network_link_backward;
+ -- signal tile_tx_b : network_link_backward;
   signal local_out : network_link_forward;
 
   signal uart_addr   : std_logic;
@@ -140,7 +140,7 @@ begin  -- struct
   not_gen_ua : if not UART generate
 
     -- CPU register, for ease of programming.
-    cpu_reg : process (processor_out.addr)
+    cpu_reg : process (processor_out.addr, processor_in_mux)
     begin  -- process cpu_reg
       processor_out_mux <= processor_out;
       processor_in      <= processor_in_mux;
@@ -166,9 +166,9 @@ begin  -- struct
       processor_clk => processor_clk,
       reset         => reset,
       tile_tx_f     => local_in,
-      tile_tx_b     => tile_tx_b,
+     -- tile_tx_b     => tile_tx_b,
       tile_rx_f     => local_out,
-      tile_rx_b     => open,
+    --  tile_rx_b     => open,
       processor_out => processor_out_mux,
       processor_in  => processor_in_mux);
 

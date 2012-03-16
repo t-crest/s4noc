@@ -1,5 +1,5 @@
 --
---  Copyright 2012 Rasmus Bo Sørensen <rasmus@rbscloud.dk>,
+--  Copyright 2012 Rasmus Bo Sï¿½rensen <rasmus@rbscloud.dk>,
 --                 Technical University of Denmark, DTU Informatics. 
 --  All rights reserved.
 --
@@ -66,7 +66,8 @@ architecture struct of router is
   signal local_in_reg, local_in_buf : network_link_forward;
 
   signal sels, reg_sels    : select_signals;
-  signal count, next_count : unsigned(log2(stable_length)+1 downto 0);
+--  signal count, next_count : unsigned(log2(stable_length)+1 downto 0);
+    signal count, next_count : unsigned(6 downto 0);
 
 begin
 
@@ -90,7 +91,8 @@ begin
 
   router_ST : entity work.router_ST
     port map (
-      count => count(log2(stable_length)+1 downto 1),
+--      count => count(log2(stable_length)+2 downto 1),
+      count => count(6 downto 1),
       sels  => reg_sels);
 
   ST_reg : process (clk, reset)

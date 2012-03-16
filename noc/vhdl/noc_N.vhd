@@ -1,5 +1,5 @@
 --
---  Copyright 2012 Rasmus Bo Sørensen <rasmus@rbscloud.dk>,
+--  Copyright 2012 Rasmus Bo Sï¿½rensen <rasmus@rbscloud.dk>,
 --                 Technical University of Denmark, DTU Informatics. 
 --  All rights reserved.
 --
@@ -38,9 +38,9 @@ use work.noc_types.all;
 
 entity noc is
   -- NxN nodes
-  generic (N        : natural := 8;
+  generic (N        : natural := 7;
            WIDTH    : natural := 16;
-           PERIOD_P : natural := 28
+           PERIOD_P : natural := 58
            );
   port(
     processor_clk : in std_logic;
@@ -57,26 +57,6 @@ end entity noc;
 
 architecture struct of noc is
 
-  --Component noc_node
-  --  generic (WIDTH    : natural;
-  --           PERIOD_P : natural);
-  --  port (p_clk : in std_logic;
-  --        n_clk : in std_logic;
-  --        reset : in std_logic;
-
-  --        north_in : in network_link_forward;
-  --        south_in : in network_link_forward;
-  --        east_in  : in network_link_forward;
-  --        west_in  : in network_link_forward;
-
-  --        north_out : out network_link_forward;
-  --        south_out : out network_link_forward;
-  --        east_out  : out network_link_forward;
-  --        west_out  : out network_link_forward
-
-  --        );
-  --end component;
-
   type link_n is array(0 to (N - 1)) of network_link_forward;
   type link_m is array(0 to (N - 1)) of link_n;
 
@@ -89,7 +69,7 @@ architecture struct of noc is
   signal south_out : link_m;
   signal west_out  : link_m;
 
-  signal open_vector : network_link_forward;
+--  signal open_vector : network_link_forward;
 
 begin
   -- generate connections
@@ -146,7 +126,7 @@ begin
   --data_out       <= north_out(0)(0);
 
   --interconnections    
-  open_vector.data <= (others => '0');
+--  open_vector.data <= (others => '0');
   links_m : for i in 0 to N-1 generate
     links_n : for j in 0 to N-1 generate
 
