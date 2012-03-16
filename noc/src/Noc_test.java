@@ -27,7 +27,7 @@ public class Noc_test extends MuviumRunnable {
 				break;
 			}
 		}
-		for(int i = 1; i < MAXCPU; i++){ // Do not send a message to core zero.
+		for(int i = 1; i != MAXCPU; i++){ // Do not send a message to core zero.
 			// Send CPUID to core number i.
 			Native.wr(CPUID,i);
 		}

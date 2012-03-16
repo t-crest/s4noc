@@ -13,7 +13,7 @@ using namespace std;
 
 int main(int argc,char *argv[]){
 	if(argc < 3){
-		cout << "Program need 2 arguments.\n1. Number of nodes\n2. Path for .shd file\n";
+		cout << "Program need 2 arguments.\n\t1. Number of nodes\n\t2. Path for .shd file\n";
 		return EXIT_SUCCESS;
 	}
 	int numOfNodes = atoi(argv[1]);
@@ -48,7 +48,7 @@ int main(int argc,char *argv[]){
 				if(ST.at(startTime + i).ports[North] == DC){
 					ST.at(startTime + i).ports[North] = inputPort;
 					inputPort = South;
-					ST.at(startTime).y_direct++;
+					ST.at(startTime).y_dest++;
 				} else {
 					cout << "Epic faliure! North\n";
 					return EXIT_FAILURE;
@@ -58,7 +58,7 @@ int main(int argc,char *argv[]){
 				if(ST.at(startTime + i).ports[South] == DC){
 					ST.at(startTime + i).ports[South] = inputPort;
 					inputPort = North;
-					ST.at(startTime).y_direct--;
+					ST.at(startTime).y_dest--;
 				} else {
 					cout << "Epic faliure! South\n";
 					return EXIT_FAILURE;
@@ -68,7 +68,7 @@ int main(int argc,char *argv[]){
 				if(ST.at(startTime + i).ports[East] == DC){
 					ST.at(startTime + i).ports[East] = inputPort;
 					inputPort = West;
-					ST.at(startTime).x_direct++;
+					ST.at(startTime).x_dest++;
 				} else {
 					cout << "Epic faliure! East\n";
 					return EXIT_FAILURE;
@@ -78,7 +78,7 @@ int main(int argc,char *argv[]){
 				if(ST.at(startTime + i).ports[West] == DC){
 					ST.at(startTime + i).ports[West] = inputPort;
 					inputPort = East;
-					ST.at(startTime).x_direct--;
+					ST.at(startTime).x_dest--;
 				} else {
 					cout << "Epic faliure! West\n";
 					return EXIT_FAILURE;
@@ -93,8 +93,8 @@ int main(int argc,char *argv[]){
 		}
 		if(ST.at(startTime + token.length()).ports[Local] == DC){
 			ST.at(startTime + token.length()).ports[Local] = inputPort;
-			ST.at(startTime + token.length()).x_src = -ST.at(startTime).x_direct;
-			ST.at(startTime + token.length()).y_src = -ST.at(startTime).y_direct;
+			ST.at(startTime + token.length()).x_src = -ST.at(startTime).x_dest;
+			ST.at(startTime + token.length()).y_src = -ST.at(startTime).y_dest;
 			inputPort = Local;
 		} else {
 			cout << "Epic faliure! Local\n";
@@ -119,9 +119,11 @@ int main(int argc,char *argv[]){
 		printer->startST(nodeNum);
 		int xPos = nodeNum % sideLength;
 		int yPos = (int)floor((double)nodeNum/sideLength);
-		for(unsigned slotNum = 0; slotNum < ST.size(); slotNum++){
-			int xDest = xPos + ST.at(slotNum).x_direct;
-			int yDest = yPos + ST.at(slotNum).y_direct;
+		// TODO: The topology dependent generation of schedules should be given as a parameter
+		// Generation of tables in mesh
+		/*for(unsigned slotNum = 0; slotNum < ST.size(); slotNum++){
+			int xDest = xPos + ST.at(slotNum).x_dest;
+			int yDest = yPos + ST.at(slotNum).y_dest;
 			int xSrc = xPos + ST.at(slotNum).x_src;
 			int ySrc = yPos + ST.at(slotNum).y_src;
 			if ((xDest < sideLength) && (xDest >= 0) && (yDest < sideLength) && (yDest >= 0)){
@@ -136,6 +138,28 @@ int main(int argc,char *argv[]){
 			} else{
 				printer->writeSlotNISrc(nodeNum);
 			}
+		}*/
+
+		// Generation of tables in double torus
+		for(unsigned slotNum = 0; slotNum < ST.size(); slotNum++){
+			int xDest = xPos + ST.at(slotNum).x_dest;
+			int yDest = yPos + ST.at(slotNum).y_dest;
+			int xSrc = xPos + ST.at(slotNum).x_src;
+			int ySrc = yPos + ST.at(slotNum).y_src;
+			// Correction of destination and source address
+			if (xDest < 0){xDest = xDest+sideLength;}
+			else if(xDest >= sideLength){xDest = xDest-sideLength;}
+			if (yDest < 0){yDest = yDest+sideLength;}
+			else if(yDest >= sideLength){yDest = yDest-sideLength;}
+			if (xSrc < 0){xSrc = xSrc+sideLength;}
+			else if(xSrc >= sideLength){xSrc = xSrc-sideLength;}
+			if (ySrc < 0){ySrc = ySrc+sideLength;}
+			else if(ySrc >= sideLength){ySrc = ySrc-sideLength;}
+
+			int destNode = (yDest * sideLength) + xDest;
+			printer->writeSlotNIDest(slotNum,countWidth,destNode);
+			int srcNode = (ySrc * sideLength) + xSrc;
+			printer->writeSlotNISrc(srcNode);
 		}
 		printer->endST(nodeNum);
 	}

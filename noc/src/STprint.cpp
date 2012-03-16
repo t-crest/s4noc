@@ -15,16 +15,16 @@ enum port {North,East,South,West,Local,DC};
 class STslot{
 public:
 	port ports[5];
-	int x_direct;
-	int y_direct;
+	int x_dest;
+	int y_dest;
 	int x_src;
 	int y_src;
 	STslot(){
 		for(int i = 0; i < 5; i++){
 			ports[i] = DC;
 		}
-		x_direct = 0;
-		y_direct = 0;
+		x_dest = 0;
+		y_dest = 0;
 		x_src = 0;
 		y_src = 0;
 	}
