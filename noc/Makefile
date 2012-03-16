@@ -23,6 +23,7 @@ base: leros
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/serdes.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/router_ST.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/ni_ST.vhd
+	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/dp_ram.vhd
 #	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/ni.vhd
 	$(WINE) vcom -2008 -quiet $(S4NOCDIR)/ni_ram.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/outnode.vhd
