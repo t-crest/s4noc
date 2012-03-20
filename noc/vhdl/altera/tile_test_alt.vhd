@@ -1,5 +1,5 @@
 --
---  Copyright 2012 Rasmus Bo Sørensen <rasmus@rbscloud.dk>,
+--  Copyright 2012 Rasmus Bo Sï¿½rensen <rasmus@rbscloud.dk>,
 --                 Technical University of Denmark, DTU Informatics. 
 --  All rights reserved.
 --
@@ -39,7 +39,8 @@ use work.leros_types.all;
 
 entity tile_test_alt is
   generic (
-    TEST_TYPE : string := "NxN");
+    TEST_TYPE : string := "NxN";
+	 TEST_BOARD : string := "cyclonII");
   port (
     clk     : in  std_logic;
     reset   : in  std_logic;
@@ -56,14 +57,26 @@ architecture struct of tile_test_alt is
 
 begin  -- struct
 
-  altpll_cyc2_inst : entity work.altpll_cyc2
-    port map (
-      areset => reset,
-      inclk0 => clk,
-      c0     => processor_clk,
-      c1     => router_clk,
-      locked => locked_sig
-      );
+
+	Cyclon2 : if TEST_BOARD = "cyclonII" generate
+	  altpll_cyc2_inst : entity work.altpll_cyc2
+		 port map (
+			areset => reset,
+			inclk0 => clk,
+			c0     => processor_clk,
+			c1     => router_clk,
+			locked => locked_sig);
+	end generate Cyclon2;
+	
+	Cyclon3 : if TEST_BOARD = "cyclonIII" generate
+	  altpll_cyc2_inst : entity work.altpll_cyc2
+		 port map (
+			areset => reset,
+			inclk0 => clk,
+			c0     => processor_clk,
+			c1     => router_clk,
+			locked => locked_sig);
+	end generate Cyclon3;
 
   NxN: if TEST_TYPE = "NxN" generate
     tile_top : entity work.noc

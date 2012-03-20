@@ -38,9 +38,9 @@ use work.noc_types.all;
 
 entity noc is
   -- NxN nodes
-  generic (N        : natural := 7;
+  generic (N        : natural := 4;
            WIDTH    : natural := 16;
-           PERIOD_P : natural := 58
+           PERIOD_P : natural := 19
            );
   port(
     processor_clk : in std_logic;
