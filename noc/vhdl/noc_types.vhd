@@ -68,6 +68,16 @@ package noc_types is
     ack : std_logic;
   end record;
 
+  type ram_side is record
+    ram_en   : std_logic;
+    ram_addr : natural;
+    ram_wr   : std_logic;
+    tx_en    : std_logic;
+    rx_en    : std_logic;
+    tx       : tile_word;
+    rx       : tile_word;
+  end record;
+
 
   type select_signals is array (0 to 4) of integer range 0 to 3;
 
@@ -80,10 +90,10 @@ package body noc_types is
 
   function log2(N : natural) return integer is
   begin
-    for I in 1 to 30 loop
-      if (2**I > N) then return (I-1); end if;
+    for I in 1 to 64 loop
+      if (2**I > N) then return I; end if;
     end loop;  -- I
-    return(30);
+    return(64);
   end;
 
 end noc_types;

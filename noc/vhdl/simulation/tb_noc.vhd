@@ -43,25 +43,46 @@ entity tb_noc is
 end tb_noc;
 
 architecture behav of tb_noc is
-  constant router_clk_period : time := 5 ns;
-  signal   router_clk        : std_logic;
-  signal   processor_clk     : std_logic;
-  signal   reset             : std_logic;
-  signal   ser_txd           : std_logic;
-  signal   ser_rxd           : std_logic;
+  constant router_clk_period : time   := 5 ns;
+  constant TEST_TYPE         : string := "NOC";
+
+  signal router_clk    : std_logic;
+  signal processor_clk : std_logic;
+  signal reset         : std_logic;
+  signal ser_txd       : std_logic;
+  signal ser_rxd       : std_logic;
+
+  signal sync_reset : std_logic;
 
 begin  -- behav
 
-  tile_test: entity work.tile_top
-    port map (
-      processor_clk => processor_clk,
-      router_clk    => router_clk,
-      reset         => reset,
-      ser_txd       => ser_txd,
-      ser_rxd       => ser_rxd);
+  noc_test : if TEST_TYPE = "NOC" generate
+    tile_test : entity work.noc
+      generic map (
+        N        => 4,
+        WIDTH    => 16,
+        PERIOD_P => 19)
+      port map (
+        processor_clk => processor_clk,
+        router_clk    => router_clk,
+        reset         => sync_reset,
+        ser_txd       => ser_txd,
+        ser_rxd       => ser_rxd);
+  end generate noc_test;
+
+  noc_test1 : if TEST_TYPE = "TIL" generate
+    
+    tile_test : entity work.tile_top
+      port map (
+        processor_clk => processor_clk,
+        router_clk    => router_clk,
+        reset         => sync_reset,
+        ser_txd       => ser_txd,
+        ser_rxd       => ser_rxd);
+  end generate noc_test1;
 
   ser_rxd <= '0';
-  
+
   router_clock_gen : process is
   begin  -- process clock_gen
     router_clk <= '0' after router_clk_period/2, '1' after router_clk_period;
@@ -76,9 +97,17 @@ begin  -- behav
 
   test : process is
   begin  -- process test
-    reset <= '1' after 0 ns, '0' after 27 ns;
+    reset <= '1' after 0 ns, '0' after 20 ns;
     wait;
   end process test;
+
+  sync : process (processor_clk)
+  begin  -- process test
+    if rising_edge(processor_clk) then
+       sync_reset <= reset;
+      
+    end if;
+  end process sync;
 
 
 end behav;

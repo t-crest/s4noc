@@ -65,7 +65,7 @@ begin
       UART => true,
       TOTAL_NI_NUM => 9,
       NI_NUM => 0,
-      stable_length => 28)
+      stable_length => 10)
     port map (
       router_clk    => router_clk,
       processor_clk => processor_clk,
@@ -86,7 +86,7 @@ begin
       UART => false,
       TOTAL_NI_NUM => 9,
       NI_NUM => 1,
-      stable_length => 28)
+      stable_length => 10)
     port map (
       router_clk    => router_clk,
       processor_clk => processor_clk,

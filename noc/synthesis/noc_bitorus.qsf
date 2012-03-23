@@ -48,6 +48,8 @@ set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name OPTIMIZE_HOLD_TIMING "IO PATHS AND MINIMUM TPD PATHS"
+set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
 set_global_assignment -name VHDL_FILE ../vhdl/generated/bt4x4/router_ST.vhd
 set_global_assignment -name VHDL_FILE ../vhdl/generated/bt4x4/ni_ST.vhd
 set_global_assignment -name VHDL_FILE ../../leros/vhdl/io/uart.vhd
@@ -69,4 +71,9 @@ set_global_assignment -name VHDL_FILE ../vhdl/ni_ram.vhd
 set_global_assignment -name VHDL_FILE ../vhdl/dp_ram.vhd
 set_global_assignment -name VHDL_FILE ../vhdl/altera/tile_test_alt.vhd
 set_global_assignment -name VHDL_FILE ../vhdl/altera/altpll_cyc2.vhd
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+set_location_assignment PIN_AD15 -to clk
+set_location_assignment PIN_AA23 -to reset
+set_location_assignment PIN_D21 -to ser_rxd
+set_location_assignment PIN_E21 -to ser_txd
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

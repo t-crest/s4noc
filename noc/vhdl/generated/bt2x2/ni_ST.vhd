@@ -28,16 +28,16 @@ begin -- data
 		case count is
 
 			when "000" =>
-				dest <= 3;
+				dest <= 2;
 				src <= 0;
 			when "001" =>
-				dest <= 0;
+				dest <= 1;
 				src <= 0;
 			when "010" =>
-				dest <= 2;
+				dest <= 0;
 				src <= 3;
 			when "011" =>
-				dest <= 1;
+				dest <= 3;
 				src <= 2;
 			when "100" =>
 				dest <= 0;
@@ -57,16 +57,16 @@ begin -- data
 		case count is
 
 			when "000" =>
-				dest <= 2;
+				dest <= 3;
 				src <= 1;
 			when "001" =>
-				dest <= 1;
+				dest <= 0;
 				src <= 1;
 			when "010" =>
-				dest <= 3;
+				dest <= 1;
 				src <= 2;
 			when "011" =>
-				dest <= 0;
+				dest <= 2;
 				src <= 3;
 			when "100" =>
 				dest <= 1;
@@ -86,16 +86,16 @@ begin -- data
 		case count is
 
 			when "000" =>
-				dest <= 1;
+				dest <= 0;
 				src <= 2;
 			when "001" =>
-				dest <= 2;
+				dest <= 3;
 				src <= 2;
 			when "010" =>
-				dest <= 0;
+				dest <= 2;
 				src <= 1;
 			when "011" =>
-				dest <= 3;
+				dest <= 1;
 				src <= 0;
 			when "100" =>
 				dest <= 2;
@@ -115,16 +115,16 @@ begin -- data
 		case count is
 
 			when "000" =>
-				dest <= 0;
+				dest <= 1;
 				src <= 3;
 			when "001" =>
-				dest <= 3;
+				dest <= 2;
 				src <= 3;
 			when "010" =>
-				dest <= 1;
+				dest <= 3;
 				src <= 0;
 			when "011" =>
-				dest <= 2;
+				dest <= 0;
 				src <= 1;
 			when "100" =>
 				dest <= 3;

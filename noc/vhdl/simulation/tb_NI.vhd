@@ -42,7 +42,7 @@ entity tb_NI is
 end tb_NI;
 
 architecture struct of tb_NI is
-  constant stable_length          : natural := 8;
+  constant stable_length          : natural := 9;
   constant router_clk_period      : time    := 5 ns;
   signal   router_clk             : std_logic;
   signal   tile_clk             : std_logic;
@@ -54,7 +54,7 @@ architecture struct of tb_NI is
   
 begin  -- struct
 
-  ni_1 : entity work.ni
+  ni_1 : entity work.ni_ram
     generic map (
       stable_length => stable_length)
     port map (
@@ -77,7 +77,7 @@ begin  -- struct
       ioin  => tile_in_1);
 
   
-  ni_2 : entity work.ni
+  ni_2 : entity work.ni_ram
     generic map (
       stable_length => stable_length)
     port map (

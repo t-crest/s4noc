@@ -54,8 +54,39 @@ architecture struct of tile_test_alt is
   signal router_clk    : std_logic;
   signal processor_clk : std_logic;
   signal locked_sig    : std_logic;
+  
+ -- signal synch_reset, next_synch_reset : std_logic;
+  
+  	-- for generation of internal reset
+	signal int_res			: std_logic;
+	signal res_cnt			: unsigned(2 downto 0) := "000";	-- for the simulation
+
+	attribute altera_attribute : string;
+	attribute altera_attribute of res_cnt : signal is "POWER_UP_LEVEL=LOW";
 
 begin  -- struct
+
+--	process(processor_clk)
+--	begin
+--		if rising_edge(processor_clk) then
+--			synch_reset <= next_synch_reset;
+--			next_synch_reset <= reset;
+--		end if;
+--	end process;
+
+	--
+	--	internal reset generation
+	--	should include the PLL lock signal
+	--
+	process(processor_clk)
+	begin
+		if rising_edge(processor_clk) then
+			if (res_cnt/="111") then
+				res_cnt <= res_cnt+1;
+			end if;
+			int_res <= not res_cnt(0) or not res_cnt(1) or not res_cnt(2);
+		end if;
+	end process;
 
 
 	Cyclon2 : if TEST_BOARD = "cyclonII" generate
@@ -83,7 +114,7 @@ begin  -- struct
     port map (
       processor_clk => processor_clk,
       router_clk    => router_clk,
-      reset         => reset,
+      reset         => int_res,
       ser_txd       => ser_txd,
       ser_rxd       => ser_rxd);
   end generate NxN;
@@ -93,7 +124,7 @@ begin  -- struct
       port map (
         processor_clk => processor_clk,
         router_clk    => router_clk,
-        reset         => reset,
+        reset         => int_res,
         ser_txd       => ser_txd,
         ser_rxd       => ser_rxd);  
   end generate simple;

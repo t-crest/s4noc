@@ -53,9 +53,7 @@ entity ni_ram is
     reset         : in  std_logic;
     -- Signals to/from the router
     tile_tx_f     : out network_link_forward;
---    tile_tx_b     : in  network_link_backward;
     tile_rx_f     : in  network_link_forward;
---    tile_rx_b     : out network_link_backward;
     -- Signals to/from the tile
     processor_out : in  io_out_type;
     processor_in  : out io_in_type);
@@ -63,26 +61,30 @@ entity ni_ram is
 end ni_ram;
 
 architecture behav of ni_ram is
-  signal count : unsigned(log2(stable_length) downto 0);  -- Count to
-                                                          -- describe the
-                                                          -- slot number.
+  signal count : unsigned(log2(stable_length)-1 downto 0);  -- Count to
+                                                            -- describe the
+                                                            -- slot number.
 
-  signal out_tx_status, out_rx_status, in_tx_status, in_rx_status : std_logic_vector(TOTAL_NI_NUM-1 downto 0);
+  signal out_tx_status, out_rx_status : std_logic_vector(TOTAL_NI_NUM-1 downto 0);
+  signal in_tx_status, in_rx_status   : std_logic_vector(TOTAL_NI_NUM-1 downto 0);
 
-  signal tx_status_reg, next_tx_status_reg       : std_logic_vector(TOTAL_NI_NUM-1 downto 0);  -- Status register for communicating to the tile.
-  signal rx_status_reg, next_rx_status_reg       : std_logic_vector(TOTAL_NI_NUM-1 downto 0);  -- Status register for communicating to the tile.
-  signal x_out_rx_status, x_out_tx_status        : std_logic_vector(TOTAL_NI_NUM-1 downto 0);
-  signal x_in_rx_status, x_in_tx_status          : std_logic_vector(TOTAL_NI_NUM-1 downto 0);
-  signal tx_slot_dest, rx_slot_src               : integer range 0 to TOTAL_NI_NUM;
-  signal next_rx_slot_src, next_next_rx_slot_src : integer range 0 to TOTAL_NI_NUM;
-  signal dest_addr, src_addr                     : integer range 0 to TOTAL_NI_NUM;
+  signal tx_status_reg, next_tx_status_reg : std_logic_vector(TOTAL_NI_NUM-1 downto 0);
+  signal rx_status_reg, next_rx_status_reg : std_logic_vector(TOTAL_NI_NUM-1 downto 0);
+  signal x_out_rx_status, x_out_tx_status  : std_logic_vector(TOTAL_NI_NUM-1 downto 0);
+  signal x_in_rx_status, x_in_tx_status    : std_logic_vector(TOTAL_NI_NUM-1 downto 0);
 
-  signal tx_in, tx_out, rx_in, rx_out : tile_word;
-  signal tx_out_reg, tx_out_mux       : tile_word;
-  signal out_addr, in_addr            : natural range 0 to 2*TOTAL_NI_NUM;
-  signal out_wr, in_wr, out_en, in_en : std_logic;
+  signal tx_slot_dest, rx_slot_src : integer range 0 to TOTAL_NI_NUM;
+  signal dest_addr, src_addr       : integer range 0 to TOTAL_NI_NUM;
 
-  signal next_tx_data_valid, next_next_tx_data_valid, reg_tx_data_valid, reg_next_tx_data_valid : std_logic;
+  signal tx_out_reg, tx_out_mux : tile_word;
+  signal tx_slot_status         : std_logic;
+
+  signal out_phase : std_logic;
+
+  type   shift_reg is array (3 downto 0) of std_logic;
+  signal reg_tx_data_valid : shift_reg;
+
+  signal i, o : ram_side;
   
 begin  -- behav
 
@@ -93,8 +95,7 @@ begin  -- behav
   counter : process (processor_clk, reset)
   begin  -- process count
     if reset = '1' then                    -- asynchronous reset (active high)
-      count <= to_unsigned(1, log2(stable_length)+1);
---      count <= (others => '0');
+      count <= (others => '0');
     elsif rising_edge(processor_clk) then  -- rising clock edge
       if count < stable_length-1 then
         count <= count + to_unsigned(1, 1);
@@ -117,10 +118,11 @@ begin  -- behav
       fast_clk     => router_clk,
       slow_clk     => processor_clk,
       reset        => reset,
+      out_phase    => out_phase,
       serial_in    => tile_rx_f.data,
       parallel_in  => tx_out_reg,
       serial_out   => tile_tx_f.data,
-      parallel_out => rx_in);
+      parallel_out => i.rx);
 
 
 -------------------------------------------------------------------------------
@@ -130,49 +132,54 @@ begin  -- behav
   dp_ram : entity work.dp_ram
     generic map (
       DATA_WIDTH => tile_word'length,
-      ADDR_WIDTH => log2(TOTAL_NI_NUM)+2)
+      ADDR_WIDTH => log2(TOTAL_NI_NUM)+1)
     port map (
       clk    => router_clk,
-      addr_a => in_addr,
-      addr_b => out_addr,
-      data_a => tx_in,
-      data_b => rx_in,
+      addr_a => i.ram_addr,
+      addr_b => o.ram_addr,
+      data_a => i.tx,
+      data_b => i.rx,
 
-      we_a => in_wr and in_en,
-      we_b => out_wr and out_en,
---    addr2   => std_logic_vector(to_unsigned(out_addr, log2(TOTAL_NI_NUM)+1)),
-      q_a  => rx_out,
-      q_b  => tx_out);
+      we_a => i.ram_wr and i.ram_en,
+      we_b => o.ram_wr and o.ram_en,
+      q_a  => o.rx,
+      q_b  => o.tx);
 
 -------------------------------------------------------------------------------
 --  Router side of the block ram
 -------------------------------------------------------------------------------
 
-  out_ch : process (processor_clk, tx_slot_dest, rx_slot_src , tx_status_reg, rx_status_reg, tile_rx_f, reg_next_tx_data_valid, tx_out, reg_tx_data_valid)
+  out_ch : process (out_phase, tx_slot_dest, rx_slot_src , tx_status_reg, rx_status_reg, tile_rx_f, reg_tx_data_valid, tx_slot_status, o)
   begin  -- process tx_ch
-    out_en                  <= '0';
-    out_addr                <= 0;
-    out_wr                  <= '0';
-    out_tx_status           <= (others => '0');
-    out_rx_status           <= (others => '0');
-    next_tx_data_valid      <= reg_next_tx_data_valid;
-    next_next_tx_data_valid <= '0';
-    if processor_clk = '1' and tx_status_reg(tx_slot_dest) = '1' then
-      out_addr                    <= tx_slot_dest;
-      out_en                      <= '1';
-      out_wr                      <= '0';
-      next_tx_data_valid          <= '1';
-      next_next_tx_data_valid     <= '1';
+    o.ram_en   <= '0';
+    o.ram_addr <= 0;
+    o.ram_wr   <= '0';
+    o.tx_en    <= '0';
+    o.rx_en    <= '0';
+
+    out_tx_status        <= (others => '0');
+    out_rx_status        <= (others => '0');
+    reg_tx_data_valid(1) <= reg_tx_data_valid(2);
+    reg_tx_data_valid(3) <= '0';
+--    if processor_clk = '1' and tx_status_reg(tx_slot_dest) = '1' then
+    if out_phase = '1' and tx_slot_status = '1' then
+      o.ram_addr                  <= tx_slot_dest;
+      o.ram_en                    <= '1';
+      o.tx_en                     <= '1';
+      o.ram_wr                    <= '0';
+      reg_tx_data_valid(1)        <= '1';
+      reg_tx_data_valid(3)        <= '1';
       out_tx_status(tx_slot_dest) <= '1';
-    elsif processor_clk = '0' and rx_status_reg(rx_slot_src) = '0' then
-      out_addr                   <= rx_slot_src + TOTAL_NI_NUM;
-      out_en                     <= tile_rx_f.data_valid;
-      out_wr                     <= '1';
+    elsif out_phase = '0' and rx_status_reg(rx_slot_src) = '0' then
+      o.ram_addr                 <= rx_slot_src + TOTAL_NI_NUM;
+      o.ram_en                   <= tile_rx_f.data_valid;
+      o.rx_en                    <= tile_rx_f.data_valid;
+      o.ram_wr                   <= '1';
       out_rx_status(rx_slot_src) <= tile_rx_f.data_valid;
     end if;
 
-    if reg_tx_data_valid = '1' then
-      tx_out_mux <= tx_out;
+    if reg_tx_data_valid(0) = '1' then
+      tx_out_mux <= o.tx;
     else
       tx_out_mux <= (others => '0');
     end if;
@@ -181,15 +188,17 @@ begin  -- behav
   out_ch_regs : process (router_clk, reset)
   begin  -- process out_ch_regs
     if reset = '1' then                 -- asynchronous reset (active high)
-      tile_tx_f.data_valid   <= '0';
-      reg_tx_data_valid      <= '0';
-      reg_next_tx_data_valid <= '0';
-      tx_out_reg             <= (others => '0');
+      tile_tx_f.data_valid <= '0';
+      reg_tx_data_valid(0) <= '0';
+      reg_tx_data_valid(2) <= '0';
+      tx_out_reg           <= (others => '0');
+      out_phase            <= '1';
     elsif rising_edge(router_clk) then  -- rising clock edge
-      tx_out_reg             <= tx_out_mux;
-      tile_tx_f.data_valid   <= reg_tx_data_valid;
-      reg_tx_data_valid      <= next_tx_data_valid;
-      reg_next_tx_data_valid <= next_next_tx_data_valid;
+      out_phase            <= not out_phase;
+      tx_out_reg           <= tx_out_mux;
+      tile_tx_f.data_valid <= reg_tx_data_valid(0);
+      reg_tx_data_valid(0) <= reg_tx_data_valid(1);
+      reg_tx_data_valid(2) <= reg_tx_data_valid(3);
     end if;
   end process out_ch_regs;
 
@@ -197,44 +206,56 @@ begin  -- behav
 -- Processor side of the block ram
 -------------------------------------------------------------------------------
 
-  in_ch : process (processor_clk, processor_out, rx_out, tx_status_reg, rx_status_reg)
+  in_ch : process (out_phase, processor_out, tx_status_reg, rx_status_reg, o)
+    variable processor_addr : integer;
   begin  -- process in_ch
-    in_en               <= '0';
-    in_addr             <= 0;
-    in_wr               <= '0';
+    processor_addr := to_integer(unsigned(processor_out.addr));
+
+    i.ram_en            <= '0';
+    i.tx_en             <= '0';
+    i.rx_en             <= '0';
+    i.ram_addr          <= 0;
+    i.ram_wr            <= '0';
     in_tx_status        <= (others => '0');
     in_rx_status        <= (others => '0');
     processor_in.rddata <= (others => '0');
 
-    if processor_out.rd = '1' and unsigned(processor_out.addr) < to_unsigned(TOTAL_NI_NUM, processor_out.addr'length) then
-      in_addr <= to_integer(unsigned(processor_out.addr)) + TOTAL_NI_NUM;
-      in_wr   <= '0';
-      in_en   <= '1';
+    --  if out_phase = '1' and processor_out.rd = '1' and processor_addr < TOTAL_NI_NUM then
+    if processor_out.rd = '1' and processor_addr < TOTAL_NI_NUM then
+      i.ram_addr <= processor_addr + TOTAL_NI_NUM;
+      if out_phase = '1' then
+        i.ram_wr                     <= '0';
+        i.ram_en                     <= '1';
+        i.rx_en                      <= '1';
+        in_rx_status(processor_addr) <= '1';
+      end if;
+      processor_in.rddata <= o.rx;
 
-      in_rx_status(to_integer(unsigned(processor_out.addr))) <= '1';
-      processor_in.rddata                                    <= rx_out;
-      
-    elsif processor_out.rd = '1' and unsigned(processor_out.addr) >= to_unsigned(TOTAL_NI_NUM, processor_out.addr'length)
-      and unsigned(processor_out.addr) < to_unsigned(TOTAL_NI_NUM+TOTAL_NI_NUM/processor_out.wrdata'length, processor_out.addr'length) then
+      --   elsif out_phase = '1' and processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM
+    elsif processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM
+      and processor_addr < TOTAL_NI_NUM+TOTAL_NI_NUM/TILE_WORD_WIDTH then
       -- return status registers 
-      processor_in.rddata <= tx_status_reg((to_integer(unsigned(processor_out.addr))-TOTAL_NI_NUM+1)*processor_in.rddata'length-1 downto (to_integer(unsigned(processor_out.addr))-TOTAL_NI_NUM)*processor_in.rddata'length);  -- TODO fix: return the correct
---(processor_out.addr-TOTAL_NI_NUM+1)*processor_in.rddata'length-1 downto (processor_out.addr-TOTAL_NI_NUM)*processor_in.rddata'length;
-      
-    elsif processor_out.rd = '1' and unsigned(processor_out.addr) >= to_unsigned(TOTAL_NI_NUM+TOTAL_NI_NUM/processor_out.wrdata'length, processor_out.addr'length)
-    and unsigned(processor_out.addr) < to_unsigned(TOTAL_NI_NUM+2*TOTAL_NI_NUM/processor_out.addr'length, processor_out.addr'length)then
-      processor_in.rddata <= rx_status_reg((to_integer(unsigned(processor_out.addr))-TOTAL_NI_NUM+1)*processor_in.rddata'length-1 downto (to_integer(unsigned(processor_out.addr))-TOTAL_NI_NUM)*processor_in.rddata'length);
+      processor_in.rddata <= tx_status_reg((processor_addr-TOTAL_NI_NUM+1)*TILE_WORD_WIDTH-1 downto (processor_addr-TOTAL_NI_NUM)*TILE_WORD_WIDTH);  -- TODO fix: return the correct
+
+      --  elsif out_phase = '1' and processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM+TOTAL_NI_NUM/TILE_WORD_WIDTH
+    elsif processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM+TOTAL_NI_NUM/TILE_WORD_WIDTH
+      and processor_addr < TOTAL_NI_NUM+2*TOTAL_NI_NUM/TILE_WORD_WIDTH then
+
+      processor_in.rddata <= rx_status_reg((processor_addr-TOTAL_NI_NUM)*TILE_WORD_WIDTH-1 downto (processor_addr-TOTAL_NI_NUM-1)*TILE_WORD_WIDTH);
     end if;
 
-    if processor_out.wr = '1' and unsigned(processor_out.addr) < to_unsigned(TOTAL_NI_NUM, processor_out.addr'length)
-      and tx_status_reg(to_integer(unsigned(processor_out.addr))) = '0' then
-      in_addr <= to_integer(unsigned(processor_out.addr));
-      in_wr   <= '1';
-      in_en   <= '1';
-      tx_in   <= processor_out.wrdata;
+    if out_phase = '0' and processor_out.wr = '1' and processor_addr < TOTAL_NI_NUM
+      and tx_status_reg(processor_addr) = '0' then
 
-      in_tx_status(to_integer(unsigned(processor_out.addr))) <= '1';
+      i.ram_addr <= processor_addr;
+      i.ram_wr   <= '1';
+      i.ram_en   <= '1';
+      i.tx_en    <= '1';
+      i.tx       <= processor_out.wrdata;
+
+      in_tx_status(processor_addr) <= '1';
     else
-      tx_in <= (others => '0');
+      i.tx <= (others => '0');
     end if;
     
   end process in_ch;
@@ -250,10 +271,10 @@ begin  -- behav
     for i in 0 to TOTAL_NI_NUM-1 loop
       if x_in_tx_status(i) = '0' and x_out_tx_status(i) = '0' then
         next_tx_status_reg(i) <= tx_status_reg(i);
-      elsif x_out_tx_status(i) = '1' then
-        next_tx_status_reg(i) <= '0';
       elsif x_in_tx_status(i) = '1' then
         next_tx_status_reg(i) <= '1';
+      elsif x_out_tx_status(i) = '1' then
+        next_tx_status_reg(i) <= '0';
       end if;
 
       if x_in_rx_status(i) = '0' and x_out_rx_status(i) = '0' then
@@ -271,24 +292,48 @@ begin  -- behav
     
   end process control;
 
-  status_register : process (router_clk, reset)
+  status_registers : process (processor_clk, reset)
+  begin  -- process transiton_registers
+    if reset = '1' then                    -- asynchronous reset (active high)
+      tx_status_reg <= (others => '0');
+      rx_status_reg <= (others => '0');
+    elsif rising_edge(processor_clk) then  -- rising clock edge
+      tx_status_reg <= next_tx_status_reg;
+      rx_status_reg <= next_rx_status_reg;
+    end if;
+  end process status_registers;
+
+  transition_register : process (router_clk, reset)
   begin  -- process status_register
     if reset = '1' then                 -- asynchronous reset (active high)
-      tx_status_reg   <= (others => '0');
-      rx_status_reg   <= (others => '0');
       x_out_tx_status <= (others => '0');
       x_out_rx_status <= (others => '0');
       x_in_tx_status  <= (others => '0');
       x_in_rx_status  <= (others => '0');
     elsif rising_edge(router_clk) then  -- rising clock edge
-      tx_status_reg   <= next_tx_status_reg;
-      x_out_tx_status <= out_tx_status;
-      x_in_tx_status  <= in_tx_status;
-      rx_status_reg   <= next_rx_status_reg;
-      x_out_rx_status <= out_rx_status;
-      x_in_rx_status  <= in_rx_status;
+      if o.tx_en = '1' then
+        x_out_tx_status <= out_tx_status;
+      elsif processor_clk = '1' then
+        x_out_tx_status <= (others => '0');
+      end if;
+      if i.tx_en = '1' then
+        x_in_tx_status <= in_tx_status;
+      elsif processor_clk = '1' then
+        x_in_tx_status <= (others => '0');
+      end if;
+      if o.rx_en = '1' then
+        x_out_rx_status <= out_rx_status;
+      elsif processor_clk = '1' then
+        x_out_rx_status <= (others => '0');
+      end if;
+      if i.rx_en = '1' then
+        x_in_rx_status <= in_rx_status;
+      elsif processor_clk = '1' then
+        x_in_rx_status <= (others => '0');
+      end if;
+      
     end if;
-  end process status_register;
+  end process transition_register;
 
 -------------------------------------------------------------------------------
 -- Slot tables and registers.
@@ -305,15 +350,13 @@ begin  -- behav
   slot_regs : process (processor_clk, reset)
   begin  -- process slot_regs
     if reset = '1' then                    -- asynchronous reset (active high)
-      tx_slot_dest          <= 0;
-      rx_slot_src           <= 0;
-      next_rx_slot_src      <= 0;
-      next_next_rx_slot_src <= 0;
+      tx_slot_dest   <= 0;
+      rx_slot_src    <= 0;
+      tx_slot_status <= '0';
     elsif rising_edge(processor_clk) then  -- rising clock edge
-      tx_slot_dest          <= dest_addr;
-      rx_slot_src           <= next_rx_slot_src;
-      next_rx_slot_src      <= next_next_rx_slot_src;
-      next_next_rx_slot_src <= src_addr;
+      tx_slot_dest   <= dest_addr;
+      tx_slot_status <= tx_status_reg(dest_addr);
+      rx_slot_src    <= src_addr;
     end if;
   end process slot_regs;
 

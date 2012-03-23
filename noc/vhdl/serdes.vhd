@@ -46,6 +46,7 @@ entity serdes is
     fast_clk     : in  std_logic;
     slow_clk     : in  std_logic;
     reset        : in  std_logic;
+    out_phase    : in  std_logic;
     serial_in    : in  std_logic_vector((TILE_WIDTH/RATIO_CLK)-1 downto 0);
     parallel_in  : in  std_logic_vector(TILE_WIDTH-1 downto 0);
     serial_out   : out std_logic_vector((TILE_WIDTH/RATIO_CLK)-1 downto 0);
@@ -133,6 +134,6 @@ begin  -- behave
 -- Phase generation for the PISO (Only working for RATIO_CLK = 2, should be generalized)
 -------------------------------------------------------------------------------
 
-  piso_phase <= not slow_clk;
+  piso_phase <= not out_phase;
   
 end behave;

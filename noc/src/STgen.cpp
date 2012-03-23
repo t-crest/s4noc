@@ -2,14 +2,18 @@
 #include <fstream>
 #include <math.h>
 #include <vector>
+#include <map>
 #include <string>
 //#include <cstdio>
 #include <algorithm>
 #include <cctype>
 #include <functional>
-#include "STprint.cpp";
+#include <cassert>
+#include "STprint.cpp"
 
 using namespace std;
+
+void check(map<int,int> hej, int numOfNodes, int nodeNum);
 
 int main(int argc,char *argv[]){
 	if(argc < 3){
@@ -21,17 +25,20 @@ int main(int argc,char *argv[]){
 	ifstream infile(inputPath, ifstream::in);
 	vector<STslot> ST;
 	STslot* slot = new STslot();
+	ST.push_back(*slot);
 	string token;
 	port inputPort = Local;
 	int startTime = 0;
 	STprint* printer = new STprint();
+
+	cout << "Shd file:\t" << inputPath << endl;
 
 	while(infile.good()){
 		getline(infile,token);
 		std::string::size_type find = token.find_first_not_of(" ");
 		startTime = (int)find;
 		token.replace(0,startTime,"");
-		cout << token << endl;
+		//cout << token << endl;
 
 		if(startTime < 0){
 			break; // The find_first_not_of() faild, we are done reading in routes.
@@ -48,7 +55,7 @@ int main(int argc,char *argv[]){
 				if(ST.at(startTime + i).ports[North] == DC){
 					ST.at(startTime + i).ports[North] = inputPort;
 					inputPort = South;
-					ST.at(startTime).y_dest++;
+					ST.at(startTime).y_dest--;
 				} else {
 					cout << "Epic faliure! North\n";
 					return EXIT_FAILURE;
@@ -58,7 +65,7 @@ int main(int argc,char *argv[]){
 				if(ST.at(startTime + i).ports[South] == DC){
 					ST.at(startTime + i).ports[South] = inputPort;
 					inputPort = North;
-					ST.at(startTime).y_dest--;
+					ST.at(startTime).y_dest++;
 				} else {
 					cout << "Epic faliure! South\n";
 					return EXIT_FAILURE;
@@ -87,7 +94,7 @@ int main(int argc,char *argv[]){
 			}
 		}
 		try{
-			ST.at(startTime + token.length());
+			ST.at(startTime + token.length() + 1);
 		} catch (out_of_range& oor){
 			ST.push_back(*slot);
 		}
@@ -104,7 +111,8 @@ int main(int argc,char *argv[]){
 	}
 	infile.close();
 	int countWidth = (int)ceil(log((double)ST.size())/log(2.0));
-	cout << countWidth << endl;
+	cout << "Count width:\t" << countWidth << endl;
+	cout << "Period length:\t" << ST.size() << endl;
 	printer->writeHeaderNI(countWidth,numOfNodes);
 	printer->writeHeaderRouter(countWidth);
 
@@ -140,27 +148,59 @@ int main(int argc,char *argv[]){
 			}
 		}*/
 
+		map<int/*id*/,int/*encounters*/> hej;
+
+
 		// Generation of tables in double torus
+		int destSlotNum;
 		for(unsigned slotNum = 0; slotNum < ST.size(); slotNum++){
-			int xDest = xPos + ST.at(slotNum).x_dest;
-			int yDest = yPos + ST.at(slotNum).y_dest;
+			if(slotNum < ST.size()-2){
+				destSlotNum = slotNum + 2;
+			} else {
+				if(slotNum == ST.size()-2){
+					destSlotNum = 0;
+				} else if(slotNum == ST.size()-1){
+					destSlotNum = 1;
+				}
+			}
+			int xDest = xPos + ST.at(destSlotNum).x_dest; // destS
+			int yDest = yPos + ST.at(destSlotNum).y_dest; // destS
 			int xSrc = xPos + ST.at(slotNum).x_src;
 			int ySrc = yPos + ST.at(slotNum).y_src;
 			// Correction of destination and source address
-			if (xDest < 0){xDest = xDest+sideLength;}
-			else if(xDest >= sideLength){xDest = xDest-sideLength;}
-			if (yDest < 0){yDest = yDest+sideLength;}
-			else if(yDest >= sideLength){yDest = yDest-sideLength;}
-			if (xSrc < 0){xSrc = xSrc+sideLength;}
-			else if(xSrc >= sideLength){xSrc = xSrc-sideLength;}
-			if (ySrc < 0){ySrc = ySrc+sideLength;}
-			else if(ySrc >= sideLength){ySrc = ySrc-sideLength;}
+
+#define fix(xDest) { \
+	xDest = (xDest >= sideLength ) ? xDest-sideLength : xDest; \
+	xDest = (xDest < 0) ? xDest+sideLength : xDest; }
+
+			fix(xDest);
+			fix(yDest);
+			fix(xSrc);
+			fix(ySrc);
+
+			//xDest = xDest % sideLength;
+			//yDest = yDest % sideLength;
+			//xSrc = xSrc	% sideLength;
+			//ySrc = ySrc % sideLength;
 
 			int destNode = (yDest * sideLength) + xDest;
+			/*if (destNode == 2) {
+
+				assert(false && "Vi fik 2");
+
+			}*/
+
+			hej[destNode]++;
+
+
 			printer->writeSlotNIDest(slotNum,countWidth,destNode);
 			int srcNode = (ySrc * sideLength) + xSrc;
 			printer->writeSlotNISrc(srcNode);
 		}
+
+
+		check(hej,numOfNodes,nodeNum);
+
 		printer->endST(nodeNum);
 	}
 
@@ -169,4 +209,24 @@ int main(int argc,char *argv[]){
 	return EXIT_SUCCESS;
 
 }
+
+void check(map<int,int> hej, int numOfNodes, int nodeNum) {
+
+	for (auto it = hej.begin(); it != hej.end(); ++it) {
+
+		auto id = it->first;
+		auto cnt = it->second;
+
+		assert(0 <= id && id <= numOfNodes-1);
+		if ((id != nodeNum) && (cnt != 1) ){
+			cerr << "Nodenum: " << nodeNum << " Fejl på id " << id << " fik " << cnt << " pakker" << endl;
+		}
+		
+	}
+	cerr << endl;
+
+
+}
+
+
 

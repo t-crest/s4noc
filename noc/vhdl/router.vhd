@@ -66,14 +66,14 @@ architecture struct of router is
   signal local_in_reg, local_in_buf : network_link_forward;
 
   signal sels, reg_sels    : select_signals;
-  signal count, next_count : unsigned(log2(stable_length)+1 downto 0);
+  signal count, next_count : unsigned(log2(stable_length) downto 0);
 --    signal count, next_count : unsigned(7 downto 0);
 
 begin
 
   counter : process (count)
   begin  -- process counter
-    if count(log2(stable_length)+1 downto 0) < (stable_length*2)-1 then
+    if count(log2(stable_length) downto 0) < (stable_length*2)-1 then
       next_count <= count + to_unsigned(1, 1);
     else
       next_count <= (others => '0');
@@ -83,7 +83,7 @@ begin
   next_counter : process (clk, reset)
   begin  -- process next_counter
     if reset = '1' then                 -- asynchronous reset (active high)
-      count <= (others => '1');
+      count <= (others => '0');
     elsif rising_edge(clk) then         -- rising clock edge
       count <= next_count;
     end if;
@@ -91,7 +91,7 @@ begin
 
   router_ST : entity work.router_ST
     port map (
-      count => count(log2(stable_length)+1 downto 1),
+      count => count(log2(stable_length) downto 1),
   --    count => count(5 downto 1),
       sels  => reg_sels);
 
@@ -143,16 +143,16 @@ begin
 
 
 
-  north_in_buf.data       <= not (not north_in.data);
-  north_in_buf.data_valid <= not (not north_in.data_valid);
-  south_in_buf.data       <= not (not south_in.data);
-  south_in_buf.data_valid <= not (not south_in.data_valid);
-  east_in_buf.data        <= not (not east_in.data);
-  east_in_buf.data_valid  <= not (not east_in.data_valid);
-  west_in_buf.data        <= not (not west_in.data);
-  west_in_buf.data_valid  <= not (not west_in.data_valid);
-  local_in_buf.data       <= not (not local_in.data);
-  local_in_buf.data_valid <= not (not local_in.data_valid);
+  --north_in_buf.data       <= not (not north_in.data);
+  --north_in_buf.data_valid <= not (not north_in.data_valid);
+  --south_in_buf.data       <= not (not south_in.data);
+  --south_in_buf.data_valid <= not (not south_in.data_valid);
+  --east_in_buf.data        <= not (not east_in.data);
+  --east_in_buf.data_valid  <= not (not east_in.data_valid);
+  --west_in_buf.data        <= not (not west_in.data);
+  --west_in_buf.data_valid  <= not (not west_in.data_valid);
+  --local_in_buf.data       <= not (not local_in.data);
+  --local_in_buf.data_valid <= not (not local_in.data_valid);
 
   input_reg : process (clk, reset)
   begin  -- process input_reg
@@ -168,11 +168,11 @@ begin
       local_in_reg.data       <= (others => '0');
       local_in_reg.data_valid <= '0';
     elsif rising_edge(clk) then         -- rising clock edge
-      north_in_reg <= north_in_buf;
-      south_in_reg <= south_in_buf;
-      east_in_reg  <= east_in_buf;
-      west_in_reg  <= west_in_buf;
-      local_in_reg <= local_in_buf;
+      north_in_reg <= north_in;
+      south_in_reg <= south_in;
+      east_in_reg  <= east_in;
+      west_in_reg  <= west_in;
+      local_in_reg <= local_in;
     end if;
   end process input_reg;
 
