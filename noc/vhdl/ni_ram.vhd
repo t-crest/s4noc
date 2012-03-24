@@ -107,6 +107,31 @@ begin  -- behav
   end process counter;
 
 -------------------------------------------------------------------------------
+-- Slot tables and registers.
+-------------------------------------------------------------------------------
+
+  ni_ST : entity work.ni_ST
+    generic map (
+      NI_NUM => NI_NUM)
+    port map (
+      count => count,
+      dest  => dest_addr,
+      src   => src_addr);
+
+  slot_regs : process (processor_clk, reset)
+  begin  -- process slot_regs
+    if reset = '1' then                    -- asynchronous reset (active high)
+      tx_slot_dest   <= 0;
+      rx_slot_src    <= 0;
+      tx_slot_status <= '0';
+    elsif rising_edge(processor_clk) then  -- rising clock edge
+      tx_slot_dest   <= dest_addr;
+      tx_slot_status <= tx_status_reg(dest_addr);
+      rx_slot_src    <= src_addr;
+    end if;
+  end process slot_regs;
+
+-------------------------------------------------------------------------------
 -- Serialize/deserialize or atomize/deatomize
 -------------------------------------------------------------------------------
 
@@ -161,7 +186,8 @@ begin  -- behav
     out_rx_status        <= (others => '0');
     reg_tx_data_valid(1) <= reg_tx_data_valid(2);
     reg_tx_data_valid(3) <= '0';
---    if processor_clk = '1' and tx_status_reg(tx_slot_dest) = '1' then
+-------------------------------------------------------------------------------
+--  Reading transmit word to send in this timeslot
     if out_phase = '1' and tx_slot_status = '1' then
       o.ram_addr                  <= tx_slot_dest;
       o.ram_en                    <= '1';
@@ -170,6 +196,8 @@ begin  -- behav
       reg_tx_data_valid(1)        <= '1';
       reg_tx_data_valid(3)        <= '1';
       out_tx_status(tx_slot_dest) <= '1';
+-------------------------------------------------------------------------------
+--  Writing the received word in this timeslot to the block ram
     elsif out_phase = '0' and rx_status_reg(rx_slot_src) = '0' then
       o.ram_addr                 <= rx_slot_src + TOTAL_NI_NUM;
       o.ram_en                   <= tile_rx_f.data_valid;
@@ -220,7 +248,8 @@ begin  -- behav
     in_rx_status        <= (others => '0');
     processor_in.rddata <= (others => '0');
 
-    --  if out_phase = '1' and processor_out.rd = '1' and processor_addr < TOTAL_NI_NUM then
+-------------------------------------------------------------------------------
+    --  Reading from the rx channel
     if processor_out.rd = '1' and processor_addr < TOTAL_NI_NUM then
       i.ram_addr <= processor_addr + TOTAL_NI_NUM;
       if out_phase = '1' then
@@ -230,20 +259,20 @@ begin  -- behav
         in_rx_status(processor_addr) <= '1';
       end if;
       processor_in.rddata <= o.rx;
-
-      --   elsif out_phase = '1' and processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM
+-------------------------------------------------------------------------------
+    -- Returning the tx_status register
     elsif processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM
       and processor_addr < TOTAL_NI_NUM+TOTAL_NI_NUM/TILE_WORD_WIDTH then
-      -- return status registers 
       processor_in.rddata <= tx_status_reg((processor_addr-TOTAL_NI_NUM+1)*TILE_WORD_WIDTH-1 downto (processor_addr-TOTAL_NI_NUM)*TILE_WORD_WIDTH);  -- TODO fix: return the correct
-
-      --  elsif out_phase = '1' and processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM+TOTAL_NI_NUM/TILE_WORD_WIDTH
+-------------------------------------------------------------------------------
+    -- Returning the rx status register
     elsif processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM+TOTAL_NI_NUM/TILE_WORD_WIDTH
       and processor_addr < TOTAL_NI_NUM+2*TOTAL_NI_NUM/TILE_WORD_WIDTH then
 
       processor_in.rddata <= rx_status_reg((processor_addr-TOTAL_NI_NUM)*TILE_WORD_WIDTH-1 downto (processor_addr-TOTAL_NI_NUM-1)*TILE_WORD_WIDTH);
     end if;
-
+-------------------------------------------------------------------------------
+    -- Writing to the tx channel
     if out_phase = '0' and processor_out.wr = '1' and processor_addr < TOTAL_NI_NUM
       and tx_status_reg(processor_addr) = '0' then
 
@@ -269,6 +298,7 @@ begin  -- behav
     next_rx_status_reg <= (others => '0');
     next_tx_status_reg <= (others => '0');
     for i in 0 to TOTAL_NI_NUM-1 loop
+      -- Setting the next tx status register
       if x_in_tx_status(i) = '0' and x_out_tx_status(i) = '0' then
         next_tx_status_reg(i) <= tx_status_reg(i);
       elsif x_in_tx_status(i) = '1' then
@@ -276,7 +306,7 @@ begin  -- behav
       elsif x_out_tx_status(i) = '1' then
         next_tx_status_reg(i) <= '0';
       end if;
-
+      -- Setting the next rx status register
       if x_in_rx_status(i) = '0' and x_out_rx_status(i) = '0' then
         next_rx_status_reg(i) <= rx_status_reg(i);
       elsif x_out_rx_status(i) = '1' then
@@ -311,53 +341,29 @@ begin  -- behav
       x_in_tx_status  <= (others => '0');
       x_in_rx_status  <= (others => '0');
     elsif rising_edge(router_clk) then  -- rising clock edge
-      if o.tx_en = '1' then
+      if o.tx_en = '1' then             -- Enable on updating the status update
+                                        -- register
         x_out_tx_status <= out_tx_status;
-      elsif processor_clk = '1' then
+      elsif processor_clk = '1' then    -- reseting the status update register
         x_out_tx_status <= (others => '0');
       end if;
-      if i.tx_en = '1' then
+      if i.tx_en = '1' then             -- Updating the status update register
         x_in_tx_status <= in_tx_status;
-      elsif processor_clk = '1' then
+      elsif processor_clk = '1' then    -- Reseting the register
         x_in_tx_status <= (others => '0');
       end if;
-      if o.rx_en = '1' then
+      if o.rx_en = '1' then             -- Updating the status update register
         x_out_rx_status <= out_rx_status;
-      elsif processor_clk = '1' then
+      elsif processor_clk = '1' then    -- Reseting the status update register
         x_out_rx_status <= (others => '0');
       end if;
-      if i.rx_en = '1' then
+      if i.rx_en = '1' then             -- Updating the status update register
         x_in_rx_status <= in_rx_status;
-      elsif processor_clk = '1' then
+      elsif processor_clk = '1' then    -- Reseting the status update register
         x_in_rx_status <= (others => '0');
       end if;
       
     end if;
   end process transition_register;
-
--------------------------------------------------------------------------------
--- Slot tables and registers.
--------------------------------------------------------------------------------
-
-  ni_ST : entity work.ni_ST
-    generic map (
-      NI_NUM => NI_NUM)
-    port map (
-      count => count,
-      dest  => dest_addr,
-      src   => src_addr);
-
-  slot_regs : process (processor_clk, reset)
-  begin  -- process slot_regs
-    if reset = '1' then                    -- asynchronous reset (active high)
-      tx_slot_dest   <= 0;
-      rx_slot_src    <= 0;
-      tx_slot_status <= '0';
-    elsif rising_edge(processor_clk) then  -- rising clock edge
-      tx_slot_dest   <= dest_addr;
-      tx_slot_status <= tx_status_reg(dest_addr);
-      rx_slot_src    <= src_addr;
-    end if;
-  end process slot_regs;
 
 end behav;
