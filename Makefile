@@ -1,5 +1,7 @@
 
-USB=true
+# USB=true is only for the special dspio (and similar boards)
+# with the FTDI chip for download
+USB=false
 # Altera FPGA configuration cable
 #BLASTER_TYPE=ByteBlasterMV
 BLASTER_TYPE=USB-Blaster
@@ -15,12 +17,16 @@ endif
 # The VHDL project for Quartus
 QPROJ=tile_test_alt
 
-all: get_leros tools compile assemble
-	make s4nocusb
-	make config
+# start from scratch including checkout of Leros
+all: get_leros build_all
 
 get_leros:
 	git clone git://github.com/schoeberl/leros.git
+
+# build everything, Leros is already in place
+build_all: tools compile assemble
+	make s4nocusb
+	make config
 
 update_leros:
 	cd leros && git pull
@@ -54,7 +60,7 @@ else
 ifeq ($(XFPGA),true)
 	make config_xilinx
 else
-	make config_byteblaster
+	make config_altblaster
 endif
 endif
 
@@ -84,8 +90,9 @@ qsyn:
 	quartus_asm noc/quartus/$(QBT)/$(QPROJ)
 	quartus_sta noc/quartus/$(QBT)/$(QPROJ)
 
-config_byteblaster:
+config_altblaster:
 	cd noc/quartus/$(QPROJ) && quartus_pgm -c $(BLASTER_TYPE) -m JTAG tile_test_alt.cdf
 
+# this is only for a very special board, the dspio
 config_usb:
 	cd rbf && ../$(USBRUNNER) $(QPROJ).rbf
