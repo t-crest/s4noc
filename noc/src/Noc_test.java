@@ -12,6 +12,8 @@ public class Noc_test extends MuviumRunnable {
 		int CPUID = Native.rd(253);
 		int MAXCPU = Native.rd(252);
 		int status = 0;
+		int mask = -1;
+		mask = mask -1;
 		
 		if(CPUID == 0){ // Core zero waits for all other cores to reply
 		    //for(;;){
@@ -55,7 +57,7 @@ public class Noc_test extends MuviumRunnable {
 			//		}
 		
 		for(;;){
-			if(Native.rd(17) == 65534){
+			if(Native.rd(17) == mask){
 				// Rx status register is all one and all messages are received.
 				break;
 			}

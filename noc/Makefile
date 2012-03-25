@@ -7,7 +7,7 @@ S4NOCDIR=./vhdl
 LEROSDIR=../leros/vhdl
 OPTIONS=-93 -quiet
 
-ifeq ($WINDIR,)
+ifeq ($(WINDIR),)
 	WINE=wine
 	S=:
 else
@@ -15,7 +15,7 @@ else
 	S=\;
 endif
 
-all: clean base
+all: clean base sim
 
 base: leros
 	$(WINE) vlib work
@@ -51,4 +51,6 @@ sim:
 	$(WINE) vsim -do $(S4NOCDIR)/simulation/noc_sim.do tb_noc
 
 clean:
+	-rm transcript
 	-rm *.wlf
+	-rm -r work
