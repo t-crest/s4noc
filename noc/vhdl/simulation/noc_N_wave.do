@@ -21,6 +21,7 @@ add wave -noupdate -radix hexadecimal -label local_out /tb_noc/noc_test/tile_tes
 add wave -noupdate -radix hexadecimal -label router/count /tb_noc/noc_test/tile_test/nodes_m(0)/nodes_n(0)/output_node/node/router_node/count
 add wave -noupdate -radix hexadecimal -label ni/count /tb_noc/noc_test/tile_test/nodes_m(0)/nodes_n(0)/output_node/node/ni/count
 add wave -noupdate -radix hexadecimal -label out_phase /tb_noc/noc_test/tile_test/nodes_m(0)/nodes_n(0)/output_node/node/ni/out_phase
+add wave -noupdate -radix hexadecimal -label ram /tb_noc/noc_test/tile_test/nodes_m(0)/nodes_n(0)/output_node/node/ni/dp_ram/ram
 
 ##############################################
 ## Links

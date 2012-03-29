@@ -92,7 +92,7 @@ begin  -- struct
 	Cyclon2 : if TEST_BOARD = "cyclonII" generate
 	  altpll_cyc2_inst : entity work.altpll_cyc2
 		 port map (
-			areset => reset,
+		--	areset => reset,
 			inclk0 => clk,
 			c0     => processor_clk,
 			c1     => router_clk,
@@ -102,7 +102,7 @@ begin  -- struct
 	Cyclon3 : if TEST_BOARD = "cyclonIII" generate
 	  altpll_cyc2_inst : entity work.altpll_cyc2
 		 port map (
-			areset => reset,
+		--	areset => reset,
 			inclk0 => clk,
 			c0     => processor_clk,
 			c1     => router_clk,

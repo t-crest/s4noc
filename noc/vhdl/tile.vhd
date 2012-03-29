@@ -92,10 +92,10 @@ begin  -- struct
   gen_ua : if UART generate
     ua : entity work.uart
       generic map (
-        clk_freq  => 25000000,
+        clk_freq  => 100000000,
         baud_rate => 115200,
         txf_depth => 1,
-        rxf_depth => 1)
+        rxf_depth => 2)
       port map (
         clk     => processor_clk,
         reset   => reset,

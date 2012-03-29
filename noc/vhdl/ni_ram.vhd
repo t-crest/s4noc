@@ -157,7 +157,7 @@ begin  -- behav
   dp_ram : entity work.dp_ram
     generic map (
       DATA_WIDTH => tile_word'length,
-      ADDR_WIDTH => log2(TOTAL_NI_NUM)+1)
+      ADDR_WIDTH => log2(TOTAL_NI_NUM))
     port map (
       clk    => router_clk,
       addr_a => i.ram_addr,

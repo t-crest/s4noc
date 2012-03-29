@@ -17,16 +17,26 @@ public class Noc_test extends MuviumRunnable {
 		
 		if(CPUID == 0){ // Core zero waits for all other cores to reply
 		    //for(;;){
-			Native.wr(65,255);
-
+			//Native.wr(65,255);
+			//for(int i = 0; i != 10; i++){
+			//	status++;
+			//}
+			//status = Native.rd(17);
+			//Native.wr(status,255);
 			// }
 		    //  Native.wr(CPUID,255);
 		    for(;;){
-			if(Native.rd(17) == 65535){ // All cores have sent their reply
-			    Native.wr(43,255);
-			    for(;;){}
-			}
-			
+				Native.wr(65,255);
+				//if(Native.rd(254) == 1){
+				//	status = Native.rd(17);
+					//status = status + 1;
+				//	Native.wr(status,255);
+				//Native.wr(Native.rd(17),255);
+				//	if(status == 65535){ // All cores have sent their reply
+				//		Native.wr(43,255);
+						//	for(;;){}
+				//	}
+				//}
 		    }
 		}
 		
@@ -39,21 +49,21 @@ public class Noc_test extends MuviumRunnable {
 		//		for(int i = 1; i != MAXCPU; i++){ // Do not send a message to core zero.
 			// Send CPUID to core number i.
 
-		Native.wr(16,1);
-		Native.wr(16,2);
-		Native.wr(16,3);
-		Native.wr(16,4);
-		Native.wr(16,5);
-		Native.wr(16,6);
-		Native.wr(16,7);
-		Native.wr(16,8);
-		Native.wr(16,9);
-		Native.wr(16,10);
-		Native.wr(16,11);
-		Native.wr(16,12);
-		Native.wr(16,13);
-		Native.wr(16,14);
-		Native.wr(16,15);
+		Native.wr(CPUID,1);
+		Native.wr(CPUID,2);
+		Native.wr(CPUID,3);
+		Native.wr(CPUID,4);
+		Native.wr(CPUID,5);
+		Native.wr(CPUID,6);
+		Native.wr(CPUID,7);
+		Native.wr(CPUID,8);
+		Native.wr(CPUID,9);
+		Native.wr(CPUID,10);
+		Native.wr(CPUID,11);
+		Native.wr(CPUID,12);
+		Native.wr(CPUID,13);
+		Native.wr(CPUID,14);
+		Native.wr(CPUID,15);
 			//		}
 		
 		for(;;){
@@ -63,7 +73,7 @@ public class Noc_test extends MuviumRunnable {
 			}
 		}
 		
-		Native.wr(111,0); // Send a packet to core zero
+		Native.wr(CPUID,0); // Send a packet to core zero
 		
 		for(;;){
 			status++;
