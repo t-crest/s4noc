@@ -1,5 +1,5 @@
 --
---  Copyright 2012 Rasmus Bo Sørensen <rasmus@rbscloud.dk>,
+--  Copyright 2012 Rasmus Bo Soerensen <rasmus@rbscloud.dk>,
 --                 Technical University of Denmark, DTU Informatics. 
 --  All rights reserved.
 --
