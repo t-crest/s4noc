@@ -6,25 +6,25 @@
 S4NOCDIR=./vhdl
 LEROSDIR=../leros/vhdl
 OPTIONS=-93 -quiet
+QUIET=@
 
-ifeq ($(WINDIR),)
-	WINE=wine
+ifeq ($(OS),)
+	WINE=$(QUIET)wine
 	S=:
 else
-	WINE=
+	WINE=$(QUIET)
 	S=\;
 endif
 
 all: clean base sim
 
 base: leros
-	$(WINE) vlib work
+	@echo Building Base...
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/noc_types.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/serdes.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/generated/bt4x4/router_ST.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/generated/bt4x4/ni_ST.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/dp_ram.vhd
-#	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/ni.vhd
 	$(WINE) vcom -2008 -quiet $(S4NOCDIR)/ni_ram.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/outnode.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/router.vhd
@@ -33,9 +33,8 @@ base: leros
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/noc_N.vhd
 
 
-
-
 leros:
+	@echo Building Leros...
 	$(WINE) vlib work
 	$(WINE) vcom $(OPTIONS) $(LEROSDIR)/core/leros_types.vhd
 	$(WINE) vcom $(OPTIONS) $(LEROSDIR)/io/uart.vhd
@@ -47,8 +46,9 @@ leros:
 	$(WINE) vcom $(OPTIONS) $(LEROSDIR)/core/leros.vhd
 
 sim: 
+	@echo Starting simulation...
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/simulation/tb_noc.vhd
-	$(WINE) vsim -do $(S4NOCDIR)/simulation/noc_sim.do tb_noc
+	$(WINE) vsim -i -do $(S4NOCDIR)/simulation/noc_sim.do tb_noc
 
 clean:
 	-rm transcript
