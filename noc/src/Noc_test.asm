@@ -25,12 +25,23 @@ run:
 	in 253
 	out 0
 	nop
+	add 66
+	out 255
+	nop
+	nop
+die:	
+	nop
+	nop
+	branch die
+	nop
+	nop
+	
 loop:
 	in 254
 	sub 2
 	nop
 	nop
-	brz loop
+	brnz loop
 	nop
 	nop
 	in 17

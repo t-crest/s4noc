@@ -40,7 +40,8 @@ compile:
 	cd leros && make java_app -e TARGET_SRC=../noc/src JAPP=Noc_test
 
 assemble:
-	cd leros && make rom -e APP=../asm/muvium
+#	cd leros && make rom -e APP=../asm/muvium
+	cd leros && make rom -e APP=../../noc/src/Noc_test
 
 build:
 	cd leros && make rom -e APP=io

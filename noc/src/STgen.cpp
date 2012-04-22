@@ -9,6 +9,7 @@
 #include <cctype>
 #include <functional>
 #include <cassert>
+#include <stdexcept>
 #include "STprint.cpp"
 
 using namespace std;
@@ -21,8 +22,13 @@ int main(int argc,char *argv[]){
 		return EXIT_SUCCESS;
 	}
 	int numOfNodes = atoi(argv[1]);
-	string inputPath = argv[2];
-	ifstream infile(inputPath, ifstream::in);
+	const string inputPath = argv[2];
+	ifstream infile;
+	infile.open(inputPath.c_str(), ios::in);
+	if(!infile.is_open()){
+		cout << ".shd file was not opened" << endl;
+		return EXIT_FAILURE;
+	}
 	vector<STslot> ST;
 	STslot* slot = new STslot();
 	ST.push_back(*slot);
@@ -47,7 +53,7 @@ int main(int argc,char *argv[]){
 		for(unsigned i = 0; i < token.length(); i++){
 			try{
 				ST.at(startTime + i);
-			} catch (out_of_range& oor){
+			} catch (std::out_of_range& oor){
 				ST.push_back(*slot);
 			}
 			switch(token[i]){
@@ -212,8 +218,7 @@ int main(int argc,char *argv[]){
 
 void check(map<int,int> hej, int numOfNodes, int nodeNum) {
 
-	for (auto it = hej.begin(); it != hej.end(); ++it) {
-
+	for (auto it = hej.begin(); it != hej.end(); ++it) {//map<int,int>::iterator
 		auto id = it->first;
 		auto cnt = it->second;
 

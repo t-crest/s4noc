@@ -46,8 +46,8 @@ class STprint{
 public:
 
 	STprint(){
-		niST = ofstream("ni_ST.vhd");
-		routerST = ofstream("router_ST.vhd");
+		niST.open("ni_ST.vhd", ios::trunc);
+		routerST.open("router_ST.vhd", ios::trunc);
 	}
 
 	void writeHeaderRouter(int countWidth){
