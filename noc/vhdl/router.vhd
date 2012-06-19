@@ -37,8 +37,6 @@ use ieee.numeric_std.all;
 use work.noc_types.all;
 
 entity router is
-  generic (
-    stable_length : natural := 28);
   port(
     clk   : in std_logic;
     reset : in std_logic;
@@ -66,41 +64,87 @@ architecture struct of router is
   signal local_in_reg, local_in_buf : network_link_forward;
 
   signal sels, reg_sels    : select_signals;
-  signal count, next_count : unsigned(log2(stable_length) downto 0);
+  signal count, next_count : unsigned(log2(TDM_PERIOD) downto 0);
 --    signal count, next_count : unsigned(7 downto 0);
 
 begin
+-------------------------------------------------------------------------------
+-- Generating the counter for the dual clocked router
+-- The following two if generate statements should be merged to one when
+-- modelsim supports it. Dumb tool!
+-------------------------------------------------------------------------------
+  
+  dualclkcounter : if DUAL_CLOCK_NOC = true generate
+    
+    counter : process (count)
+    begin  -- process counter
+      if count(log2(TDM_PERIOD) downto 0) < (TDM_PERIOD*2)-1 then
+        next_count <= count + to_unsigned(1, 1);
+      else
+        next_count <= (others => '0');
+      end if;
+    end process counter;
 
-  counter : process (count)
-  begin  -- process counter
-    if count(log2(stable_length) downto 0) < (stable_length*2)-1 then
-      next_count <= count + to_unsigned(1, 1);
-    else
-      next_count <= (others => '0');
-    end if;
-  end process counter;
+    router_ST : entity work.router_ST
+      port map (
+        count => count(log2(TDM_PERIOD) downto 1),
+        --    count => count(5 downto 1),
+        sels  => reg_sels);
+
+  end generate dualclkcounter;
+
+-------------------------------------------------------------------------------
+-- Generating the single clock counter for the router
+-------------------------------------------------------------------------------
+
+
+  singleclkcounter : if DUAL_CLOCK_NOC = false generate
+    
+    counter : process (count)
+    begin  -- process counter
+      if count < TDM_PERIOD-1 then
+        next_count <= count + to_unsigned(1, 1);
+      else
+        next_count <= (others => '0');
+      end if;
+    end process counter;
+
+    router_ST : entity work.router_ST
+      port map (
+        count => count(log2(TDM_PERIOD)-1 downto 0),
+        --    count => count(5 downto 1),
+        sels  => reg_sels);
+
+  end generate singleclkcounter;
+
+-------------------------------------------------------------------------------
+
 
   next_counter : process (clk, reset)
   begin  -- process next_counter
-    if reset = '1' then                 -- asynchronous reset (active high)
-      count <= (others => '0');
-    elsif rising_edge(clk) then         -- rising clock edge
-      count <= next_count;
+    if rising_edge(clk) then            -- rising clock edge
+      if reset = '1' then
+        count <= (others => '0');
+      else
+        count <= next_count;
+      end if;
     end if;
   end process next_counter;
 
-  router_ST : entity work.router_ST
-    port map (
-      count => count(log2(stable_length) downto 1),
-  --    count => count(5 downto 1),
-      sels  => reg_sels);
+
+-------------------------------------------------------------------------------
+-- Multiplexing logic
+-------------------------------------------------------------------------------
+
 
   ST_reg : process (clk, reset)
   begin  -- process ST_reg
-    if reset = '1' then                 -- asynchronous reset (active high)
-      sels <= (others => 0);
-    elsif rising_edge(clk) then         -- rising clock edge
-      sels <= reg_sels;
+    if rising_edge(clk) then            -- rising clock edge
+      if reset = '1' then
+        sels <= (others => 0);
+      else
+        sels <= reg_sels;
+      end if;
     end if;
   end process ST_reg;
 
@@ -156,23 +200,25 @@ begin
 
   input_reg : process (clk, reset)
   begin  -- process input_reg
-    if reset = '1' then                 -- asynchronous reset (active high)
-      north_in_reg.data       <= (others => '0');
-      north_in_reg.data_valid <= '0';
-      south_in_reg.data       <= (others => '0');
-      south_in_reg.data_valid <= '0';
-      east_in_reg.data        <= (others => '0');
-      east_in_reg.data_valid  <= '0';
-      west_in_reg.data        <= (others => '0');
-      west_in_reg.data_valid  <= '0';
-      local_in_reg.data       <= (others => '0');
-      local_in_reg.data_valid <= '0';
-    elsif rising_edge(clk) then         -- rising clock edge
-      north_in_reg <= north_in;
-      south_in_reg <= south_in;
-      east_in_reg  <= east_in;
-      west_in_reg  <= west_in;
-      local_in_reg <= local_in;
+    if rising_edge(clk) then            -- rising clock edge
+      if reset = '1' then               -- asynchronous reset (active high)
+        north_in_reg.data       <= (others => '0');
+        north_in_reg.data_valid <= '0';
+        south_in_reg.data       <= (others => '0');
+        south_in_reg.data_valid <= '0';
+        east_in_reg.data        <= (others => '0');
+        east_in_reg.data_valid  <= '0';
+        west_in_reg.data        <= (others => '0');
+        west_in_reg.data_valid  <= '0';
+        local_in_reg.data       <= (others => '0');
+        local_in_reg.data_valid <= '0';
+      else
+        north_in_reg <= north_in;
+        south_in_reg <= south_in;
+        east_in_reg  <= east_in;
+        west_in_reg  <= west_in;
+        local_in_reg <= local_in;
+      end if;
     end if;
   end process input_reg;
 

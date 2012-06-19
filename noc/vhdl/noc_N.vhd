@@ -30,32 +30,66 @@
 --
 --
 
+-------------------------------------------------------------------------------
+-- For the time when tools support VHDL-2008
+-------------------------------------------------------------------------------
+--library ieee;
+--use ieee.std_logic_1164.all;
+--
+--package noc_types is new work.generic_noc_types
+--                       generic map (
+--                         ADDR_WIDTH     => 8,
+--                         WORD_WIDTH     => 16,
+--                         PHIT_WIDTH     => 16,
+--                         TILE_CLK_FREQ  => 100000000,
+--                         TOTAL_NI_NUM   => 16,
+--                         TDM_PERIOD     => 19,
+--                         DUAL_CLOCK_NOC => false);
+--
+                     
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
 use work.noc_types.all;
 
 entity noc is
-  -- NxN nodes
-  generic (N        : natural := 4;
-           WIDTH    : natural := 16;
-           PERIOD_P : natural := 19
-           );
+                                        -- NxN nodes
   port(
-    processor_clk : in std_logic;
-    router_clk : in std_logic;
-    reset : in std_logic;
-
-    ser_txd : out std_logic;
-    ser_rxd : in  std_logic
-    --data_in  : in  std_logic_vector(WIDTH-1 downto 0);
-    --data_out : out std_logic_vector(WIDTH-1 downto 0)
-
+    processor_clk : in  std_logic;
+    router_clk    : in  std_logic;
+    reset         : in  std_logic;
+    ser_txd       : out std_logic;
+    ser_rxd       : in  std_logic
     );
 end entity noc;
 
 architecture struct of noc is
+
+  constant N : natural := sqrt(TOTAL_NI_NUM);
+
+  component tile
+    generic (
+      UART           : boolean;
+      NI_NUM         : natural);
+    port (
+      router_clk    : in std_logic;     -- processor_clk
+      processor_clk : in std_logic;
+      reset         : in std_logic;
+
+      north_in : in network_link_forward;
+      south_in : in network_link_forward;
+      east_in  : in network_link_forward;
+      west_in  : in network_link_forward;
+
+      north_out : out network_link_forward;
+      south_out : out network_link_forward;
+      east_out  : out network_link_forward;
+      west_out  : out network_link_forward;
+
+      ser_txd : out std_logic;
+      ser_rxd : in  std_logic);
+  end component;
 
   type link_n is array(0 to (N - 1)) of network_link_forward;
   type link_m is array(0 to (N - 1)) of link_n;
@@ -72,16 +106,14 @@ architecture struct of noc is
 --  signal open_vector : network_link_forward;
 
 begin
-  -- generate connections
+                                        -- generate connections
   nodes_m : for i in N-1 downto 0 generate
     nodes_n : for j in N-1 downto 0 generate
       output_node : if i = 0 and j = 0 generate
-        node : entity work.tile
+        node : tile
           generic map (
-            UART          => true,
-            TOTAL_NI_NUM  => N*N,
-            NI_NUM        => i*N+j,
-            stable_length => PERIOD_P)
+            UART           => true,
+            NI_NUM         => i*N+j)
           port map (router_clk => router_clk, processor_clk => processor_clk,
                     reset      => reset,
                     north_in   => north_in(i)(j),
@@ -98,12 +130,10 @@ begin
       end generate output_node;
 
       normal_node : if i /= 0 or j /= 0 generate
-        node : entity work.tile
+        node : tile
           generic map (
-            UART          => false,
-            TOTAL_NI_NUM  => N*N,
-            NI_NUM        => i*N+j,
-            stable_length => PERIOD_P)
+            UART           => false,
+            NI_NUM         => i*N+j)
           port map (router_clk => router_clk, processor_clk => processor_clk,
                     reset      => reset,
                     north_in   => north_in(i)(j),
@@ -121,11 +151,11 @@ begin
     end generate nodes_n;
   end generate nodes_m;
 
-  ----outinterface
-  --north_in(0)(0) <= data_in;
-  --data_out       <= north_out(0)(0);
+                                        ----outinterface
+                                        --north_in(0)(0) <= data_in;
+                                        --data_out       <= north_out(0)(0);
 
-  --interconnections    
+                                        --interconnections    
 --  open_vector.data <= (others => '0');
   links_m : for i in 0 to N-1 generate
     links_n : for j in 0 to N-1 generate

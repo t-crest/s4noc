@@ -39,10 +39,8 @@ use work.noc_types.all;
 
 entity tile is
   generic (
-    UART          : boolean := false;
-    TOTAL_NI_NUM  : natural;
-    NI_NUM        : natural;
-    stable_length : natural);
+    UART   : boolean := false;
+    NI_NUM : natural);
   port (
     router_clk    : in std_logic;
     processor_clk : in std_logic;
@@ -92,7 +90,7 @@ begin  -- struct
   gen_ua : if UART generate
     ua : entity work.uart
       generic map (
-        clk_freq  => 100000000,
+        clk_freq  => TILE_CLK_FREQ,
         baud_rate => 115200,
         txf_depth => 1,
         rxf_depth => 2)
@@ -153,29 +151,41 @@ begin  -- struct
   end generate not_gen_ua;
 
 
+  dualclkni : if DUAL_CLOCK_NOC = true generate
+    ni : entity work.ni_ram
+      generic map (
+        NI_NUM => NI_NUM)
+      port map (
+        router_clk    => router_clk,
+        processor_clk => processor_clk,
+        reset         => reset,
+        tile_tx_f     => local_in,
+        -- tile_tx_b     => tile_tx_b,
+        tile_rx_f     => local_out,
+        --  tile_rx_b     => open,
+        processor_out => processor_out_mux,
+        processor_in  => processor_in_mux);
+
+  end generate dualclkni;
+
+  singleclkni : if DUAL_CLOCK_NOC = false generate
+    ni : entity work.ni_ram_single
+      generic map (
+        NI_NUM => NI_NUM)
+      port map (
+        clk           => processor_clk,
+        reset         => reset,
+        tile_tx_f     => local_in,
+        -- tile_tx_b     => tile_tx_b,
+        tile_rx_f     => local_out,
+        --  tile_rx_b     => open,
+        processor_out => processor_out_mux,
+        processor_in  => processor_in_mux);
+
+  end generate singleclkni;
 
 
-
-  ni : entity work.ni_ram
-    generic map (
-      TOTAL_NI_NUM  => TOTAL_NI_NUM,
-      NI_NUM        => NI_NUM,
-      stable_length => stable_length)
-    port map (
-      router_clk    => router_clk,
-      processor_clk => processor_clk,
-      reset         => reset,
-      tile_tx_f     => local_in,
-      -- tile_tx_b     => tile_tx_b,
-      tile_rx_f     => local_out,
-      --  tile_rx_b     => open,
-      processor_out => processor_out_mux,
-      processor_in  => processor_in_mux);
-
-  
   router_node : entity work.router
-    generic map (
-      stable_length => stable_length)
     port map (
       clk       => router_clk,
       reset     => reset,

@@ -81,7 +81,7 @@ begin  -- struct
 	process(processor_clk)
 	begin
 		if rising_edge(processor_clk) then
-			if (res_cnt/="111") then
+			if (res_cnt/="111") and reset='0' then
 				res_cnt <= res_cnt+1;
 			end if;
 			int_res <= not res_cnt(0) or not res_cnt(1) or not res_cnt(2);
@@ -108,6 +108,8 @@ begin  -- struct
 			c1     => router_clk,
 			locked => locked_sig);
 	end generate Cyclon3;
+	
+	
 
   NxN: if TEST_TYPE = "NxN" generate
     tile_top : entity work.noc

@@ -41,13 +41,11 @@ use ieee.std_logic_1164.all;
 use work.leros_types.all;
 use work.noc_types.all;
 
-entity ni_ram is
+entity ni_ram_single is
   generic (
-    NI_NUM        : natural);           -- The slot table length should be
-  -- modified to fit the NoC.
+    NI_NUM : natural);
   port (
-    router_clk    : in  std_logic;
-    processor_clk : in  std_logic;
+    clk           : in  std_logic;
     reset         : in  std_logic;
     -- Signals to/from the router
     tile_tx_f     : out network_link_forward;
@@ -56,33 +54,28 @@ entity ni_ram is
     processor_out : in  io_out_type;
     processor_in  : out io_in_type);
 
-end ni_ram;
+end ni_ram_single;
 
-architecture behav of ni_ram is
+architecture behav of ni_ram_single is
   signal count : unsigned(log2(TDM_PERIOD)-1 downto 0);  -- Count to
-                                                            -- describe the
-                                                            -- slot number.
+                                                         -- describe the
+                                                         -- slot number.
 
   signal out_tx_status, out_rx_status : status_word;
   signal in_tx_status, in_rx_status   : status_word;
 
   signal tx_status_reg, next_tx_status_reg : status_word;
   signal rx_status_reg, next_rx_status_reg : status_word;
-  signal x_out_rx_status, x_out_tx_status  : status_word;
-  signal x_in_rx_status, x_in_tx_status    : status_word;
 
   signal tx_slot_dest, rx_slot_src : status_int;
   signal dest_addr, src_addr       : status_int;
 
-  signal tx_out_reg, tx_out_mux : tile_word;
-  signal tx_slot_status         : std_logic;
+  signal tx_slot_status, rx_slot_status : std_logic;
 
-  signal out_phase : std_logic;
+  signal processor_addr : natural;
+  signal tx_data_valid  : std_logic;
 
-  type   shift_reg is array (3 downto 0) of std_logic;
-  signal reg_tx_data_valid : shift_reg;
-
-  signal i, o : ram_side;
+  signal rd_data : tile_word;
   
 begin  -- behav
 
@@ -90,9 +83,9 @@ begin  -- behav
 -- Counter for keeping track of the timeslot number
 -------------------------------------------------------------------------------
   
-  counter : process (processor_clk, reset)
+  counter : process (clk)
   begin  -- process count
-    if rising_edge(processor_clk) then  -- rising clock edge
+    if rising_edge(clk) then            -- rising clock edge
       if reset = '1' then
         count <= (others => '0');
       else
@@ -117,9 +110,9 @@ begin  -- behav
       dest  => dest_addr,
       src   => src_addr);
 
-  slot_regs : process (processor_clk, reset)
+  slot_regs : process (clk)
   begin  -- process slot_regs
-    if rising_edge(processor_clk) then  -- rising clock edge
+    if rising_edge(clk) then            -- rising clock edge
       if reset = '1' then
         tx_slot_dest   <= 0;
         rx_slot_src    <= 0;
@@ -128,107 +121,101 @@ begin  -- behav
         tx_slot_dest   <= dest_addr;
         tx_slot_status <= tx_status_reg(dest_addr);
         rx_slot_src    <= src_addr;
+        rx_slot_status <= rx_status_reg(src_addr);
       end if;
     end if;
   end process slot_regs;
 
 -------------------------------------------------------------------------------
 -- Serialize/deserialize or atomize/deatomize
+-- Not needed for single clock domain
 -------------------------------------------------------------------------------
 
-  serdes : entity work.serdes
-    generic map (
-      tile_width => WORD_WIDTH,
-      ratio_clk  => NETWORK_PHITS_PR_FLIT)
-    port map (
-      fast_clk     => router_clk,
-      slow_clk     => processor_clk,
-      reset        => reset,
-      out_phase    => out_phase,
-      serial_in    => tile_rx_f.data,
-      parallel_in  => tx_out_reg,
-      serial_out   => tile_tx_f.data,
-      parallel_out => i.rx);
+  --serdes : entity work.serdes
+  --  generic map (
+  --    tile_width => WORD_WIDTH,
+  --    ratio_clk  => NETWORK_PHITS_PR_FLIT)
+  --  port map (
+  --    fast_clk     => router_clk,
+  --    slow_clk     => processor_clk,
+  --    reset        => reset,
+  --    out_phase    => out_phase,
+  --    serial_in    => tile_rx_f.data,
+  --    parallel_in  => tx_out_reg,
+  --    serial_out   => tile_tx_f.data,
+  --    parallel_out => i.rx);
 
 
 -------------------------------------------------------------------------------
--- Dual portet block ram.
+-- TX and RX buffer
 -------------------------------------------------------------------------------
+  processor_addr <= to_integer(unsigned(processor_out.addr));
 
-  dp_ram : entity work.dp_ram
+  TX_ram : entity work.dp_ram
     generic map (
       DATA_WIDTH => WORD_WIDTH,
-      ADDR_WIDTH => log2(TOTAL_NI_NUM))
+      ADDR_WIDTH => log2(TOTAL_NI_NUM)-1)
     port map (
-      clk    => router_clk,
-      addr_a => i.ram_addr,
-      addr_b => o.ram_addr,
-      data_a => i.tx,
-      data_b => i.rx,
+      clk    => clk,
+      addr_a => processor_addr,
+      addr_b => tx_slot_dest,
+      data_a => processor_out.wrdata,
+      data_b => (others => '0'),
+      we_a   => processor_out.wr,
+      we_b   => '0',
+      q_a    => open,
+      q_b    => tile_tx_f.data);
 
-      we_a => i.ram_wr and i.ram_en,
-      we_b => o.ram_wr and o.ram_en,
-      q_a  => o.rx,
-      q_b  => o.tx);
+  RX_ram : entity work.dp_ram
+    generic map (
+      DATA_WIDTH => WORD_WIDTH,
+      ADDR_WIDTH => log2(TOTAL_NI_NUM)-1)
+    port map (
+      clk    => clk,
+      addr_a => processor_addr,
+      addr_b => rx_slot_src,
+      data_a => (others => '0'),
+      data_b => tile_rx_f.data,
+      we_a   => '0',
+      we_b   => tile_rx_f.data_valid,
+      q_a    => rd_data,
+      q_b    => open);
+
 
 -------------------------------------------------------------------------------
 --  Router side of the block ram
 -------------------------------------------------------------------------------
 
-  out_ch : process (out_phase, tx_slot_dest, rx_slot_src , tx_status_reg, rx_status_reg, tile_rx_f, reg_tx_data_valid, tx_slot_status, o)
-  begin  -- process tx_ch
-    o.ram_en   <= '0';
-    o.ram_addr <= 0;
-    o.ram_wr   <= '0';
-    o.tx_en    <= '0';
-    o.rx_en    <= '0';
-
-    out_tx_status        <= (others => '0');
-    out_rx_status        <= (others => '0');
-    reg_tx_data_valid(1) <= reg_tx_data_valid(2);
-    reg_tx_data_valid(3) <= '0';
--------------------------------------------------------------------------------
---  Reading transmit word to send in this timeslot
-    if out_phase = '1' and tx_slot_status = '1' then
-      o.ram_addr                  <= tx_slot_dest;
-      o.ram_en                    <= '1';
-      o.tx_en                     <= '1';
-      o.ram_wr                    <= '0';
-      reg_tx_data_valid(1)        <= '1';
-      reg_tx_data_valid(3)        <= '1';
+  tx_router : process (tx_slot_dest, tx_slot_status)
+  begin  -- process tx_router
+    out_tx_status <= (others => '0');
+    tx_data_valid <= '0';
+    if tx_slot_status = '1' then
+      tx_data_valid               <= '1';
       out_tx_status(tx_slot_dest) <= '1';
--------------------------------------------------------------------------------
---  Writing the received word in this timeslot to the block ram
-    elsif out_phase = '0' and rx_status_reg(rx_slot_src) = '0' then
-      o.ram_addr                 <= rx_slot_src + TOTAL_NI_NUM;
-      o.ram_en                   <= tile_rx_f.data_valid;
-      o.rx_en                    <= tile_rx_f.data_valid;
-      o.ram_wr                   <= '1';
+    end if;
+  end process tx_router;
+
+
+  rx_router : process (rx_slot_src, rx_slot_status, tile_rx_f.data_valid)
+  begin  -- process rx_router
+    out_rx_status <= (others => '0');
+    if rx_slot_status = '1' then
       out_rx_status(rx_slot_src) <= tile_rx_f.data_valid;
     end if;
+  end process rx_router;
 
-    if reg_tx_data_valid(0) = '1' then
-      tx_out_mux <= o.tx;
-    else
-      tx_out_mux <= (others => '0');
-    end if;
-  end process out_ch;
+-------------------------------------------------------------------------------
+--  Writing the received word in this timeslot to the block ram
 
-  out_ch_regs : process (router_clk, reset)
+
+  out_ch_regs : process (clk)
   begin  -- process out_ch_regs
-    if rising_edge(router_clk) then     -- rising clock edge
+    if rising_edge(clk) then            -- rising clock edge
       if reset = '1' then
         tile_tx_f.data_valid <= '0';
-        reg_tx_data_valid(0) <= '0';
-        reg_tx_data_valid(2) <= '0';
-        tx_out_reg           <= (others => '0');
-        out_phase            <= '1';
       else
-        out_phase            <= not out_phase;
-        tx_out_reg           <= tx_out_mux;
-        tile_tx_f.data_valid <= reg_tx_data_valid(0);
-        reg_tx_data_valid(0) <= reg_tx_data_valid(1);
-        reg_tx_data_valid(2) <= reg_tx_data_valid(3);
+        tile_tx_f.data_valid <= tx_data_valid;
       end if;
     end if;
   end process out_ch_regs;
@@ -237,16 +224,9 @@ begin  -- behav
 -- Processor side of the block ram
 -------------------------------------------------------------------------------
 
-  in_ch : process (out_phase, processor_out, tx_status_reg, rx_status_reg, o)
-    variable processor_addr : integer;
+  in_ch : process (processor_out, tx_status_reg, rx_status_reg, processor_addr, rd_data)
   begin  -- process in_ch
-    processor_addr := to_integer(unsigned(processor_out.addr));
 
-    i.ram_en            <= '0';
-    i.tx_en             <= '0';
-    i.rx_en             <= '0';
-    i.ram_addr          <= 0;
-    i.ram_wr            <= '0';
     in_tx_status        <= (others => '0');
     in_rx_status        <= (others => '0');
     processor_in.rddata <= (others => '0');
@@ -254,40 +234,27 @@ begin  -- behav
 -------------------------------------------------------------------------------
     --  Reading from the rx channel
     if processor_out.rd = '1' and processor_addr < TOTAL_NI_NUM then
-      i.ram_addr <= processor_addr + TOTAL_NI_NUM;
-      if out_phase = '1' then
-        i.ram_wr                     <= '0';
-        i.ram_en                     <= '1';
-        i.rx_en                      <= '1';
-        in_rx_status(processor_addr) <= '1';
-      end if;
-      processor_in.rddata <= o.rx;
+      in_rx_status(processor_addr) <= '1';
+      processor_in.rddata          <= rd_data;
 -------------------------------------------------------------------------------
       -- Returning the tx_status register
     elsif processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM
       and processor_addr < TOTAL_NI_NUM+TOTAL_NI_NUM/WORD_WIDTH then
-      processor_in.rddata <= tx_status_reg((processor_addr-TOTAL_NI_NUM+1)*WORD_WIDTH-1 downto (processor_addr-TOTAL_NI_NUM)*WORD_WIDTH);  -- TODO fix: return the correct
+--      processor_in.rddata <= tx_status_reg((processor_addr-TOTAL_NI_NUM+1)*WORD_WIDTH-1 downto (processor_addr-TOTAL_NI_NUM)*WORD_WIDTH);  -- TODO fix: return the correct
+      processor_in.rddata <= tx_status_reg(TOTAL_NI_NUM-1 downto 0);
 -------------------------------------------------------------------------------
       -- Returning the rx status register
     elsif processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM+TOTAL_NI_NUM/WORD_WIDTH
       and processor_addr < TOTAL_NI_NUM+2*TOTAL_NI_NUM/WORD_WIDTH then
 
-      processor_in.rddata <= rx_status_reg((processor_addr-TOTAL_NI_NUM)*WORD_WIDTH-1 downto (processor_addr-TOTAL_NI_NUM-1)*WORD_WIDTH);
+--      processor_in.rddata <= rx_status_reg((processor_addr-TOTAL_NI_NUM)*WORD_WIDTH-1 downto (processor_addr-TOTAL_NI_NUM-1)*WORD_WIDTH);
+      processor_in.rddata <= rx_status_reg(TOTAL_NI_NUM-1 downto 0);
     end if;
 -------------------------------------------------------------------------------
     -- Writing to the tx channel
-    if out_phase = '0' and processor_out.wr = '1' and processor_addr < TOTAL_NI_NUM
+    if processor_out.wr = '1' and processor_addr < TOTAL_NI_NUM
       and tx_status_reg(processor_addr) = '0' then
-
-      i.ram_addr <= processor_addr;
-      i.ram_wr   <= '1';
-      i.ram_en   <= '1';
-      i.tx_en    <= '1';
-      i.tx       <= processor_out.wrdata;
-
       in_tx_status(processor_addr) <= '1';
-    else
-      i.tx <= (others => '0');
     end if;
     
   end process in_ch;
@@ -296,25 +263,25 @@ begin  -- behav
 -- Control logic & update of the status register
 -------------------------------------------------------------------------------
 
-  control : process (tx_status_reg, rx_status_reg, x_in_tx_status, x_out_tx_status, x_in_rx_status, x_out_rx_status)
+  control : process (tx_status_reg, rx_status_reg, in_tx_status, out_tx_status, in_rx_status, out_rx_status)
   begin  -- process control
     next_rx_status_reg <= (others => '0');
     next_tx_status_reg <= (others => '0');
     for i in 0 to TOTAL_NI_NUM-1 loop
       -- Setting the next tx status register
-      if x_in_tx_status(i) = '0' and x_out_tx_status(i) = '0' then
+      if in_tx_status(i) = '0' and out_tx_status(i) = '0' then
         next_tx_status_reg(i) <= tx_status_reg(i);
-      elsif x_in_tx_status(i) = '1' then
+      elsif in_tx_status(i) = '1' then
         next_tx_status_reg(i) <= '1';
-      elsif x_out_tx_status(i) = '1' then
+      elsif out_tx_status(i) = '1' then
         next_tx_status_reg(i) <= '0';
       end if;
       -- Setting the next rx status register
-      if x_in_rx_status(i) = '0' and x_out_rx_status(i) = '0' then
+      if in_rx_status(i) = '0' and out_rx_status(i) = '0' then
         next_rx_status_reg(i) <= rx_status_reg(i);
-      elsif x_out_rx_status(i) = '1' then
+      elsif out_rx_status(i) = '1' then
         next_rx_status_reg(i) <= '1';
-      elsif x_in_rx_status(i) = '1' then
+      elsif in_rx_status(i) = '1' then
         next_rx_status_reg(i) <= '0';
       end if;
       
@@ -325,9 +292,9 @@ begin  -- behav
     
   end process control;
 
-  status_registers : process (processor_clk, reset)
+  status_registers : process (clk)
   begin  -- process transiton_registers
-    if rising_edge(processor_clk) then  -- rising clock edge
+    if rising_edge(clk) then            -- rising clock edge
       if reset = '1' then
         tx_status_reg <= (others => '0');
         rx_status_reg <= (others => '0');
@@ -337,40 +304,5 @@ begin  -- behav
       end if;
     end if;
   end process status_registers;
-
-  transition_register : process (router_clk, reset)
-  begin  -- process status_register
-    if rising_edge(router_clk) then     -- rising clock edge
-      if reset = '1' then
-        x_out_tx_status <= (others => '0');
-        x_out_rx_status <= (others => '0');
-        x_in_tx_status  <= (others => '0');
-        x_in_rx_status  <= (others => '0');
-      else
-        if o.tx_en = '1' then           -- Enable on updating the status update
-                                        -- register
-          x_out_tx_status <= out_tx_status;
-        elsif processor_clk = '1' then  -- reseting the status update register
-          x_out_tx_status <= (others => '0');
-        end if;
-        if i.tx_en = '1' then           -- Updating the status update register
-          x_in_tx_status <= in_tx_status;
-        elsif processor_clk = '1' then  -- Reseting the register
-          x_in_tx_status <= (others => '0');
-        end if;
-        if o.rx_en = '1' then           -- Updating the status update register
-          x_out_rx_status <= out_rx_status;
-        elsif processor_clk = '1' then  -- Reseting the status update register
-          x_out_rx_status <= (others => '0');
-        end if;
-        if i.rx_en = '1' then           -- Updating the status update register
-          x_in_rx_status <= in_rx_status;
-        elsif processor_clk = '1' then  -- Reseting the status update register
-          x_in_rx_status <= (others => '0');
-        end if;
-        
-      end if;
-    end if;
-  end process transition_register;
 
 end behav;
