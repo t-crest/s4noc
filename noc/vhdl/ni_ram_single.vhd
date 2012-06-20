@@ -67,15 +67,17 @@ architecture behav of ni_ram_single is
   signal tx_status_reg, next_tx_status_reg : status_word;
   signal rx_status_reg, next_rx_status_reg : status_word;
 
-  signal tx_slot_dest, rx_slot_src : status_int;
-  signal dest_addr, src_addr       : status_int;
+  signal tx_slot_dest, rx_slot_src     : status_int;
+  signal x_rx_slot_src, x_tx_slot_dest : status_int;
+  signal dest_addr, src_addr           : status_int;
 
   signal tx_slot_status, rx_slot_status : std_logic;
 
   signal processor_addr : natural;
-  signal tx_data_valid  : std_logic;
+  -- signal tx_data_valid  : std_logic;
 
   signal rd_data : tile_word;
+  signal tx_data : tile_word;
   
 begin  -- behav
 
@@ -115,13 +117,18 @@ begin  -- behav
     if rising_edge(clk) then            -- rising clock edge
       if reset = '1' then
         tx_slot_dest   <= 0;
+        x_tx_slot_dest <= 0;
         rx_slot_src    <= 0;
+        x_rx_slot_src  <= 0;
         tx_slot_status <= '0';
+        rx_slot_status <= '0';
       else
-        tx_slot_dest   <= dest_addr;
-        tx_slot_status <= tx_status_reg(dest_addr);
-        rx_slot_src    <= src_addr;
-        rx_slot_status <= rx_status_reg(src_addr);
+        tx_slot_dest   <= x_tx_slot_dest;
+        x_tx_slot_dest <= dest_addr;
+        tx_slot_status <= tx_status_reg(tx_slot_dest);
+        rx_slot_src    <= x_rx_slot_src;
+        x_rx_slot_src  <= src_addr;
+        rx_slot_status <= rx_status_reg(rx_slot_src);
       end if;
     end if;
   end process slot_regs;
@@ -149,7 +156,7 @@ begin  -- behav
 -------------------------------------------------------------------------------
 -- TX and RX buffer
 -------------------------------------------------------------------------------
-  processor_addr <= to_integer(unsigned(processor_out.addr));
+  processor_addr <= to_integer(unsigned(processor_out.addr(3 downto 0)));
 
   TX_ram : entity work.dp_ram
     generic map (
@@ -164,7 +171,7 @@ begin  -- behav
       we_a   => processor_out.wr,
       we_b   => '0',
       q_a    => open,
-      q_b    => tile_tx_f.data);
+      q_b    => tx_data);
 
   RX_ram : entity work.dp_ram
     generic map (
@@ -186,39 +193,46 @@ begin  -- behav
 --  Router side of the block ram
 -------------------------------------------------------------------------------
 
-  tx_router : process (tx_slot_dest, tx_slot_status)
+  tx_router : process (tx_slot_dest, tx_slot_status, tx_data)
   begin  -- process tx_router
-    out_tx_status <= (others => '0');
-    tx_data_valid <= '0';
+    out_tx_status               <= (others => '0');
+--    tx_data_valid <= '0';
+    --if tx_slot_status = '1' then
+    --  tx_data_valid               <= '1';
+    --  out_tx_status(tx_slot_dest) <= '1';
+    --end if;
+    out_tx_status(tx_slot_dest) <= tx_slot_status;
+    tile_tx_f.data_valid        <= tx_slot_status;
     if tx_slot_status = '1' then
-      tx_data_valid               <= '1';
-      out_tx_status(tx_slot_dest) <= '1';
+      tile_tx_f.data <= tx_data;
+    else
+      tile_tx_f.data <= (others => '0');
     end if;
   end process tx_router;
 
 
   rx_router : process (rx_slot_src, rx_slot_status, tile_rx_f.data_valid)
   begin  -- process rx_router
-    out_rx_status <= (others => '0');
-    if rx_slot_status = '1' then
-      out_rx_status(rx_slot_src) <= tile_rx_f.data_valid;
-    end if;
+    out_rx_status              <= (others => '0');
+--    if rx_slot_status = '0' then
+    out_rx_status(rx_slot_src) <= tile_rx_f.data_valid;
+--    end if;
   end process rx_router;
 
 -------------------------------------------------------------------------------
 --  Writing the received word in this timeslot to the block ram
 
 
-  out_ch_regs : process (clk)
-  begin  -- process out_ch_regs
-    if rising_edge(clk) then            -- rising clock edge
-      if reset = '1' then
-        tile_tx_f.data_valid <= '0';
-      else
-        tile_tx_f.data_valid <= tx_data_valid;
-      end if;
-    end if;
-  end process out_ch_regs;
+  --out_ch_regs : process (clk)
+  --begin  -- process out_ch_regs
+  --  if rising_edge(clk) then            -- rising clock edge
+  --    if reset = '1' then
+  --      tile_tx_f.data_valid <= '0';
+  --    else
+  --      tile_tx_f.data_valid <= tx_data_valid;
+  --    end if;
+  --  end if;
+  --end process out_ch_regs;
 
 -------------------------------------------------------------------------------
 -- Processor side of the block ram

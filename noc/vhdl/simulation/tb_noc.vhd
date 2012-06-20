@@ -58,10 +58,6 @@ begin  -- behav
 
   noc_test : if TEST_TYPE = "NOC" generate
     tile_test : entity work.noc
-      generic map (
-        N        => 4,
-        WIDTH    => 16,
-        PERIOD_P => 19)
       port map (
         processor_clk => processor_clk,
         router_clk    => router_clk,
@@ -83,17 +79,29 @@ begin  -- behav
 
   ser_rxd <= '0';
 
-  router_clock_gen : process is
-  begin  -- process clock_gen
-    router_clk <= '0' after router_clk_period/2, '1' after router_clk_period;
-    wait for router_clk_period;
-  end process router_clock_gen;
+  dual_clk : if DUAL_CLOCK_NOC = true generate
+    router_clock_gen : process is
+    begin  -- process clock_gen
+      router_clk <= '0' after router_clk_period/2, '1' after router_clk_period;
+      wait for router_clk_period;
+    end process router_clock_gen;
 
-  processor_clock_gen : process is
-  begin  -- process tile_clock_gen
-    processor_clk <= '0' after router_clk_period, '1' after router_clk_period*2;
-    wait for router_clk_period*2;
-  end process processor_clock_gen;
+    processor_clock_gen : process is
+    begin  -- process tile_clock_gen
+      processor_clk <= '0' after router_clk_period, '1' after router_clk_period*2;
+      wait for router_clk_period*2;
+    end process processor_clock_gen;
+  end generate dual_clk;
+
+  single_clk : if DUAL_CLOCK_NOC = false generate
+    router_clock_gen : process is
+    begin  -- process clock_gen
+      router_clk <= '0' after router_clk_period/2, '1' after router_clk_period;
+      processor_clk <= '0' after router_clk_period/2, '1' after router_clk_period;
+      wait for router_clk_period;
+    end process router_clock_gen;
+  end generate single_clk;
+
 
   test : process is
   begin  -- process test
@@ -104,7 +112,7 @@ begin  -- behav
   sync : process (processor_clk)
   begin  -- process test
     if rising_edge(processor_clk) then
-       sync_reset <= reset;
+      sync_reset <= reset;
       
     end if;
   end process sync;

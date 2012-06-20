@@ -57,11 +57,11 @@ end entity router;
 
 
 architecture struct of router is
-  signal north_in_reg, north_in_buf : network_link_forward;
-  signal south_in_reg, south_in_buf : network_link_forward;
-  signal east_in_reg, east_in_buf   : network_link_forward;
-  signal west_in_reg, west_in_buf   : network_link_forward;
-  signal local_in_reg, local_in_buf : network_link_forward;
+  signal north_in_reg : network_link_forward;
+  signal south_in_reg : network_link_forward;
+  signal east_in_reg  : network_link_forward;
+  signal west_in_reg  : network_link_forward;
+  signal local_in_reg : network_link_forward;
 
   signal sels, reg_sels    : select_signals;
   signal count, next_count : unsigned(log2(TDM_PERIOD) downto 0);
@@ -186,41 +186,42 @@ begin
              reg_out => local_out);
 
 
-
-  --north_in_buf.data       <= not (not north_in.data);
-  --north_in_buf.data_valid <= not (not north_in.data_valid);
-  --south_in_buf.data       <= not (not south_in.data);
-  --south_in_buf.data_valid <= not (not south_in.data_valid);
-  --east_in_buf.data        <= not (not east_in.data);
-  --east_in_buf.data_valid  <= not (not east_in.data_valid);
-  --west_in_buf.data        <= not (not west_in.data);
-  --west_in_buf.data_valid  <= not (not west_in.data_valid);
-  --local_in_buf.data       <= not (not local_in.data);
-  --local_in_buf.data_valid <= not (not local_in.data_valid);
-
-  input_reg : process (clk, reset)
-  begin  -- process input_reg
-    if rising_edge(clk) then            -- rising clock edge
-      if reset = '1' then               -- asynchronous reset (active high)
-        north_in_reg.data       <= (others => '0');
-        north_in_reg.data_valid <= '0';
-        south_in_reg.data       <= (others => '0');
-        south_in_reg.data_valid <= '0';
-        east_in_reg.data        <= (others => '0');
-        east_in_reg.data_valid  <= '0';
-        west_in_reg.data        <= (others => '0');
-        west_in_reg.data_valid  <= '0';
-        local_in_reg.data       <= (others => '0');
-        local_in_reg.data_valid <= '0';
-      else
-        north_in_reg <= north_in;
-        south_in_reg <= south_in;
-        east_in_reg  <= east_in;
-        west_in_reg  <= west_in;
-        local_in_reg <= local_in;
+  extra_reg : if DUAL_CLOCK_NOC = true generate
+    
+    
+    input_reg : process (clk, reset)
+    begin  -- process input_reg
+      if rising_edge(clk) then          -- rising clock edge
+        if reset = '1' then             -- asynchronous reset (active high)
+          north_in_reg.data       <= (others => '0');
+          north_in_reg.data_valid <= '0';
+          south_in_reg.data       <= (others => '0');
+          south_in_reg.data_valid <= '0';
+          east_in_reg.data        <= (others => '0');
+          east_in_reg.data_valid  <= '0';
+          west_in_reg.data        <= (others => '0');
+          west_in_reg.data_valid  <= '0';
+          local_in_reg.data       <= (others => '0');
+          local_in_reg.data_valid <= '0';
+        else
+          north_in_reg <= north_in;
+          south_in_reg <= south_in;
+          east_in_reg  <= east_in;
+          west_in_reg  <= west_in;
+          local_in_reg <= local_in;
+        end if;
       end if;
-    end if;
-  end process input_reg;
+    end process input_reg;
+    
+  end generate extra_reg;
+
+  no_reg : if DUAL_CLOCK_NOC = false generate
+    north_in_reg <= north_in;
+    south_in_reg <= south_in;
+    east_in_reg  <= east_in;
+    west_in_reg  <= west_in;
+    local_in_reg <= local_in;
+  end generate no_reg;
 
 end architecture struct;
 
