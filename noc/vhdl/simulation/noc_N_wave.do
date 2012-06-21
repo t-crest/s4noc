@@ -50,29 +50,30 @@ add wave -noupdate /tb_noc/reset
 ## Leros_0_0
 add wave -noupdate -divider -height 32 Leros_0_0
 ##############################################
-addwave pc $NODE_0_0/leros/fdout.pc
-addwave accu $NODE_0_0/leros/exout.accu
-addwave processor_out $NODE_0_0/leros/ioout
+addwave pc		$NODE_0_0/leros/fdout.pc
+addwave accu		$NODE_0_0/leros/exout.accu
+addwave processor_out 	$NODE_0_0/leros/ioout
 addwave processor_out_mux $NODE_0_0/processor_out_mux
-addwave processor_in $NODE_0_0/leros/ioin
-addwave tx_status_reg $NODE_0_0/$NA/tx_status_reg
-addwave rx_status_reg $NODE_0_0/$NA/rx_status_reg
-addwave south_in $NODE_0_0/south_in
-addwave router/count $NODE_0_0/router_node/count
-addwave local_out $NODE_0_0/router_node/local_out
-addwave local_in $NODE_0_0/router_node/local_in
-addwave out_rx_status $NODE_0_0/$NA/out_rx_status
-addwave out_tx_status $NODE_0_0/$NA/out_tx_status
-addwave tx_slot_dest $NODE_0_0/$NA/tx_slot_dest
-addwave rx_slot_src $NODE_0_0/$NA/rx_slot_src
+addwave processor_in 	$NODE_0_0/leros/ioin
+addwave rd_data 	$NODE_0_0/$NA/rd_data
+addwave tx_status_reg 	$NODE_0_0/$NA/tx_status_reg
+addwave rx_status_reg 	$NODE_0_0/$NA/rx_status_reg
+addwave south_in 	$NODE_0_0/south_in
+addwave router/count 	$NODE_0_0/router_node/count
+addwave local_out 	$NODE_0_0/router_node/local_out
+addwave local_in 	$NODE_0_0/router_node/local_in
+addwave out_rx_status 	$NODE_0_0/$NA/out_rx_status
+addwave out_tx_status 	$NODE_0_0/$NA/out_tx_status
+addwave tx_slot_dest 	$NODE_0_0/$NA/tx_slot_dest
+addwave rx_slot_src 	$NODE_0_0/$NA/rx_slot_src
 
-addwave router/count $NODE_0_0/router_node/count
-addwave router/sels $NODE_0_0/router_node/sels
-addwave na/count $NODE_0_0/$NA/count
+addwave router/count 	$NODE_0_0/router_node/count
+addwave router/sels 	$NODE_0_0/router_node/sels
+addwave na/count 	$NODE_0_0/$NA/count
 
-singleadd TX_ram $NODE_0_0/$NA/TX_ram/ram
-singleadd RX_ram $NODE_0_0/$NA/RX_ram/ram
-dualadd ram $NODE_0_0/$NA/dp_ram/ram
+singleadd TX_ram 	$NODE_0_0/$NA/TX_ram/ram
+singleadd RX_ram 	$NODE_0_0/$NA/RX_ram/ram
+dualadd ram 		$NODE_0_0/$NA/dp_ram/ram
 
 ##############################################
 ## Links
@@ -84,50 +85,50 @@ add wave -noupdate -divider -height 32 Links
 ## Leros_0_1
 add wave -noupdate -divider -height 32 Leros_0_1
 ##############################################
-addwave pc $NODE_0_1/leros/fdout.pc
-addwave accu $NODE_0_1/leros/exout.accu
-addwave processor_out $NODE_0_1/leros/ioout
+addwave pc		$NODE_0_1/leros/fdout.pc
+addwave accu 		$NODE_0_1/leros/exout.accu
+addwave processor_out 	$NODE_0_1/leros/ioout
 addwave processor_out_mux $NODE_0_1/processor_out_mux
-addwave processor_in $NODE_0_1/leros/ioin
-addwave tx_status_reg $NODE_0_1/$NA/tx_status_reg
-addwave rx_status_reg $NODE_0_1/$NA/rx_status_reg
+addwave processor_in 	$NODE_0_1/leros/ioin
+addwave tx_status_reg 	$NODE_0_1/$NA/tx_status_reg
+addwave rx_status_reg 	$NODE_0_1/$NA/rx_status_reg
 
-addwave local_out $NODE_0_1/router_node/local_out
-addwave local_in $NODE_0_1/router_node/local_in
-addwave out_rx_status $NODE_0_1/$NA/out_rx_status
-addwave out_tx_status $NODE_0_1/$NA/out_tx_status
+addwave local_out 	$NODE_0_1/router_node/local_out
+addwave local_in 	$NODE_0_1/router_node/local_in
+addwave out_rx_status 	$NODE_0_1/$NA/out_rx_status
+addwave out_tx_status 	$NODE_0_1/$NA/out_tx_status
 
-addwave tx_slot_dest $NODE_0_1/$NA/tx_slot_dest
-addwave tx_slot_status $NODE_0_1/$NA/tx_slot_status
-addwave rx_slot_src $NODE_0_1/$NA/rx_slot_src
-addwave rx_slot_status $NODE_0_1/$NA/rx_slot_status
+addwave tx_slot_dest 	$NODE_0_1/$NA/tx_slot_dest
+addwave tx_slot_status 	$NODE_0_1/$NA/tx_slot_status
+addwave rx_slot_src 	$NODE_0_1/$NA/rx_slot_src
+addwave rx_slot_status 	$NODE_0_1/$NA/rx_slot_status
 
-singleadd TX_ram $NODE_0_1/$NA/TX_ram/ram
-singleadd RX_ram $NODE_0_1/$NA/RX_ram/ram
+singleadd TX_ram 	$NODE_0_1/$NA/TX_ram/ram
+singleadd RX_ram 	$NODE_0_1/$NA/RX_ram/ram
 
 ##############################################
 ## Leros_1_0
 add wave -noupdate -divider -height 32 Leros_1_0
 ##############################################
-addwave pc $NODE_1_0/leros/fdout.pc
-addwave accu $NODE_1_0/leros/exout.accu
-addwave processor_out $NODE_1_0/leros/ioout
-addwave processor_in $NODE_1_0/leros/ioin
-addwave tx_status_reg $NODE_1_0/$NA/tx_status_reg
-addwave rx_status_reg $NODE_1_0/$NA/rx_status_reg
+addwave pc		$NODE_1_0/leros/fdout.pc
+addwave accu 		$NODE_1_0/leros/exout.accu
+addwave processor_out 	$NODE_1_0/leros/ioout
+addwave processor_in 	$NODE_1_0/leros/ioin
+addwave tx_status_reg 	$NODE_1_0/$NA/tx_status_reg
+addwave rx_status_reg 	$NODE_1_0/$NA/rx_status_reg
 
-addwave local_out $NODE_1_0/router_node/local_out
-addwave local_in $NODE_1_0/router_node/local_in
-addwave out_rx_status $NODE_1_0/$NA/out_rx_status
-addwave out_tx_status $NODE_1_0/$NA/out_tx_status
+addwave local_out 	$NODE_1_0/router_node/local_out
+addwave local_in 	$NODE_1_0/router_node/local_in
+addwave out_rx_status 	$NODE_1_0/$NA/out_rx_status
+addwave out_tx_status 	$NODE_1_0/$NA/out_tx_status
 
-addwave tx_slot_dest $NODE_1_0/$NA/tx_slot_dest
-addwave rx_slot_src $NODE_1_0/$NA/rx_slot_src
-addwave router/count $NODE_1_0/router_node/count
-addwave router/sels $NODE_1_0/router_node/sels
+addwave tx_slot_dest 	$NODE_1_0/$NA/tx_slot_dest
+addwave rx_slot_src 	$NODE_1_0/$NA/rx_slot_src
+addwave router/count 	$NODE_1_0/router_node/count
+addwave router/sels 	$NODE_1_0/router_node/sels
 
-singleadd TX_ram $NODE_1_0/$NA/TX_ram/ram
-singleadd RX_ram $NODE_1_0/$NA/RX_ram/ram
+singleadd TX_ram 	$NODE_1_0/$NA/TX_ram/ram
+singleadd RX_ram 	$NODE_1_0/$NA/RX_ram/ram
 
 
 TreeUpdate [SetDefaultTree]
