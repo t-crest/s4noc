@@ -22,36 +22,69 @@ Start:
 run:
 	nop
 	nop
+	// Read core ID
 	in 253
-	out 0
 	nop
-	add 66
+	nop
+	brnz ncz
+	nop
+	nop
+	// Core zero
+cz:
+	in 17 // Read the receive register
+	nop
+	add 1 // If the receive register has the desired value the result of the addition should be zero
+	nop
+	brnz cz
+	nop
+	nop
+complete:
+	load 65
 	out 255
+	nop
+	nop
+	branch complete
+	nop
+	nop
+	
+	
+ncz:
+	// All other cores than core zero
+	// Writes their core ID to all other cores than core zero
+	out 1
+	out 2
+	out 3
+	out 4
+	out 5
+	out 6
+	out 7
+	out 8
+	out 9
+	out 10
+	out 11
+	out 12
+	out 13
+	out 14
+	out 15
+	nop
+	nop
+wait:
+	nop
+	in 17 // Read the Receive register
+	nop
+	add 2 // If the receive register has the desired value the result of the addition should be zero
+	nop
+	brnz wait
+	nop
+	nop
+	load 31
+	out 0
 	nop
 	nop
 die:	
 	nop
 	nop
 	branch die
-	nop
-	nop
-	
-loop:
-	in 254
-	sub 2
-	nop
-	nop
-	brnz loop
-	nop
-	nop
-	in 17
-	and 127
-	sub 62
-	nop
-	out 255
-	nop
-	nop
-	branch loop
 	nop
 	nop
 	
