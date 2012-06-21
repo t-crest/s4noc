@@ -38,10 +38,51 @@ cz:
 	brnz cz
 	nop
 	nop
-complete:
-	load 65
+	load 32
 	out 255
-	nop
+	in 1
+	in 1
+	out 255
+	in 2
+	in 2
+	out 255
+	in 3
+	in 3
+	out 255
+	in 4
+	in 4
+	out 255
+	in 5
+	in 5
+	out 255
+	in 6
+	in 6
+	out 255
+	in 7
+	in 7
+	out 255
+	in 8
+	in 8
+	out 255
+	in 9
+	in 9
+	out 255
+	in 10
+	in 10
+	out 255
+	in 11
+	in 11
+	out 255
+	in 12
+	in 12
+	out 255
+	in 13
+	in 13
+	out 255
+	in 14
+	in 14
+	out 255
+complete:
 	nop
 	branch complete
 	nop
@@ -75,12 +116,138 @@ wait:
 	add 2 // If the receive register has the desired value the result of the addition should be zero
 	nop
 	brnz wait
+	nop // The core has received the core ID from all other cores
+	nop
+	in 253
+	sub 1
+	brz H
 	nop
 	nop
+	sub 1
+	brz E
+	nop
+	nop
+	sub 1
+	brz L
+	nop
+	nop
+	sub 1
+	brz L
+	nop
+	nop
+	sub 1
+	brz O
+	nop
+	nop
+	sub 1
+	brz space
+	nop
+	nop
+	sub 1
+	brz T
+	nop
+	nop
+	sub 1
+	brz dash
+	nop
+	nop
+	sub 1
+	brz C
+	nop
+	nop
+	sub 1
+	brz R
+	nop
+	nop
+	sub 1
+	brz E
+	nop
+	nop
+	sub 1
+	brz S
+	nop
+	nop
+	sub 1
+	brz T
+	nop
+	nop
+	sub 1
+	brz exclamation
+	nop
+	nop	
 	load 31
 	out 0
 	nop
 	nop
+H:
+	load 72
+	out 0
+	branch die
+	nop
+	nop
+E:
+	load 69
+	out 0
+	branch die
+	nop
+	nop
+L:
+	load 76
+	out 0
+	branch die
+	nop
+	nop
+O:
+	load 79
+	out 0
+	branch die
+	nop
+	nop
+space:
+	load 32
+	out 0
+	branch die
+	nop
+	nop
+T:
+	load 84
+	out 0
+	branch die
+	nop
+	nop
+dash:
+	load 45
+	out 0
+	branch die
+	nop
+	nop
+C:
+	load 67
+	out 0
+	branch die
+	nop
+	nop
+R:
+	load 82
+	out 0
+	branch die
+	nop
+	nop
+S:
+	load 83
+	out 0
+	branch die
+	nop
+	nop
+T:
+	load 84
+	out 0
+	branch die
+	nop
+	nop
+exclamation:
+	load 33
+	out 0
 die:	
 	nop
 	nop

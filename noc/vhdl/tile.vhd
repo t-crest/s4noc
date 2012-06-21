@@ -92,8 +92,8 @@ begin  -- struct
       generic map (
         clk_freq  => TILE_CLK_FREQ,
         baud_rate => 115200,
-        txf_depth => 1,
-        rxf_depth => 2)
+        txf_depth => 14,
+        rxf_depth => 14)
       port map (
         clk     => processor_clk,
         reset   => reset,
