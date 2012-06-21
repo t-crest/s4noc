@@ -72,8 +72,13 @@ architecture behav of ni_ram_single is
   signal dest_addr, src_addr           : status_int;
 
   signal tx_slot_status, rx_slot_status : std_logic;
+  signal x_tx_slot_status               : std_logic;
 
-  signal processor_addr : natural;
+  signal read_rdy, next_read_rdy : std_logic;
+
+  signal next_read_addr     : natural;
+  signal processor_addr     : natural;
+  signal processor_ram_addr : natural;
   -- signal tx_data_valid  : std_logic;
 
   signal rd_data : tile_word;
@@ -116,19 +121,21 @@ begin  -- behav
   begin  -- process slot_regs
     if rising_edge(clk) then            -- rising clock edge
       if reset = '1' then
-        tx_slot_dest   <= 0;
-        x_tx_slot_dest <= 0;
-        rx_slot_src    <= 0;
-        x_rx_slot_src  <= 0;
-        tx_slot_status <= '0';
-        rx_slot_status <= '0';
+        tx_slot_dest     <= 0;
+        x_tx_slot_dest   <= 0;
+        rx_slot_src      <= 0;
+        x_rx_slot_src    <= 0;
+        tx_slot_status   <= '0';
+        x_tx_slot_status <= '0';
+        rx_slot_status   <= '0';
       else
-        tx_slot_dest   <= x_tx_slot_dest;
-        x_tx_slot_dest <= dest_addr;
-        tx_slot_status <= tx_status_reg(tx_slot_dest);
-        rx_slot_src    <= x_rx_slot_src;
-        x_rx_slot_src  <= src_addr;
-        rx_slot_status <= rx_status_reg(rx_slot_src);
+        tx_slot_dest     <= x_tx_slot_dest;
+        x_tx_slot_dest   <= dest_addr;
+        x_tx_slot_status <= tx_status_reg(x_tx_slot_dest);
+        tx_slot_status   <= x_tx_slot_status;
+        rx_slot_src      <= x_rx_slot_src;
+        x_rx_slot_src    <= src_addr;
+        rx_slot_status   <= rx_status_reg(rx_slot_src);
       end if;
     end if;
   end process slot_regs;
@@ -156,7 +163,7 @@ begin  -- behav
 -------------------------------------------------------------------------------
 -- TX and RX buffer
 -------------------------------------------------------------------------------
-  processor_addr <= to_integer(unsigned(processor_out.addr(3 downto 0)));
+  processor_ram_addr <= to_integer(unsigned(processor_out.addr(3 downto 0)));
 
   TX_ram : entity work.dp_ram
     generic map (
@@ -164,7 +171,7 @@ begin  -- behav
       ADDR_WIDTH => log2(TOTAL_NI_NUM)-1)
     port map (
       clk    => clk,
-      addr_a => processor_addr,
+      addr_a => processor_ram_addr,
       addr_b => tx_slot_dest,
       data_a => processor_out.wrdata,
       data_b => (others => '0'),
@@ -179,7 +186,7 @@ begin  -- behav
       ADDR_WIDTH => log2(TOTAL_NI_NUM)-1)
     port map (
       clk    => clk,
-      addr_a => processor_addr,
+      addr_a => processor_ram_addr,
       addr_b => rx_slot_src,
       data_a => (others => '0'),
       data_b => tile_rx_f.data,
@@ -193,7 +200,7 @@ begin  -- behav
 --  Router side of the block ram
 -------------------------------------------------------------------------------
 
-  tx_router : process (tx_slot_dest, tx_slot_status, tx_data)
+  tx_router : process (tx_slot_dest, x_tx_slot_status, tx_slot_status, tx_data)
   begin  -- process tx_router
     out_tx_status               <= (others => '0');
 --    tx_data_valid <= '0';
@@ -201,7 +208,7 @@ begin  -- behav
     --  tx_data_valid               <= '1';
     --  out_tx_status(tx_slot_dest) <= '1';
     --end if;
-    out_tx_status(tx_slot_dest) <= tx_slot_status;
+    out_tx_status(tx_slot_dest) <= x_tx_slot_status;
     tile_tx_f.data_valid        <= tx_slot_status;
     if tx_slot_status = '1' then
       tile_tx_f.data <= tx_data;
@@ -237,10 +244,11 @@ begin  -- behav
 -------------------------------------------------------------------------------
 -- Processor side of the block ram
 -------------------------------------------------------------------------------
+  processor_addr <= to_integer(unsigned(processor_out.addr));
 
-  in_ch : process (processor_out, tx_status_reg, rx_status_reg, processor_addr, rd_data)
+  in_ch : process (processor_out, tx_status_reg, rx_status_reg, processor_addr, rd_data, read_rdy)
   begin  -- process in_ch
-
+    next_read_rdy       <= read_rdy;
     in_tx_status        <= (others => '0');
     in_rx_status        <= (others => '0');
     processor_in.rddata <= (others => '0');
@@ -248,8 +256,13 @@ begin  -- behav
 -------------------------------------------------------------------------------
     --  Reading from the rx channel
     if processor_out.rd = '1' and processor_addr < TOTAL_NI_NUM then
-      in_rx_status(processor_addr) <= '1';
-      processor_in.rddata          <= rd_data;
+      if read_rdy = '1' then
+        in_rx_status(processor_addr) <= '1';
+        processor_in.rddata          <= rd_data;
+        next_read_rdy                <= '0';
+      else
+        next_read_rdy <= '1';
+      end if;
 -------------------------------------------------------------------------------
       -- Returning the tx_status register
     elsif processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM
@@ -312,9 +325,11 @@ begin  -- behav
       if reset = '1' then
         tx_status_reg <= (others => '0');
         rx_status_reg <= (others => '0');
+        read_rdy      <= '0';
       else
         tx_status_reg <= next_tx_status_reg;
         rx_status_reg <= next_rx_status_reg;
+        read_rdy      <= next_read_rdy;
       end if;
     end if;
   end process status_registers;
