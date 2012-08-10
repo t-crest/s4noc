@@ -93,7 +93,16 @@ addwave processor_in 	$NODE_0_1/leros/ioin
 addwave tx_status_reg 	$NODE_0_1/$NA/tx_status_reg
 addwave rx_status_reg 	$NODE_0_1/$NA/rx_status_reg
 
+addwave north_out	$NODE_0_1/router_node/north_out
+addwave east_out	$NODE_0_1/router_node/east_out
+addwave south_out	$NODE_0_1/router_node/south_out
+addwave west_out	$NODE_0_1/router_node/west_out
 addwave local_out 	$NODE_0_1/router_node/local_out
+addwave selsS           $NODE_0_1/router_node/sels
+addwave north_in 	$NODE_0_1/router_node/north_in
+addwave east_in 	$NODE_0_1/router_node/east_in
+addwave south_in 	$NODE_0_1/router_node/south_in
+addwave west_in 	$NODE_0_1/router_node/west_in
 addwave local_in 	$NODE_0_1/router_node/local_in
 addwave out_rx_status 	$NODE_0_1/$NA/out_rx_status
 addwave out_tx_status 	$NODE_0_1/$NA/out_tx_status

@@ -191,6 +191,8 @@ begin  -- struct
 
 
   router_node : entity work.router
+    generic map (
+      NI_NUM => NI_NUM)
     port map (
       clk       => router_clk,
       reset     => reset,

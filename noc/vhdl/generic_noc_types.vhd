@@ -97,8 +97,10 @@ package noc_types is
     rx       : tile_word;
   end record;
 
-
-  type select_signals is array (0 to 4) of integer range 0 to 3;
+  
+--type select_signals is array (0 to 4) of integer range 0 to 3;
+  type port_t is (N,S,E,W,L,D);
+  type select_signals is array (port_t'left to port_t'right) of port_t;
 
   function log2 (N : natural) return integer;
 

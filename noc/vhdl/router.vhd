@@ -37,6 +37,8 @@ use ieee.numeric_std.all;
 use work.noc_types.all;
 
 entity router is
+  generic (
+    NI_NUM : natural);
   port(
     clk   : in std_logic;
     reset : in std_logic;
@@ -63,17 +65,33 @@ architecture struct of router is
   signal west_in_reg  : network_link_forward;
   signal local_in_reg : network_link_forward;
 
+  signal north_out_reg   : network_link_forward;
+  signal south_out_reg   : network_link_forward;
+  signal east_out_reg    : network_link_forward;
+  signal west_out_reg    : network_link_forward;
+  signal local_out_reg   : network_link_forward;
+  signal north_out_reg_x : network_link_forward;
+  signal south_out_reg_x : network_link_forward;
+  signal east_out_reg_x  : network_link_forward;
+  signal west_out_reg_x  : network_link_forward;
+  signal local_out_reg_x : network_link_forward;
+
+  signal zero_link : network_link_forward;
+
   signal sels, reg_sels    : select_signals;
   signal count, next_count : unsigned(log2(TDM_PERIOD) downto 0);
 --    signal count, next_count : unsigned(7 downto 0);
 
 begin
+
+  zero_link.data       <= (others => '0');
+  zero_link.data_valid <= '0';
 -------------------------------------------------------------------------------
 -- Generating the counter for the dual clocked router
 -- The following two if generate statements should be merged to one when
 -- modelsim supports it. Dumb tool!
 -------------------------------------------------------------------------------
-  
+
   dualclkcounter : if DUAL_CLOCK_NOC = true generate
     
     counter : process (count)
@@ -86,6 +104,8 @@ begin
     end process counter;
 
     router_ST : entity work.router_ST
+      generic map (
+        NI_NUM => NI_NUM)
       port map (
         count => count(log2(TDM_PERIOD) downto 1),
         --    count => count(5 downto 1),
@@ -110,6 +130,8 @@ begin
     end process counter;
 
     router_ST : entity work.router_ST
+      generic map (
+        NI_NUM => NI_NUM)
       port map (
         count => count(log2(TDM_PERIOD)-1 downto 0),
         --    count => count(5 downto 1),
@@ -141,54 +163,127 @@ begin
   begin  -- process ST_reg
     if rising_edge(clk) then            -- rising clock edge
       if reset = '1' then
-        sels <= (others => 0);
+        sels <= (others => D);
       else
         sels <= reg_sels;
       end if;
     end if;
   end process ST_reg;
 
-  north_output : entity work.outnode
-    port map (in0     => east_in_reg, in1 => south_in_reg,
-              in2     => west_in_reg, in3 => local_in_reg,
-              clk     => clk, reset => reset,
-              sel     => sels(0),
-              reg_out => north_out);
+  -- North out Multiplexer
+  with sels(N) select
+    north_out_reg_x <=
+    south_in_reg when S,
+    local_in_reg when L,
+    west_in_reg  when W,
+    east_in_reg  when E,
+    zero_link    when others;
 
-  east_output : entity work.outnode
-    port map(in0     => south_in_reg, in1 => west_in_reg,
-             in2     => local_in_reg, in3 => north_in_reg,
-             clk     => clk, reset => reset,
-             sel     => sels(1),
-             reg_out => east_out);
+  -- East out Multiplexer
+  with sels(E) select
+    east_out_reg_x <=
+    south_in_reg when S,
+    local_in_reg when L,
+    west_in_reg  when W,
+    north_in_reg when N,
+    zero_link    when others;
 
-  south_output : entity work.outnode
-    port map(in0     => west_in_reg, in1 => local_in_reg,
-             in2     => north_in_reg, in3 => east_in_reg,
-             clk     => clk, reset => reset,
-             sel     => sels(2),
-             reg_out => south_out);
+  -- South out Multiplexer
+  with sels(S) select
+    south_out_reg_x <=
+    local_in_reg when L,
+    west_in_reg  when W,
+    north_in_reg when N,
+    east_in_reg  when E,
+    zero_link    when others;
+
+  -- West out Multiplexer
+  with sels(W) select
+    west_out_reg_x <=
+    south_in_reg when S,
+    local_in_reg when L,
+    north_in_reg when N,
+    east_in_reg  when E,
+    zero_link    when others;
+
+  -- Local out Multiplexer
+  with sels(L) select
+    local_out_reg_x <=
+    south_in_reg when S,
+    north_in_reg when N,
+    east_in_reg  when E,
+    west_in_reg  when W,
+    zero_link    when others;
+
+  --north_output : entity work.outnode
+  --  port map (in0     => east_in_reg, in1 => south_in_reg,
+  --            in2     => west_in_reg, in3 => local_in_reg,
+  --            clk     => clk, reset => reset,
+  --            sel     => sels(0),
+  --            reg_out => north_out);
+
+  --east_output : entity work.outnode
+  --  port map(in0     => south_in_reg, in1 => west_in_reg,
+  --           in2     => local_in_reg, in3 => north_in_reg,
+  --           clk     => clk, reset => reset,
+  --           sel     => sels(1),
+  --           reg_out => east_out);
+
+  --south_output : entity work.outnode
+  --  port map(in0     => west_in_reg, in1 => local_in_reg,
+  --           in2     => north_in_reg, in3 => east_in_reg,
+  --           clk     => clk, reset => reset,
+  --           sel     => sels(2),
+  --           reg_out => south_out);
 
 
-  west_output : entity work.outnode
-    port map(in0     => local_in_reg, in1 => north_in_reg,
-             in2     => east_in_reg, in3 => south_in_reg,
-             clk     => clk, reset => reset,
-             sel     => sels(3),
-             reg_out => west_out);
+  --west_output : entity work.outnode
+  --  port map(in0     => local_in_reg, in1 => north_in_reg,
+  --           in2     => east_in_reg, in3 => south_in_reg,
+  --           clk     => clk, reset => reset,
+  --           sel     => sels(3),
+  --           reg_out => west_out);
 
 
-  local_output : entity work.outnode
-    port map(in0     => north_in_reg, in1 => east_in_reg,
-             in2     => south_in_reg, in3 => west_in_reg,
-             clk     => clk, reset => reset,
-             sel     => sels(4),
-             reg_out => local_out);
+  --local_output : entity work.outnode
+  --  port map(in0     => north_in_reg, in1 => east_in_reg,
+  --           in2     => south_in_reg, in3 => west_in_reg,
+  --           clk     => clk, reset => reset,
+  --           sel     => sels(4),
+  --           reg_out => local_out);
+
+  north_out <= north_out_reg;
+  south_out <= south_out_reg;
+  east_out  <= east_out_reg;
+  west_out  <= west_out_reg;
+  local_out <= local_out_reg;
+
+  output_reg : process (clk, reset)
+  begin  -- process input_reg
+    if rising_edge(clk) then            -- rising clock edge
+      if reset = '1' then               -- asynchronous reset (active high)
+        north_out_reg.data       <= (others => '0');
+        north_out_reg.data_valid <= '0';
+        south_out_reg.data       <= (others => '0');
+        south_out_reg.data_valid <= '0';
+        east_out_reg.data        <= (others => '0');
+        east_out_reg.data_valid  <= '0';
+        west_out_reg.data        <= (others => '0');
+        west_out_reg.data_valid  <= '0';
+        local_out_reg.data       <= (others => '0');
+        local_out_reg.data_valid <= '0';
+      else
+        north_out_reg <= north_out_reg_x;
+        south_out_reg <= south_out_reg_x;
+        east_out_reg  <= east_out_reg_x;
+        west_out_reg  <= west_out_reg_x;
+        local_out_reg <= local_out_reg_x;
+      end if;
+    end if;
+  end process output_reg;
 
 
   extra_reg : if DUAL_CLOCK_NOC = true generate
-    
-    
     input_reg : process (clk, reset)
     begin  -- process input_reg
       if rising_edge(clk) then          -- rising clock edge
@@ -212,7 +307,6 @@ begin
         end if;
       end if;
     end process input_reg;
-    
   end generate extra_reg;
 
   no_reg : if DUAL_CLOCK_NOC = false generate

@@ -33,7 +33,7 @@ int main(int argc,char *argv[]){
 	STslot* slot = new STslot();
 	ST.push_back(*slot);
 	string token;
-	port inputPort = Local;
+	port inputPort = L;
 	int startTime = 0;
 	STprint* printer = new STprint();
 
@@ -58,9 +58,9 @@ int main(int argc,char *argv[]){
 			}
 			switch(token[i]){
 			case 'n':
-				if(ST.at(startTime + i).ports[North] == DC){
-					ST.at(startTime + i).ports[North] = inputPort;
-					inputPort = South;
+				if(ST.at(startTime + i).ports[N] == D){
+					ST.at(startTime + i).ports[N] = inputPort;
+					inputPort = S;
 					ST.at(startTime).y_dest--;
 				} else {
 					cout << "Epic faliure! North\n";
@@ -68,9 +68,9 @@ int main(int argc,char *argv[]){
 				}
 				break;
 			case 's':
-				if(ST.at(startTime + i).ports[South] == DC){
-					ST.at(startTime + i).ports[South] = inputPort;
-					inputPort = North;
+				if(ST.at(startTime + i).ports[S] == D){
+					ST.at(startTime + i).ports[S] = inputPort;
+					inputPort = N;
 					ST.at(startTime).y_dest++;
 				} else {
 					cout << "Epic faliure! South\n";
@@ -78,9 +78,9 @@ int main(int argc,char *argv[]){
 				}
 				break;
 			case 'e':
-				if(ST.at(startTime + i).ports[East] == DC){
-					ST.at(startTime + i).ports[East] = inputPort;
-					inputPort = West;
+				if(ST.at(startTime + i).ports[E] == D){
+					ST.at(startTime + i).ports[E] = inputPort;
+					inputPort = W;
 					ST.at(startTime).x_dest++;
 				} else {
 					cout << "Epic faliure! East\n";
@@ -88,9 +88,9 @@ int main(int argc,char *argv[]){
 				}
 				break;
 			case 'w':
-				if(ST.at(startTime + i).ports[West] == DC){
-					ST.at(startTime + i).ports[West] = inputPort;
-					inputPort = East;
+				if(ST.at(startTime + i).ports[W] == D){
+					ST.at(startTime + i).ports[W] = inputPort;
+					inputPort = E;
 					ST.at(startTime).x_dest--;
 				} else {
 					cout << "Epic faliure! West\n";
@@ -100,15 +100,16 @@ int main(int argc,char *argv[]){
 			}
 		}
 		try{
-			ST.at(startTime + token.length() + 1);
+			//ST.at(startTime + token.length() + 1);
+			ST.at(startTime + token.length()-1);
 		} catch (out_of_range& oor){
 			ST.push_back(*slot);
 		}
-		if(ST.at(startTime + token.length()).ports[Local] == DC){
-			ST.at(startTime + token.length()).ports[Local] = inputPort;
-			ST.at(startTime + token.length()).x_src = -ST.at(startTime).x_dest;
-			ST.at(startTime + token.length()).y_src = -ST.at(startTime).y_dest;
-			inputPort = Local;
+		if(ST.at(startTime + token.length()-1).ports[L] == D){
+			ST.at(startTime + token.length()-1).ports[L] = inputPort;
+			ST.at(startTime + token.length()-1).x_src = -ST.at(startTime).x_dest;
+			ST.at(startTime + token.length()-1).y_src = -ST.at(startTime).y_dest;
+			inputPort = L;
 		} else {
 			cout << "Epic faliure! Local\n";
 			return EXIT_FAILURE;
@@ -211,6 +212,8 @@ int main(int argc,char *argv[]){
 	}
 
 	printer->endArchNI();
+	
+	delete printer;
 
 	return EXIT_SUCCESS;
 
@@ -224,13 +227,10 @@ void check(map<int,int> hej, int numOfNodes, int nodeNum) {
 
 		assert(0 <= id && id <= numOfNodes-1);
 		if ((id != nodeNum) && (cnt != 1) ){
-			cerr << "Nodenum: " << nodeNum << " Fejl på id " << id << " fik " << cnt << " pakker" << endl;
+			cerr << "Nodenum: " << nodeNum << " Fejl pï¿½ id " << id << " fik " << cnt << " pakker" << endl;
 		}
 		
 	}
-	cerr << endl;
-
-
 }
 
 

@@ -14,8 +14,8 @@ entity ni_ST is
 		NI_NUM	: natural);
 	port (
 		count	: in unsigned(4 downto 0);
-		dest	: out integer range 0 to 16;
-		src	: out integer range 0 to 16
+		dest	: out integer range 0 to 15;
+		src	: out integer range 0 to 15
 		);
 end ni_ST;
 
