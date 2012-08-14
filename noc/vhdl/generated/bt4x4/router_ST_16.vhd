@@ -1,22 +1,24 @@
 -------------------------------------------------------------
--- router_ST.vhd
+-- router_ST_16.vhd
 -- This is an auto generated file, do not edit by hand.
 -------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.leros_types.all;
 use work.noc_types.all;
 
-entity router_ST is
+entity router_ST_16 is
+	generic (
+		NI_NUM	: natural
+		);
 	port (
 		count	: in unsigned(4 downto 0);
 		sels	: out select_signals
 		);
-end router_ST;
+end router_ST_16;
 
-architecture data of router_ST is
+architecture data of router_ST_16 is
 begin -- data
 
 process(count) begin

@@ -35,7 +35,7 @@ int main(int argc,char *argv[]){
 	string token;
 	port inputPort = L;
 	int startTime = 0;
-	STprint* printer = new STprint();
+	STprint* printer = new STprint(numOfNodes);
 
 	cout << "Shd file:\t" << inputPath << endl;
 

@@ -37,6 +37,10 @@ class STprint{
 	ofstream niST;
 	ofstream routerST;
 
+	char niST_name[20];
+	char routerST_name[20];
+	const int numOfNodes;
+
 	string bin(int val, int bits) {
 	int max = (int)pow(2.0,bits-1);
 	string s = "";
@@ -54,9 +58,11 @@ class STprint{
 
 public:
 
-	STprint(){
-		niST.open("ni_ST.vhd", ios::trunc);
-		routerST.open("router_ST.vhd", ios::trunc);
+	STprint(int _numOfNodes): numOfNodes(_numOfNodes){
+		sprintf(niST_name,"ni_ST_%i.vhd",numOfNodes);
+		sprintf(routerST_name,"router_ST_%i.vhd",numOfNodes);
+		niST.open(niST_name, ios::trunc);
+		routerST.open(routerST_name, ios::trunc);
 	}
 	
 	~STprint(){
@@ -78,24 +84,26 @@ public:
 
 	void writeHeaderRouter(int countWidth){
 		routerST << "-------------------------------------------------------------\n";
-		routerST << "-- router_ST.vhd\n";
+		routerST << "-- " << routerST_name << "\n";
 		routerST << "-- This is an auto generated file, do not edit by hand.\n";
 		routerST << "-------------------------------------------------------------\n";
 		routerST << "library ieee;\n";
 		routerST << "use ieee.std_logic_1164.all;\n";
 		routerST << "use ieee.numeric_std.all;\n\n";
 
-		routerST << "use work.leros_types.all;\n";
 		routerST << "use work.noc_types.all;\n\n";
 
-		routerST << "entity router_ST is\n";
+		routerST << "entity router_ST_" << numOfNodes << " is\n";
+		routerST << "\tgeneric (\n";
+		routerST << "\t\tNI_NUM\t: natural\n";
+		routerST << "\t\t);\n";
 		routerST << "\tport (\n";
 		routerST << "\t\tcount\t: in unsigned(" << countWidth-1 << " downto 0);\n";
 		routerST << "\t\tsels\t: out select_signals\n";
 		routerST << "\t\t);\n";
 
-		routerST << "end router_ST;\n\n";
-		routerST << "architecture data of router_ST is\n";
+		routerST << "end router_ST_" << numOfNodes << ";\n\n";
+		routerST << "architecture data of router_ST_" << numOfNodes << " is\n";
 		routerST << "begin -- data\n\n";
 		routerST << "process(count) begin\n\n";
 		routerST << "\tcase count is\n\n";
@@ -120,17 +128,16 @@ public:
 
 	void writeHeaderNI(int countWidth, int numOfNodes){
 		niST << "-------------------------------------------------------------\n";
-		niST << "-- ni_ST.vhd\n";
+		niST << "-- " << niST_name << "\n";
 		niST << "-- This is an auto generated file, do not edit by hand.\n";
 		niST << "-------------------------------------------------------------\n";
 		niST << "library ieee;\n";
 		niST << "use ieee.std_logic_1164.all;\n";
 		niST << "use ieee.numeric_std.all;\n\n";
 
-		niST << "use work.leros_types.all;\n";
 		niST << "use work.noc_types.all;\n\n";
 
-		niST << "entity ni_ST is\n";
+		niST << "entity ni_ST_" << numOfNodes << " is\n";
 		niST << "\tgeneric (\n";
 		niST << "\t\tNI_NUM\t: natural);\n";
 		niST << "\tport (\n";
@@ -139,8 +146,8 @@ public:
 		niST << "\t\tsrc\t: out integer range 0 to " << numOfNodes-1 << "\n";
 		niST << "\t\t);\n";
 
-		niST << "end ni_ST;\n\n";
-		niST << "architecture data of ni_ST is\n";
+		niST << "end ni_ST_" << numOfNodes << ";\n\n";
+		niST << "architecture data of ni_ST_" << numOfNodes << " is\n";
 		niST << "begin -- data\n\n";
 
 	}

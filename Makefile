@@ -33,6 +33,7 @@ update_leros:
 
 tools:
 	cd leros && make tools
+	cd noc && make tools
 
 compile:
 #	cd leros/LerosMuviumSDK && makeTest.bat

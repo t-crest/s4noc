@@ -6,194 +6,54 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.leros_types.all;
 use work.noc_types.all;
 
 entity router_ST is
-	port (
-		count	: in unsigned(4 downto 0);
-		sels	: out select_signals
-		);
+  generic (
+    NI_NUM : natural);
+  port (
+    count : in  unsigned(4 downto 0);
+    sels  : out select_signals
+    );
 end router_ST;
 
 architecture data of router_ST is
-begin -- data
+begin  -- data
 
-process(count) begin
+  st3x3 : if TOTAL_NI_NUM = 9 generate
+    st : entity work.router_ST_9
+      generic map (
+        NI_NUM => NI_NUM)
+      port map (
+        count => count,
+        sels  => sels);
+  end generate st3x3;
 
-	case count is
+  st4x4 : if TOTAL_NI_NUM = 16 generate
+    st : entity work.router_ST_16
+      generic map (
+        NI_NUM => NI_NUM)
+      port map (
+        count => count,
+        sels  => sels);
+  end generate st4x4;
 
-		when "00000" =>
-			sels(0) <= 3;
-			sels(1) <= 0;
-			sels(2) <= 0;
-			sels(3) <= 0;
-			sels(4) <= 0;
-		when "00001" =>
-			sels(0) <= 1;
-			sels(1) <= 2;
-			sels(2) <= 0;
-			sels(3) <= 0;
-			sels(4) <= 0;
-		when "00010" =>
-			sels(0) <= 3;
-			sels(1) <= 0;
-			sels(2) <= 0;
-			sels(3) <= 0;
-			sels(4) <= 0;
-		when "00011" =>
-			sels(0) <= 1;
-			sels(1) <= 1;
-			sels(2) <= 1;
-			sels(3) <= 0;
-			sels(4) <= 0;
-		when "00100" =>
-			sels(0) <= 0;
-			sels(1) <= 2;
-			sels(2) <= 2;
-			sels(3) <= 3;
-			sels(4) <= 3;
-		when "00101" =>
-			sels(0) <= 3;
-			sels(1) <= 1;
-			sels(2) <= 0;
-			sels(3) <= 2;
-			sels(4) <= 0;
-		when "00110" =>
-			sels(0) <= 3;
-			sels(1) <= 0;
-			sels(2) <= 0;
-			sels(3) <= 0;
-			sels(4) <= 1;
-		when "00111" =>
-			sels(0) <= 3;
-			sels(1) <= 0;
-			sels(2) <= 2;
-			sels(3) <= 0;
-			sels(4) <= 3;
-		when "01000" =>
-			sels(0) <= 0;
-			sels(1) <= 1;
-			sels(2) <= 1;
-			sels(3) <= 3;
-			sels(4) <= 0;
-		when "01001" =>
-			sels(0) <= 0;
-			sels(1) <= 2;
-			sels(2) <= 2;
-			sels(3) <= 2;
-			sels(4) <= 3;
-		when "01010" =>
-			sels(0) <= 3;
-			sels(1) <= 1;
-			sels(2) <= 0;
-			sels(3) <= 1;
-			sels(4) <= 1;
-		when "01011" =>
-			sels(0) <= 1;
-			sels(1) <= 2;
-			sels(2) <= 0;
-			sels(3) <= 2;
-			sels(4) <= 3;
-		when "01100" =>
-			sels(0) <= 3;
-			sels(1) <= 0;
-			sels(2) <= 0;
-			sels(3) <= 0;
-			sels(4) <= 1;
-		when "01101" =>
-			sels(0) <= 1;
-			sels(1) <= 2;
-			sels(2) <= 2;
-			sels(3) <= 0;
-			sels(4) <= 3;
-		when "01110" =>
-			sels(0) <= 0;
-			sels(1) <= 1;
-			sels(2) <= 1;
-			sels(3) <= 3;
-			sels(4) <= 0;
-		when "01111" =>
-			sels(0) <= 0;
-			sels(1) <= 0;
-			sels(2) <= 0;
-			sels(3) <= 1;
-			sels(4) <= 1;
-		when "10000" =>
-			sels(0) <= 0;
-			sels(1) <= 0;
-			sels(2) <= 1;
-			sels(3) <= 2;
-			sels(4) <= 0;
-		when "10001" =>
-			sels(0) <= 3;
-			sels(1) <= 0;
-			sels(2) <= 2;
-			sels(3) <= 0;
-			sels(4) <= 1;
-		when "10010" =>
-			sels(0) <= 3;
-			sels(1) <= 0;
-			sels(2) <= 0;
-			sels(3) <= 1;
-			sels(4) <= 2;
-		when "10011" =>
-			sels(0) <= 3;
-			sels(1) <= 0;
-			sels(2) <= 0;
-			sels(3) <= 3;
-			sels(4) <= 1;
-		when "10100" =>
-			sels(0) <= 1;
-			sels(1) <= 0;
-			sels(2) <= 1;
-			sels(3) <= 0;
-			sels(4) <= 1;
-		when "10101" =>
-			sels(0) <= 0;
-			sels(1) <= 0;
-			sels(2) <= 0;
-			sels(3) <= 1;
-			sels(4) <= 2;
-		when "10110" =>
-			sels(0) <= 0;
-			sels(1) <= 0;
-			sels(2) <= 0;
-			sels(3) <= 0;
-			sels(4) <= 1;
-		when "10111" =>
-			sels(0) <= 0;
-			sels(1) <= 0;
-			sels(2) <= 0;
-			sels(3) <= 2;
-			sels(4) <= 0;
-		when "11000" =>
-			sels(0) <= 0;
-			sels(1) <= 2;
-			sels(2) <= 0;
-			sels(3) <= 0;
-			sels(4) <= 1;
-		when "11001" =>
-			sels(0) <= 0;
-			sels(1) <= 0;
-			sels(2) <= 1;
-			sels(3) <= 0;
-			sels(4) <= 3;
-		when "11010" =>
-			sels(0) <= 0;
-			sels(1) <= 0;
-			sels(2) <= 0;
-			sels(3) <= 0;
-			sels(4) <= 0;
-		when "11011" =>
-			sels(0) <= 0;
-			sels(1) <= 0;
-			sels(2) <= 0;
-			sels(3) <= 0;
-			sels(4) <= 1;
-		when others => sels <= (others => 0);
+  st5x5 : if TOTAL_NI_NUM = 25 generate
+    st : entity work.router_ST_25
+      generic map (
+        NI_NUM => NI_NUM)
+      port map (
+        count => count,
+        sels  => sels);
+  end generate st5x5;
 
-	end case;
-end process;
+  st6x6 : if TOTAL_NI_NUM = 36 generate
+    st : entity work.router_ST_36
+      generic map (
+        NI_NUM => NI_NUM)
+      port map (
+        count => count,
+        sels  => sels);
+  end generate st6x6;
 
 end data;

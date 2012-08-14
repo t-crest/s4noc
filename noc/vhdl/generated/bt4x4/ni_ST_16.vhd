@@ -1,15 +1,14 @@
 -------------------------------------------------------------
--- ni_ST.vhd
+-- ni_ST_16.vhd
 -- This is an auto generated file, do not edit by hand.
 -------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.leros_types.all;
 use work.noc_types.all;
 
-entity ni_ST is
+entity ni_ST_16 is
 	generic (
 		NI_NUM	: natural);
 	port (
@@ -17,9 +16,9 @@ entity ni_ST is
 		dest	: out integer range 0 to 15;
 		src	: out integer range 0 to 15
 		);
-end ni_ST;
+end ni_ST_16;
 
-architecture data of ni_ST is
+architecture data of ni_ST_16 is
 begin -- data
 
 	NI_NUM0 : if NI_NUM = 0 generate

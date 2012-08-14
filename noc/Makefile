@@ -27,6 +27,8 @@ base: leros
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/serdes.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/generated/bt$(N)x$(N)/router_ST.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/generated/bt$(N)x$(N)/ni_ST.vhd
+	$(WINE) vsom $(OPTIONS) $(S4NOCDIR)/router_ST.vhd
+	$(WINE) vsom $(OPTIONS) $(S4NOCDIR)/ni_ST.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/dp_ram.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/ni_ram.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/ni_ram_single.vhd
@@ -48,6 +50,20 @@ leros:
 	$(WINE) vcom $(OPTIONS) $(LEROSDIR)/core/leros_ex.vhd
 	$(WINE) vcom $(OPTIONS) $(LEROSDIR)/core/leros.vhd
 
+tools:
+	cd src && make
+	
+schedule:
+	cd vhdl/generated/bt2x2 && ../../../src/STgen.exe 4 bt2x2.shd
+	cd vhdl/generated/bt3x3 && ../../../src/STgen.exe 9 bt3x3.shd
+	cd vhdl/generated/bt4x4 && ../../../src/STgen.exe 16 bt4x4.shd
+	cd vhdl/generated/bt5x5 && ../../../src/STgen.exe 25 bt5x5.shd
+	cd vhdl/generated/bt6x6 && ../../../src/STgen.exe 36 bt6x6.shd
+	cd vhdl/generated/bt7x7 && ../../../src/STgen.exe 49 bt7x7.shd
+	cd vhdl/generated/bt8x8 && ../../../src/STgen.exe 64 bt8x8.shd
+	cd vhdl/generated/bt9x9 && ../../../src/STgen.exe 81 bt9x9.shd
+	cd vhdl/generated/bt10x10 && ../../../src/STgen.exe 100 bt10x10.shd
+	
 sim: 
 	@echo Starting simulation...
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/simulation/tb_noc.vhd
