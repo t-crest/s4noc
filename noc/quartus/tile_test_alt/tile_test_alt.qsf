@@ -65,6 +65,10 @@ set_global_assignment -name VHDL_INPUT_VERSION VHDL_2008
 set_global_assignment -name VHDL_SHOW_LMF_MAPPING_MESSAGES OFF
 set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS OFF
 set_global_assignment -name DISABLE_REGISTER_MERGING_ACROSS_HIERARCHIES OFF
+set_global_assignment -name VHDL_FILE ../../vhdl/generated/bt10x10/router_ST_100.vhd
+set_global_assignment -name VHDL_FILE ../../vhdl/generated/bt10x10/ni_ST_100.vhd
+set_global_assignment -name VHDL_FILE ../../vhdl/generated/bt9x9/router_ST_81.vhd
+set_global_assignment -name VHDL_FILE ../../vhdl/generated/bt9x9/ni_ST_81.vhd
 set_global_assignment -name VHDL_FILE ../../vhdl/ni_ST.vhd
 set_global_assignment -name VHDL_FILE ../../vhdl/generated/bt8x8/router_ST_64.vhd
 set_global_assignment -name VHDL_FILE ../../vhdl/generated/bt8x8/ni_ST_64.vhd
@@ -100,4 +104,5 @@ set_global_assignment -name VHDL_FILE ../../vhdl/noc_N.vhd
 set_global_assignment -name VHDL_FILE ../../vhdl/ni_ram.vhd -hdl_version VHDL_2008
 set_global_assignment -name VHDL_FILE ../../vhdl/dp_ram.vhd
 set_global_assignment -name SIGNALTAP_FILE stp1.stp
+set_global_assignment -name QIP_FILE ../../vhdl/altera/altpll_cyc2.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

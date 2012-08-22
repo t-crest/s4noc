@@ -13,7 +13,7 @@ entity ni_ST is
   generic (
     NI_NUM : natural);
   port (
-    count : in  unsigned(4 downto 0);
+    count : in  unsigned(log2(TDM_PERIOD)-1 downto 0);
     dest  : out integer range 0 to 9;
     src   : out integer range 0 to 9
     );
@@ -61,5 +61,45 @@ begin  -- data
         dest  => dest,
         src   => src);
   end generate st6x6;
+  
+  st7x7 : if TOTAL_NI_NUM = 49 generate
+    st : entity work.ni_ST_49
+      generic map (
+        NI_NUM => NI_NUM)
+      port map (
+        count => count,
+        dest  => dest,
+        src   => src);
+  end generate st7x7;
+  
+  st8x8 : if TOTAL_NI_NUM = 64 generate
+    st : entity work.ni_ST_64
+      generic map (
+        NI_NUM => NI_NUM)
+      port map (
+        count => count,
+        dest  => dest,
+        src   => src);
+  end generate st8x8;
+  
+  st9x9 : if TOTAL_NI_NUM = 81 generate
+    st : entity work.ni_ST_81
+      generic map (
+        NI_NUM => NI_NUM)
+      port map (
+        count => count,
+        dest  => dest,
+        src   => src);
+  end generate st9x9;
+  
+  st10x10 : if TOTAL_NI_NUM = 100 generate
+    st : entity work.ni_ST_100
+      generic map (
+        NI_NUM => NI_NUM)
+      port map (
+        count => count,
+        dest  => dest,
+        src   => src);
+  end generate st10x10;
 
 end data;

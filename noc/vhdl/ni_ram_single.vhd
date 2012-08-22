@@ -38,6 +38,7 @@
 library ieee;
 use ieee.numeric_std.all;
 use ieee.std_logic_1164.all;
+use ieee.math_real.all;
 use work.leros_types.all;
 use work.noc_types.all;
 
@@ -57,6 +58,8 @@ entity ni_ram_single is
 end ni_ram_single;
 
 architecture behav of ni_ram_single is
+  constant STATUS_REG_DIV : natural := natural(ceil(real(TOTAL_NI_NUM)/real(WORD_WIDTH)));
+
   signal count : unsigned(log2(TDM_PERIOD)-1 downto 0);  -- Count to
                                                          -- describe the
                                                          -- slot number.
@@ -71,8 +74,8 @@ architecture behav of ni_ram_single is
   signal x_rx_slot_src, x_tx_slot_dest : status_int;
   signal dest_addr, src_addr           : status_int;
 
-  signal tx_slot_status, rx_slot_status : std_logic;
-  signal x_tx_slot_status               : std_logic;
+  signal tx_slot_status   : std_logic;
+  signal x_tx_slot_status : std_logic;
 
   signal read_rdy, next_read_rdy : std_logic;
 
@@ -127,7 +130,6 @@ begin  -- behav
         x_rx_slot_src    <= 0;
         tx_slot_status   <= '0';
         x_tx_slot_status <= '0';
-        rx_slot_status   <= '0';
       else
         tx_slot_dest     <= x_tx_slot_dest;
         x_tx_slot_dest   <= dest_addr;
@@ -135,7 +137,6 @@ begin  -- behav
         tx_slot_status   <= x_tx_slot_status;
         rx_slot_src      <= x_rx_slot_src;
         x_rx_slot_src    <= src_addr;
-        rx_slot_status   <= rx_status_reg(rx_slot_src);
       end if;
     end if;
   end process slot_regs;
@@ -163,12 +164,12 @@ begin  -- behav
 -------------------------------------------------------------------------------
 -- TX and RX buffer
 -------------------------------------------------------------------------------
-  processor_ram_addr <= to_integer(unsigned(processor_out.addr(3 downto 0)));
+  processor_ram_addr <= to_integer(unsigned(processor_out.addr(log2(TOTAL_NI_NUM)-1 downto 0)));
 
   TX_ram : entity work.dp_ram
     generic map (
       DATA_WIDTH => WORD_WIDTH,
-      ADDR_WIDTH => log2(TOTAL_NI_NUM)-1)
+      ADDR_WIDTH => log2(TOTAL_NI_NUM))
     port map (
       clk    => clk,
       addr_a => processor_ram_addr,
@@ -183,7 +184,7 @@ begin  -- behav
   RX_ram : entity work.dp_ram
     generic map (
       DATA_WIDTH => WORD_WIDTH,
-      ADDR_WIDTH => log2(TOTAL_NI_NUM)-1)
+      ADDR_WIDTH => log2(TOTAL_NI_NUM))
     port map (
       clk    => clk,
       addr_a => processor_ram_addr,
@@ -218,12 +219,10 @@ begin  -- behav
   end process tx_router;
 
 
-  rx_router : process (rx_slot_src, rx_slot_status, tile_rx_f.data_valid)
+  rx_router : process (rx_slot_src, tile_rx_f.data_valid)
   begin  -- process rx_router
     out_rx_status              <= (others => '0');
---    if rx_slot_status = '0' then
     out_rx_status(rx_slot_src) <= tile_rx_f.data_valid;
---    end if;
   end process rx_router;
 
 -------------------------------------------------------------------------------
@@ -253,29 +252,41 @@ begin  -- behav
     in_rx_status        <= (others => '0');
     processor_in.rddata <= (others => '0');
 
+    if processor_out.rd = '1' then
 -------------------------------------------------------------------------------
-    --  Reading from the rx channel
-    if processor_out.rd = '1' and processor_addr < TOTAL_NI_NUM then
-      if read_rdy = '1' then
-        in_rx_status(processor_addr) <= '1';
-        processor_in.rddata          <= rd_data;
-        next_read_rdy                <= '0';
-      else
-        next_read_rdy <= '1';
+      --  Reading from the rx channel
+      if processor_addr < TOTAL_NI_NUM then
+        if read_rdy = '1' then
+          in_rx_status(processor_addr) <= '1';
+          processor_in.rddata          <= rd_data;
+          next_read_rdy                <= '0';
+        else
+          next_read_rdy <= '1';
+        end if;
       end if;
+
 -------------------------------------------------------------------------------
       -- Returning the tx_status register
-    elsif processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM
-      and processor_addr < TOTAL_NI_NUM+TOTAL_NI_NUM/WORD_WIDTH then
---      processor_in.rddata <= tx_status_reg((processor_addr-TOTAL_NI_NUM+1)*WORD_WIDTH-1 downto (processor_addr-TOTAL_NI_NUM)*WORD_WIDTH);  -- TODO fix: return the correct
-      processor_in.rddata <= tx_status_reg(TOTAL_NI_NUM-1 downto 0);
+      for i in 0 to STATUS_REG_DIV-2 loop
+        if processor_addr = i+TOTAL_NI_NUM then
+          processor_in.rddata <= tx_status_reg((i+1)*WORD_WIDTH-1 downto i*WORD_WIDTH);
+        end if;
+      end loop;  -- i
+      if processor_addr = TOTAL_NI_NUM + STATUS_REG_DIV - 1 then
+        processor_in.rddata((TOTAL_NI_NUM mod WORD_WIDTH)-1 downto 0) <= tx_status_reg(TOTAL_NI_NUM-1 downto TOTAL_NI_NUM-(TOTAL_NI_NUM mod WORD_WIDTH));
+      end if;
+
+
 -------------------------------------------------------------------------------
       -- Returning the rx status register
-    elsif processor_out.rd = '1' and processor_addr >= TOTAL_NI_NUM+TOTAL_NI_NUM/WORD_WIDTH
-      and processor_addr < TOTAL_NI_NUM+2*TOTAL_NI_NUM/WORD_WIDTH then
-
---      processor_in.rddata <= rx_status_reg((processor_addr-TOTAL_NI_NUM)*WORD_WIDTH-1 downto (processor_addr-TOTAL_NI_NUM-1)*WORD_WIDTH);
-      processor_in.rddata <= rx_status_reg(TOTAL_NI_NUM-1 downto 0);
+      for i in 0 to STATUS_REG_DIV-2 loop
+        if processor_addr = i+TOTAL_NI_NUM+STATUS_REG_DIV then
+          processor_in.rddata <= rx_status_reg((i+1)*WORD_WIDTH-1 downto i*WORD_WIDTH);
+        end if;
+      end loop;  -- i
+      if processor_addr = TOTAL_NI_NUM + (2*STATUS_REG_DIV) - 1 then
+        processor_in.rddata((TOTAL_NI_NUM mod WORD_WIDTH)-1 downto 0) <= rx_status_reg(TOTAL_NI_NUM-1 downto TOTAL_NI_NUM-(TOTAL_NI_NUM mod WORD_WIDTH));
+      end if;
     end if;
 -------------------------------------------------------------------------------
     -- Writing to the tx channel

@@ -106,6 +106,7 @@ public:
 		routerST << "architecture data of router_ST_" << numOfNodes << " is\n";
 		routerST << "begin -- data\n\n";
 		routerST << "process(count) begin\n\n";
+		routerST << "\tsels(D) <= D;\n";
 		routerST << "\tcase count is\n\n";
 
 	}

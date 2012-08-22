@@ -9,17 +9,20 @@ set DUAL_CLK_NOC false
 for {set i 0} {$i<${SIDE_LENGTH}} {incr i} {
     for {set j 0} {$j<${SIDE_LENGTH}} {incr j} {
         if {$i == 0 && $j == 0} {
-	   set "NODE_${j}_${i}" "/tb_noc/noc_test/tile_test/nodes_m(${j})/nodes_n(${i})/output_node/node"
-	} else {
-	  set "NODE_${j}_${i}" "/tb_noc/noc_test/tile_test/nodes_m(${j})/nodes_n(${i})/normal_node/node"
-	}
+			set "NODE_${j}_${i}" "/tb_noc/noc_test/tile_test/nodes_m(${j})/nodes_n(${i})/output_node/node"
+		} else {
+			set "NODE_${j}_${i}" "/tb_noc/noc_test/tile_test/nodes_m(${j})/nodes_n(${i})/normal_node/node"
+		}
     }
 }
 
-# Path to single clock Network Adapter
-set NA "singleclkni/ni"
-# Path to dual clock Network Adapter
-#set NA "dualclkni/ni"
+if {$DUAL_CLK_NOC} {
+	# Path to dual clock Network Adapter
+	set NA "dualclkni/ni"
+} else {
+	# Path to single clock Network Adapter
+	set NA "singleclkni/ni"
+}
 
 # Short form of add wave with the defined options
 proc addwave {label path} {

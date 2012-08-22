@@ -23,6 +23,7 @@ begin -- data
 
 process(count) begin
 
+	sels(D) <= D;
 	case count is
 
 		when "0000000" =>
