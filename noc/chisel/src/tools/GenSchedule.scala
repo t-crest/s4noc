@@ -60,7 +60,7 @@ object GenSchedule {
   )
   
   
-  def readFile(file: String) {
+  def genSchedule(file: String) = {
     val lines = Source.fromFile(file).getLines().toList
     var schedLen = 0
     for (line <- lines)
@@ -83,17 +83,12 @@ object GenSchedule {
       println(s)
 
     // How do we multidimensional arrays in Scala?
-    val ports = new Array[Array[Array[Int]]](5) // 5 ports
+    val ports = new Array[Array[Int]](5) // 5 ports
     for (i <- 0 until ports.length) {
-      // no muxes needed!! it is a two dimensional array ports/schedule
-      val muxIn = new Array[Array[Int]](4) // 4 mux inputs
-      ports(i) = muxIn
-      for (j <- 0 until muxIn.length) {
         val shd = new Array[Int](schedLen)
-        muxIn(j) = shd
-        for (k <- 0 until shd.length)
-          shd(k) = -1 // unused value for checking
-      }
+        ports(i) = shd
+        for (j <- 0 until shd.length)
+          shd(j) = -1 // unused value for checking
     }
     
     // Debug printout
@@ -106,9 +101,8 @@ object GenSchedule {
       println()
     }
 
-    // ports(ports)(muxes)(schedule index)
+    // ports(ports)(schedule index) == mux index
     // now find the patterns
-    // Debug printout
     for (i <- 0 until schedLen) {
       print("Cycle " + i + " : ")
       for (s <- schedStrings) {
@@ -116,10 +110,10 @@ object GenSchedule {
         print(pat + " ")
         if (routeMap.contains(pat)) {
           val (port, input) = routeMap(pat)
-          if (ports(port)(input)(i)!= -1) {
-            throw new Exception(port + " " + input + " at cycle " + i + " in use!")
+          if (ports(port)(i)!= -1) {
+            throw new Exception("port " + port + " at cycle " + i + " in use!")
           } else {
-            ports(port)(input)(i) = 1
+            ports(port)(i) = input
           }
           print(port + " " + input)      
         }
@@ -134,12 +128,17 @@ object GenSchedule {
       println(line.length + " " + line)
     }
     println("Max schedule: " + (max + 1))
+    
+    ports
   }
 
   def main(args: Array[String]): Unit = {
     println("Hello Scala")
     val N = 3
-    readFile("/Users/martin/t-crest/s4noc/noc/vhdl/generated/bt" + N + "x" + N + "/bt" + N + "x" + N + ".shd")
+    val p = genSchedule("/Users/martin/t-crest/s4noc/noc/vhdl/generated/bt" + N + "x" + N + "/bt" + N + "x" + N + ".shd")
+    for (x <- p)
+      for (y <- x)
+        println(y)
   }
 
 }
