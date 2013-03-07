@@ -8,6 +8,7 @@ SBT = java -Xmx1024M -Xss8M -XX:MaxPermSize=128M -jar sbt/sbt-launch.jar
 
 MAIN=example.BlinkMain
 MAIN=example.FsmMain
+MAIN=s4noc.SimpNocMain
 
 # Testing with C++ based simulator
 test:
