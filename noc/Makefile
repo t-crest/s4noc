@@ -27,8 +27,8 @@ base: leros
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/serdes.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/generated/bt$(N)x$(N)/router_ST.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/generated/bt$(N)x$(N)/ni_ST.vhd
-	$(WINE) vsom $(OPTIONS) $(S4NOCDIR)/router_ST.vhd
-	$(WINE) vsom $(OPTIONS) $(S4NOCDIR)/ni_ST.vhd
+	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/router_ST.vhd
+	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/ni_ST.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/dp_ram.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/ni_ram.vhd
 	$(WINE) vcom $(OPTIONS) $(S4NOCDIR)/ni_ram_single.vhd
