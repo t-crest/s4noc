@@ -1,0 +1,173 @@
+[*]
+[*] GTKWave Analyzer v3.3.64 (w)1999-2014 BSI
+[*] Fri May  6 19:45:41 2016
+[*]
+[dumpfile] "/home/troels/Code/ComputerArchitecture/ooo-patmos/hwbuild/Main.vcd"
+[dumpfile_mtime] "Fri May  6 19:33:21 2016"
+[dumpfile_size] 61480
+[savefile] "/home/troels/Code/ComputerArchitecture/ooo-patmos/hwbuild/Main.gtkw"
+[timestart] 10
+[size] 1366 704
+[pos] -1 -1
+*-2.836501 20 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] Main.
+[treeopen] Main.ReservationStation_1.
+[sst_width] 217
+[signals_width] 335
+[sst_expanded] 1
+[sst_vpaned_height] 181
+@28
+Main.clk
+Main.reset
+Main.io_ena
+Main.io_busy
+@200
+-
+-Input Stream
+@28
+Main.io_itype
+@24
+Main.io_imm[31:0]
+@28
+Main.io_useImm
+@22
+Main.io_rd[4:0]
+Main.io_rs[4:0]
+Main.io_rt[4:0]
+@200
+-
+-Issue output
+@28
+Main.issue.io_RS_io_0_sel
+Main.issue.io_RS_io_1_sel
+Main.issue.io_RS_io_2_sel
+Main.issue.io_RS_io_3_sel
+Main.issue.io_LSQ_io_sel
+Main.issue.io_busy
+@22
+Main.issue.io_RS_io_0_val_rs[31:0]
+@24
+Main.issue.io_RS_io_0_val_rt[31:0]
+@28
+Main.issue.io_RS_io_0_tag_rs[2:0]
+Main.issue.io_RS_io_0_tag_rt[2:0]
+@200
+-
+-RegisterStatus
+@28
+Main.regStatus.reg_stat_0[2:0]
+Main.regStatus.reg_stat_1[2:0]
+Main.regStatus.reg_stat_2[2:0]
+Main.regStatus.reg_stat_3[2:0]
+Main.regStatus.reg_stat_4[2:0]
+Main.regStatus.reg_stat_5[2:0]
+Main.regStatus.reg_stat_6[2:0]
+Main.regStatus.reg_stat_7[2:0]
+Main.regStatus.reg_stat_8[2:0]
+Main.regStatus.reg_stat_9[2:0]
+Main.regStatus.reg_stat_10[2:0]
+@200
+-
+-RS1
+@28
+Main.ReservationStation.reg_st[1:0]
+@22
+Main.ReservationStation.io_issue_io_val_rt[31:0]
+@28
+Main.ReservationStation.io_issue_io_busy
+Main.ReservationStation.io_CDB_io_rtw
+Main.ReservationStation.io_CDB_io_ack
+@22
+Main.ReservationStation.reg_tag_rs[3:0]
+Main.ReservationStation.reg_tag_rt[3:0]
+Main.ReservationStation.reg_val_rs[31:0]
+Main.ReservationStation.reg_val_rt[31:0]
+Main.ReservationStation.io_CDB_io_result_out[31:0]
+@200
+-
+-RS2
+@28
+Main.ReservationStation_1.io_issue_io_busy
+Main.ReservationStation_1.io_CDB_io_rtw
+Main.ReservationStation_1.io_CDB_io_ack
+@22
+Main.ReservationStation_1.reg_tag_rs[3:0]
+Main.ReservationStation_1.reg_tag_rt[3:0]
+Main.ReservationStation_1.reg_val_rs[31:0]
+Main.ReservationStation_1.reg_val_rt[31:0]
+Main.ReservationStation_1.io_CDB_io_result_out[31:0]
+@200
+-
+-RS3
+@28
+Main.ReservationStation_2.io_issue_io_busy
+Main.ReservationStation_2.io_CDB_io_rtw
+Main.ReservationStation_2.io_CDB_io_ack
+@22
+Main.ReservationStation_2.reg_tag_rs[3:0]
+Main.ReservationStation_2.reg_tag_rt[3:0]
+Main.ReservationStation_2.reg_val_rs[31:0]
+Main.ReservationStation_2.reg_val_rt[31:0]
+Main.ReservationStation_2.io_CDB_io_result_out[31:0]
+@200
+-
+-RS4
+@28
+Main.ReservationStation_3.io_issue_io_busy
+Main.ReservationStation_3.io_CDB_io_rtw
+Main.ReservationStation_3.io_CDB_io_ack
+@22
+Main.ReservationStation_3.reg_tag_rs[3:0]
+Main.ReservationStation_3.reg_tag_rt[3:0]
+Main.ReservationStation_3.reg_val_rs[31:0]
+Main.ReservationStation_3.reg_val_rt[31:0]
+Main.ReservationStation_3.io_CDB_io_result_out[31:0]
+@200
+-
+-LoadStoreQ
+@28
+Main.lsqueue.io_issue_io_mem_op
+Main.lsqueue.io_issue_io_rs_id[2:0]
+Main.lsqueue.io_issue_io_sel
+Main.lsqueue.queue_0_state[1:0]
+Main.lsqueue.queue_1_state[1:0]
+@24
+Main.lsqueue.fifoCount[1:0]
+Main.lsqueue.head[1:0]
+Main.lsqueue.tail[1:0]
+@28
+Main.lsqueue.io_CDB_io_ack
+@22
+Main.lsqueue.io_CDB_io_result_out[31:0]
+@28
+Main.lsqueue.io_CDB_io_rtw
+@22
+Main.lsqueue.result[31:0]
+@28
+Main.lsqueue.rtw
+@200
+-
+-Common Data Bus
+@28
+Main.cdb.io_regstat_io_valid
+Main.cdb.io_regstat_io_tag[2:0]
+@22
+Main.cdb.io_regstat_io_result[31:0]
+@200
+-
+-Register File
+@420
+Main.regFile.rf_0[31:0]
+Main.regFile.rf_1[31:0]
+Main.regFile.rf_2[31:0]
+Main.regFile.rf_3[31:0]
+Main.regFile.rf_4[31:0]
+Main.regFile.rf_5[31:0]
+Main.regFile.rf_6[31:0]
+@421
+Main.regFile.rf_7[31:0]
+Main.regFile.rf_8[31:0]
+Main.regFile.rf_9[31:0]
+Main.regFile.rf_10[31:0]
+[pattern_trace] 1
+[pattern_trace] 0

@@ -1,0 +1,72 @@
+$timescale 1ps $end
+$scope module schtab $end
+$var wire 1 ! clk $end
+$var wire 1 " reset $end
+$var wire 3 # io_rInfo_schtab_io_up $end
+$var wire 3 $ io_rInfo_schtab_io_right $end
+$var wire 3 % io_rInfo_schtab_io_down $end
+$var wire 3 & io_rInfo_schtab_io_left $end
+$var wire 3 ' io_rInfo_schtab_io_local $end
+$var wire 3 ( io_rInfo_schtab_io_dc $end
+$var wire 16 ) io_slotCounter_schtab_io $end
+$upscope $end
+$enddefinitions $end
+$dumpvars
+$end
+#0
+b1 !
+b1 "
+b001 #
+b000 $
+b000 %
+b000 &
+b000 '
+b000 (
+b0000000000000000 )
+#1
+b0 !
+#2
+b1 !
+b1 "
+#3
+b0 !
+#4
+b1 !
+#5
+b0 !
+#6
+b1 !
+#7
+b0 !
+#8
+b1 !
+#9
+b0 !
+#10
+b1 !
+b0 "
+#11
+b0 !
+#12
+b1 !
+#13
+b0 !
+#14
+b1 !
+b010 #
+b001 $
+b0000000000000001 )
+#15
+b0 !
+#16
+b1 !
+b000 #
+b010 $
+b011 %
+b0000000000000010 )
+#17
+b0 !
+#18
+b1 !
+#19
+b0 !
