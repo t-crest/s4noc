@@ -148,6 +148,8 @@ class NiBoxIO() extends Bundle(){
    val output1 = new phit().asOutput
 }
 
+
+
 class RouterBoxIO() extends Bundle(){
 
    val lc_din =new phit().asInput
@@ -167,6 +169,16 @@ class RouterBoxIO() extends Bundle(){
    val dn_din = new phit().asInput
    val dn_dout = new phit().asOutput
 
+
+}
+
+class ipIO() extends Bundle(){
+
+  val led1 = UInt(OUTPUT, 1)
+
+  val led2 = UInt(OUTPUT, 1)
+
+  val ipNI_io = new ipNI().flip
 
 }
 

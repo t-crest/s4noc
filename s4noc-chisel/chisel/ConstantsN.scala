@@ -18,6 +18,11 @@ object ConstantsN {
  val TOTAL_NI_NUM = 4 // 4bits 
  val TDM_PERIOD   = 19
 
+// =================
+// test values for ip cores
+// =================
+val TEST_VALUE_1 = 5
+val TEST_VALUE_2 = 7
 
  val D = Bits("b000")   
  val L = Bits("b001")   

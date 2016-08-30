@@ -41,10 +41,19 @@ val niControllers = for(i<- 0 until TOTAL_IP_NUM) yield
  // ================================================
  //  Create ipCores
  // ================================================
-/*
-val ipCores = for() yield{
 
+val ipCores = for(i<-0 until TOTAL_IP_NUM) yield {
+  val ipC = Module(new Ip())
+  ipC
 }
+
+/*
+// Create connection between ip ni and rom
+for (i <- 0 until TOTAL_IP_NUM) {
+  niControllers(i).io <> ipCores(i).io
+}
+//niControllers(0).io <> rom0 
+
 
  // ================================================
  //  Create routers
