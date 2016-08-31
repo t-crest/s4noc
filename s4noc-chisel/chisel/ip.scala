@@ -7,8 +7,14 @@ import ConstantsN._
 class Ip() extends Module {
  val io = new ipIO()
 
+      io.ipNI_io.ip_din:= Bits(0)
+      io.ipNI_io.ip_addr:= Bits(0)
+      io.led1:=UInt(0) 
+      io.led2:= UInt(0)
+
+      io.ipNI_io.router_tx:= Bool(false) 
  val transmit = Bool()
-     transmit = !(ip_qtBusy)
+     transmit := !(io.ipNI_io.ip_qtBusy)
 
  val CNT_MAX = UInt(20000000 / 2 - 1);
 
@@ -26,7 +32,6 @@ class Ip() extends Module {
     }
   }
 //  io.led1 := blkReg
-
 
   when ( io.ipNI_io.ip_dout === TEST_VALUE_1 ){
     io.led1:=blkReg
@@ -52,7 +57,7 @@ class TestIp(dut: Ip) extends Tester(dut) {
 }
 
 object tIpBox {
-   def main(args: Array[String]): Uipt = {
+   def main(args: Array[String]): Unit = {
       chiselMainTest(args,
          () => Module(new Ip())) {
             dut => new TestIp(dut)

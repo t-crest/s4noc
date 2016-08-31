@@ -1,11 +1,11 @@
-[0m[[0minfo[0m] [0mUpdating {file:/home/patmos/t-crest/somtheing/ooo-patmos/}ooo-patmos...[0m
-[0m[[0mdebug[0m] [0m:: resolving dependencies :: default#ooo-patmos_2.11;0.1-SNAPSHOT[0m
+[0m[[0minfo[0m] [0mUpdating {file:/home/patmos/t-crest/s4noc/s4noc-chisel/}s4noc-chisel...[0m
+[0m[[0mdebug[0m] [0m:: resolving dependencies :: default#s4noc-chisel_2.11;0.1-SNAPSHOT[0m
 [0m[[0mdebug[0m] [0m	confs: [compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool][0m
 [0m[[0mdebug[0m] [0m	validate = true[0m
 [0m[[0mdebug[0m] [0m	refresh = false[0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'compile'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0minfo[0m] [0mResolving org.scala-lang#scala-library;2.11.7 ...[0m
@@ -13,10 +13,10 @@
 [0m[[0mdebug[0m] [0msbt-chain: module revision found in cache: org.scala-lang#scala-library;2.11.7[0m
 [0m[[0mdebug[0m] [0m	found org.scala-lang#scala-library;2.11.7 in sbt-chain[0m
 [0m[[0mdebug[0m] [0m	[2.11.7] org.scala-lang#scala-library;2.11.7[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->master][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->default(compile)][0m
 [0m[[0minfo[0m] [0mResolving edu.berkeley.cs#chisel_2.11;latest.release ...[0m
 [0m[[0mdebug[0m] [0msbt-chain: Checking cache for: dependency: edu.berkeley.cs#chisel_2.11;latest.release {compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdefault-cache: cached resolved revision expired for edu.berkeley.cs#chisel_2.11;latest.release[0m
@@ -36,8 +36,8 @@
 [0m[[0mdebug[0m] [0m	[2.2.35] edu.berkeley.cs#chisel_2.11;latest.release[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->compile][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies edu.berkeley.cs#chisel_2.11;latest.release->org.scala-lang#scala-library;2.11.7 [compile->compile(*)][0m
@@ -92,29 +92,29 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies edu.berkeley.cs#chisel_2.11;latest.release->org.scala-lang#scala-library;2.11.7 [runtime->compile][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies edu.berkeley.cs#chisel_2.11;latest.release->org.scala-lang#scala-reflect;2.11.7 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies edu.berkeley.cs#chisel_2.11;latest.release->org.scala-lang#scala-reflect;2.11.7 [runtime->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->master][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'runtime'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->master][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->compile][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies edu.berkeley.cs#chisel_2.11;latest.release->org.scala-lang#scala-library;2.11.7 [compile->compile(*)][0m
@@ -162,34 +162,34 @@
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-reflect;2.11.7->org.scala-lang#scala-library;2.11.7 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-reflect;2.11.7->org.scala-lang#scala-library;2.11.7 [runtime->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->master][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'test'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [test][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [test][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->master][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->compile][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies edu.berkeley.cs#chisel_2.11;latest.release->org.scala-lang#scala-library;2.11.7 [compile->compile(*)][0m
@@ -239,19 +239,19 @@
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-reflect;2.11.7->org.scala-lang#scala-library;2.11.7 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-reflect;2.11.7->org.scala-lang#scala-library;2.11.7 [runtime->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->master][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'provided'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [provided][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [provided][0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'optional'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [optional][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [optional][0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'compile-internal'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [compile-internal][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [compile-internal][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
@@ -260,10 +260,10 @@
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->master][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
@@ -272,8 +272,8 @@
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->compile][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies edu.berkeley.cs#chisel_2.11;latest.release->org.scala-lang#scala-library;2.11.7 [compile->compile(*)][0m
@@ -325,18 +325,18 @@
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-reflect;2.11.7->org.scala-lang#scala-library;2.11.7 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-reflect;2.11.7->org.scala-lang#scala-library;2.11.7 [runtime->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->master][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [optional][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [provided][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [optional][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [provided][0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'runtime-internal'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [runtime-internal][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [runtime-internal][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
@@ -345,10 +345,10 @@
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->master][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
@@ -357,8 +357,8 @@
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->compile][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies edu.berkeley.cs#chisel_2.11;latest.release->org.scala-lang#scala-library;2.11.7 [compile->compile(*)][0m
@@ -410,18 +410,18 @@
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-reflect;2.11.7->org.scala-lang#scala-library;2.11.7 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-reflect;2.11.7->org.scala-lang#scala-library;2.11.7 [runtime->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->master][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [optional][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [optional][0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'test-internal'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [test-internal][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [test][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [test-internal][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [test][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
@@ -434,10 +434,10 @@
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->master][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->default(compile)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->default(compile)][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
@@ -450,8 +450,8 @@
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->compile][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies edu.berkeley.cs#chisel_2.11;latest.release->org.scala-lang#scala-library;2.11.7 [compile->compile(*)][0m
@@ -507,32 +507,32 @@
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-reflect;2.11.7->org.scala-lang#scala-library;2.11.7 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-reflect;2.11.7->org.scala-lang#scala-library;2.11.7 [runtime->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->edu.berkeley.cs#chisel_2.11;latest.release [compile->master][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(compile)], runtime=[runtime(*)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [optional][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [provided][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [optional][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [provided][0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'plugin'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [plugin][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [plugin][0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'sources'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [sources][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [sources][0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'docs'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [docs][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [docs][0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'pom'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [pom][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [pom][0m
 [0m[[0mdebug[0m] [0mresolving dependencies for configuration 'scala-tool'[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies for default#ooo-patmos_2.11;0.1-SNAPSHOT [scala-tool][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.11.7 [scala-tool->default][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies for default#s4noc-chisel_2.11;0.1-SNAPSHOT [scala-tool][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.11.7 [scala-tool->default][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.11.7 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.11.7 {scala-tool=[default, optional(default)], compile=[default(compile)]}[0m
 [0m[[0minfo[0m] [0mResolving org.scala-lang#scala-compiler;2.11.7 ...[0m
 [0m[[0mdebug[0m] [0msbt-chain: Checking cache for: dependency: org.scala-lang#scala-compiler;2.11.7 {scala-tool=[default, optional(default)]}[0m
 [0m[[0mdebug[0m] [0msbt-chain: module revision found in cache: org.scala-lang#scala-compiler;2.11.7[0m
 [0m[[0mdebug[0m] [0m	found org.scala-lang#scala-compiler;2.11.7 in sbt-chain[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.11.7 [scala-tool->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.11.7 [scala-tool->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.11.7 [scala-tool->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.11.7 [scala-tool->compile][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-compiler;2.11.7->org.scala-lang#scala-library;2.11.7 [compile->master(*)][0m
@@ -662,12 +662,12 @@
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-compiler;2.11.7->org.scala-lang.modules#scala-xml_2.11;1.0.4 [runtime->compile][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-compiler;2.11.7->org.scala-lang.modules#scala-parser-combinators_2.11;1.0.4 [runtime->runtime(*)][0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-compiler;2.11.7->org.scala-lang.modules#scala-parser-combinators_2.11;1.0.4 [runtime->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.11.7 [scala-tool->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.11.7 [scala-tool->master][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.11.7 [scala-tool->optional(default)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.11.7 [scala-tool->optional(default)][0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-library;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0mdependency descriptor has been mediated: dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]} => dependency: org.scala-lang#scala-reflect;2.11.7 {compile=[compile(*), master(*)], runtime=[runtime(*)]}[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-compiler;2.11.7->jline#jline;2.12.1 [optional->master(*)][0m
@@ -690,11 +690,11 @@
 [0m[[0mdebug[0m] [0msbt-chain: module revision found in cache: jline#jline;2.12.1[0m
 [0m[[0mdebug[0m] [0m	found jline#jline;2.12.1 in sbt-chain[0m
 [0m[[0mdebug[0m] [0m== resolving dependencies org.scala-lang#scala-compiler;2.11.7->jline#jline;2.12.1 [optional->compile(*)][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [scala-tool->default][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [scala-tool->runtime][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [scala-tool->compile][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [scala-tool->master][0m
-[0m[[0mdebug[0m] [0m== resolving dependencies default#ooo-patmos_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [scala-tool->optional(default)][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [scala-tool->default][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [scala-tool->runtime][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [scala-tool->compile][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [scala-tool->master][0m
+[0m[[0mdebug[0m] [0m== resolving dependencies default#s4noc-chisel_2.11;0.1-SNAPSHOT->org.scala-lang#scala-library;2.11.7 [scala-tool->optional(default)][0m
 [0m[[0mdebug[0m] [0mignoring unhandled DependencyDescriptorMediator: class sbt.IvyScala$OverrideScalaMediator[0m
 [0m[[0mdebug[0m] [0m	resolved ivy file produced in cache[0m
 [0m[[0mdebug[0m] [0m:: downloading artifacts ::[0m
@@ -705,19 +705,19 @@
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-lang.modules#scala-xml_2.11;1.0.4!scala-xml_2.11.jar(bundle)[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] org.scala-lang.modules#scala-parser-combinators_2.11;1.0.4!scala-parser-combinators_2.11.jar(bundle)[0m
 [0m[[0mdebug[0m] [0m	[NOT REQUIRED] jline#jline;2.12.1!jline.jar[0m
-[0m[[0mdebug[0m] [0m:: resolution report :: resolve 3719ms :: artifacts dl 37ms[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT compile produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-compile.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT runtime produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-runtime.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT test produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-test.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT provided produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-provided.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT optional produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-optional.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT compile-internal produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-compile-internal.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT runtime-internal produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-runtime-internal.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT test-internal produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-test-internal.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT plugin produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-plugin.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT sources produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-sources.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT docs produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-docs.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT pom produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-pom.xml[0m
-[0m[[0mdebug[0m] [0m	report for default#ooo-patmos_2.11;0.1-SNAPSHOT scala-tool produced in /home/patmos/t-crest/somtheing/ooo-patmos/target/resolution-cache/reports/default-ooo-patmos_2.11-scala-tool.xml[0m
-[0m[[0mdebug[0m] [0m	resolve done (3719ms resolve - 37ms download)[0m
+[0m[[0mdebug[0m] [0m:: resolution report :: resolve 4884ms :: artifacts dl 120ms[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT compile produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-compile.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT runtime produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-runtime.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT test produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-test.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT provided produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-provided.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT optional produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-optional.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT compile-internal produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-compile-internal.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT runtime-internal produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-runtime-internal.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT test-internal produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-test-internal.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT plugin produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-plugin.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT sources produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-sources.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT docs produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-docs.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT pom produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-pom.xml[0m
+[0m[[0mdebug[0m] [0m	report for default#s4noc-chisel_2.11;0.1-SNAPSHOT scala-tool produced in /home/patmos/t-crest/s4noc/s4noc-chisel/target/resolution-cache/reports/default-s4noc-chisel_2.11-scala-tool.xml[0m
+[0m[[0mdebug[0m] [0m	resolve done (4884ms resolve - 120ms download)[0m
 [0m[[0minfo[0m] [0mDone updating.[0m

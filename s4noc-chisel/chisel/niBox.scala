@@ -70,13 +70,14 @@ val routers = for() yield{
 
 
 
-schedule_ni.io.dir.rdAddr <>control_ni.io.dir_rdAddr
-schedule_ni.io.dir.rdData.src <> control_ni.io.dir_rdData_src
-schedule_ni.io.dir.rdData.dst <> control_ni.io.dir_rdData_dst
-schedule_ni.io.dir.read <> control_ni.io.dir_read
+//schedule_ni.io.dir.rdAddr <>control_ni.io.dir_rdAddr
+//schedule_ni.io.dir.rdData.src <> control_ni.io.dir_rdData_src
 
-io.core_io <> control_ni.io.ipNI_io
-control_ni.io.r_lc_dout <> io.output1
+//schedule_ni.io.dir.rdData.dst <> control_ni.io.dir_rdData_dst
+//schedule_ni.io.dir.read <> control_ni.io.dir_read
+
+//io.core_io <> control_ni.io.ipNI_io
+//control_ni.io.r_lc_dout <> io.output1
 
 }
 

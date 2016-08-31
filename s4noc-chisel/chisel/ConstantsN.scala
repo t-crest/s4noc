@@ -21,8 +21,8 @@ object ConstantsN {
 // =================
 // test values for ip cores
 // =================
-val TEST_VALUE_1 = 5
-val TEST_VALUE_2 = 7
+val TEST_VALUE_1 = Bits(5)
+val TEST_VALUE_2 = Bits(7)
 
  val D = Bits("b000")   
  val L = Bits("b001")   

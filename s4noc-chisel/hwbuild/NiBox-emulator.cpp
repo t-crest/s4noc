@@ -7,7 +7,7 @@ int main (int argc, char* argv[]) {
   api.init_sim_data();
   api.init_channels();
   std::vector<std::string> args(argv+1, argv+argc);
-  std::string vcdfile = "/home/patmos/t-crest/somtheing/ooo-patmos/hwbuild/NiBox.vcd";
+  std::string vcdfile = "/home/patmos/t-crest/s4noc/s4noc-chisel/hwbuild/NiBox.vcd";
   std::vector<std::string>::const_iterator it;
   for (it = args.begin() ; it != args.end() ; it++) {
     if (it->find("+vcdfile=") == 0) vcdfile = it->c_str()+9;
