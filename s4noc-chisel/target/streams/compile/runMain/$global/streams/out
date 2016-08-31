@@ -8,9 +8,9 @@
 [0m[[0mdebug[0m] [0mWaiting for thread run-main-0 to terminate.[0m
 [0m[[0mdebug[0m] [0m	Thread run-main-0 exited.[0m
 [0m[[0mdebug[0m] [0mInterrupting remaining threads (should be all daemons).[0m
-[0m[[0mdebug[0m] [0mInterrupting thread ForkJoinPool-1-worker-3[0m
-[0m[[0mdebug[0m] [0m	Interrupted ForkJoinPool-1-worker-3[0m
 [0m[[0mdebug[0m] [0mInterrupting thread ForkJoinPool-1-worker-1[0m
 [0m[[0mdebug[0m] [0m	Interrupted ForkJoinPool-1-worker-1[0m
+[0m[[0mdebug[0m] [0mInterrupting thread ForkJoinPool-1-worker-3[0m
+[0m[[0mdebug[0m] [0m	Interrupted ForkJoinPool-1-worker-3[0m
 [0m[[0mdebug[0m] [0mSandboxed run complete..[0m
 [0m[[0mdebug[0m] [0mExited with code 0[0m
