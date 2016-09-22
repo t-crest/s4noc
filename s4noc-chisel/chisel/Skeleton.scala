@@ -1,1 +1,1 @@
-package patmos
+package skeleton

@@ -75,7 +75,6 @@ class niQueue(length: Int) extends Module {
   
   val qt = Vec.fill(length) { Reg(init = qphit_init_state) }
 
-//  val qReceived = Vec.fill(length) { Reg(init = qphit_init_state) }
 
 // =====================================================================
 // Insert Element in TransmitQueue
@@ -110,6 +109,51 @@ class niQueue(length: Int) extends Module {
   .elsewhen (!qtInc && qtDec) {
     qtPhitCount := qtPhitCount - UInt(1)
   }
+
+  
+// =====================================================================
+// qr: Queue Receive
+// =====================================================================
+
+  val qrHead = Reg(init = UInt(0, width = log2Up(length)))
+  val qrTail = Reg(init = UInt(0, width = log2Up(length)))
+
+  val qrPhitCount = Reg(init = UInt(0, width = log2Up(length+1)))
+  
+  val qrInc = Bool() 
+      qrInc := Bool(false)
+  val qrDec = Bool()
+      qrDec := Bool(false)
+
+  val qrFull = Bool()
+      qrFull:= (qrPhitCount === UInt(length))
+
+  val qrEmpty = Bool()
+      qrEmpty:=(qrPhitCount === UInt(0))
+
+  val qrTailNext = UInt(width = log2Up(length))
+      qrTailNext := Mux(qrTail === UInt(length), UInt(0), qrTail + UInt(1))
+
+  val qrHeadNext = UInt(width = log2Up(length))
+      qrHeadNext := Mux(qrHead === UInt(length), UInt(0), qrHead + UInt(1))
+// =====================================================================
+// qr: Signal state of Queueu Receive
+// =====================================================================
+  io.ipNI_io.ip_qrBusy:= qrFull
+// =====================================================================
+// Inistantiate phit - queue elements
+// =====================================================================
+
+  val qr = Vec.fill(length) { Reg(init = qphit_init_state) }
+
+// =====================================================================
+// Insert Element in ReceiveQueue
+// =====================================================================
+
+
+// =====================================================================
+// Remove Element in ReceiveQueue
+// =====================================================================
 
 
 // =======================================
@@ -189,23 +233,7 @@ when (reg_dir_data_dst === reg_tx_dst){
     peek(dut.tx_dout)
      expect(dut.qtPhitCount,2)
      expect(dut.io.ipNI_io.ip_qtBusy,0)
-   step(1)
-
-     poke(dut.io.ipNI_io.ip_addr,3)
-     expect(dut.qtPhitCount,2)
-
-    peek(dut.io.r_lc_dout)
-    peek(dut.tx_dout)
-     expect(dut.io.ipNI_io.ip_qtBusy,0)
-   step(1)
-
-     expect(dut.qtPhitCount,2)
-     expect(dut.io.ipNI_io.ip_qtBusy,0)
-   step(1)
-
-     expect(dut.qtPhitCount,2)
-     expect(dut.io.ipNI_io.ip_qtBusy,0)
-   step(1)
+   step(100)
 
 }
 

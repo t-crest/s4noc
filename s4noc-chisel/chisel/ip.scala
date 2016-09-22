@@ -9,6 +9,7 @@ class Ip() extends Module {
 
       io.ipNI_io.ip_din:= Bits(0)
       io.ipNI_io.ip_addr:= Bits(0)
+      io.ipNI_io.ip_rtw:= Bool(true)
       io.led1:=UInt(0) 
       io.led2:= UInt(0)
 
@@ -28,7 +29,7 @@ class Ip() extends Module {
     when (transmit){
       io.ipNI_io.ip_din:= TEST_VALUE_1
       io.ipNI_io.router_tx:= Bool(true) 
-      io.ipNI_io.ip_addr:= Bits(10) // suppose to change
+      io.ipNI_io.ip_addr:= Bits(5) // suppose to change
     }
   }
 //  io.led1 := blkReg

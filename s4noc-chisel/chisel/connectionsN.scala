@@ -108,6 +108,7 @@ class ipNI() extends Bundle(){
   val ip_ack = Bool(OUTPUT)
   val ip_addr = Bits(INPUT, ADDRESS_WIDTH)
   val ip_qtBusy = Bool(OUTPUT)
+  val ip_qrBusy= Bool(OUTPUT)
   val ip_dout = Bits(OUTPUT, DATA_WIDTH)
 
 }

@@ -1,5 +1,5 @@
-PROJNAME = skeleton
-MAIN = skeleton.Skeleton
+PROJNAME = patmos
+MAIN = patmos.tNiBox
 MODULE ?= MAIN
 
 HWBUILDDIR ?= $(CURDIR)/hwbuild
